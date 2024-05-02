@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="m-4 flex flex-wrap justify-between gap-8 lg:m-8 lg:text-xl xl:text-base"
-  >
+  <div class="m-4 flex flex-wrap justify-between gap-8 lg:m-8 lg:text-xl">
     <div class="w-[90%] lg:w-7/12 xl:w-1/3">
       <p>
         Labore fugiat non ea voluptate tempor non occaecat nisi amet proident.
