@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: "Goli";
+  src: url("./assets/fonts/Goli/Goli.ttf");
+}
+
+@layer components {
+  .connect-link {
+    @apply mr-2 hover:cursor-pointer lg:mr-4;
+  }
+}
