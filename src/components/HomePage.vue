@@ -2,11 +2,12 @@
   <div class="m-4 flex flex-wrap justify-between gap-8 lg:m-8 lg:text-xl">
     <div class="w-[90%] lg:w-7/12 xl:w-1/3">
       <p>
-        Labore fugiat non ea voluptate tempor non occaecat nisi amet proident.
-        Ipsum sint irure anim eu cillum deserunt duis ea. Duis cupidatat ullamco
-        minim aliquip do eiusmod incididunt non do non. Irure voluptate deserunt
-        ea ex consectetur et cillum nisi. Ut mollit minim Lorem proident velit
-        irure.
+        Thanks for visiting! I'm a Cloud & DevOps Engineer based in the United
+        States with a development and sysadmin background. I enjoy designing
+        beautiful systems, improving efficiency and safety, while working with
+        all aspects of a software project. I'm currently a Cloud Engineer at
+        Auction Edge, open to consulting or contracting opportunities with
+        clients worldwide.
       </p>
 
       <div class="mt-2 text-light-400 underline">
@@ -24,20 +25,23 @@
 
     <div class="grid w-[90%] grid-rows-2 gap-y-4 lg:w-7/12 lg:gap-y-8 xl:w-1/3">
       <div class="grid grid-cols-2">
-        <div class="text-start">Skills</div>
+        <div class="text-start">Cloud & DevOps</div>
         <div class="text-end">
-          <p>Something</p>
-          <p>Something else</p>
-          <p>A third thing</p>
+          <p>AWS</p>
+          <p>Infrastructure-as-Code</p>
+          <p>CI/CD Pipelines</p>
+          <p>Docker/Kubernetes</p>
+          <p>Configuration Management</p>
         </div>
       </div>
 
       <div class="grid grid-cols-2">
-        <div class="text-start">Technologies</div>
+        <div class="text-start">Development</div>
         <div class="text-end">
-          <p>Something</p>
-          <p>Something else</p>
-          <p>A third thing</p>
+          <p>Scripting (Go, Python, Shell)</p>
+          <p>Node, Vue, Rails</p>
+          <p>Tailwind, Bootstrap</p>
+          <p>C++, Java</p>
         </div>
       </div>
     </div>
