@@ -19,6 +19,9 @@ export default {
           500: "#212529",
         },
       },
+      screens: {
+        "3xl": "1792px",
+      },
     },
   },
   plugins: [],

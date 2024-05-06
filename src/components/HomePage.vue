@@ -1,6 +1,6 @@
 <template>
-  <div class="m-4 flex flex-wrap justify-between gap-8 lg:m-8 lg:text-xl">
-    <div class="w-[90%] lg:w-7/12 xl:w-1/3">
+  <div class="m-4 grid grid-cols-5 gap-8 lg:m-8">
+    <div class="col-span-5 md:col-span-4 xl:col-span-2">
       <p>
         Thanks for visiting! I'm a Cloud & DevOps Engineer based in the United
         States with a development and sysadmin background. I enjoy designing
@@ -20,13 +20,12 @@
       </div>
     </div>
 
-    <div class="lg:w-3/12 xl:hidden"></div>
-    <div class="lg:w-3/12 xl:hidden"></div>
-
-    <div class="grid w-[90%] grid-rows-2 gap-y-4 lg:w-7/12 lg:gap-y-8 xl:w-1/3">
-      <div class="grid grid-cols-2">
-        <div class="text-start">Cloud & DevOps</div>
-        <div class="text-end">
+    <div
+      class="col-span-5 grid grid-rows-2 gap-y-4 md:col-span-4 md:col-start-2 lg:gap-y-8 xl:col-span-2 xl:col-start-4"
+    >
+      <div class="grid grid-cols-3">
+        <div class="col-span-1 text-start font-bold">Cloud & DevOps</div>
+        <div class="col-span-2 text-end">
           <p>AWS</p>
           <p>Infrastructure-as-Code</p>
           <p>CI/CD Pipelines</p>
@@ -35,9 +34,9 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2">
-        <div class="text-start">Development</div>
-        <div class="text-end">
+      <div class="grid grid-cols-3">
+        <div class="col-span-1 text-start font-bold">Development</div>
+        <div class="col-span-2 text-end">
           <p>Scripting (Go, Python, Shell)</p>
           <p>Node, Vue, Rails</p>
           <p>Tailwind, Bootstrap</p>
@@ -48,7 +47,7 @@
   </div>
 
   <div
-    class="absolute bottom-0 ml-2 text-8xl lg:ml-4 lg:text-[10rem] 2xl:text-[14rem]"
+    class="3xl:text-[14rem] absolute bottom-0 ml-2 text-8xl lg:ml-4 lg:text-[10rem] 2xl:text-[12rem]"
   >
     Ethan Hassett
   </div>
