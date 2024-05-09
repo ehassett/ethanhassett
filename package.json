@@ -1,25 +1,25 @@
 {
   "name": "ethanhassett.com",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "version": "0.0.1",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
   "dependencies": {
-    "vue": "^3.4.21",
-    "vue-router": "^4.3.2"
+    "astro": "^4.8.0",
+    "@astrojs/check": "^0.6.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.4",
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.38",
     "prettier": "^3.2.5",
-    "prettier-plugin-tailwindcss": "^0.5.14",
-    "sass": "^1.75.0",
-    "tailwindcss": "^3.4.3",
-    "vite": "^5.2.8"
+    "prettier-plugin-astro": "^0.13.0",
+    "prettier-plugin-tailwindcss": "^0.5.14"
   }
 }
