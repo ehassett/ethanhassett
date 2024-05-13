@@ -1,9 +1,16 @@
 ---
+import { fade } from "astro:transitions";
+import { slide } from "astro:transitions";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout>
-  <div class="text-8xl lg:text-[10rem] 2xl:text-[12rem] 3xl:text-[14rem]">
-    <a href="/">Ethan Hassett</a>
+  <div class="mt-4 lg:mt-8">
+    <a
+      transition:animate={fade({ duration: "0.3s" })}
+      class="text-4xl lg:text-[5rem] 2xl:text-[6rem] 3xl:text-[7rem]"
+      href="/">Ethan Hassett</a
+    >
   </div>
+  <p>Cloud Engineering & DevOps</p>
 </BaseLayout>

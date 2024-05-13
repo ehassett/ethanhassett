@@ -12,29 +12,3 @@
     @apply mr-2 hover:cursor-pointer lg:mr-4;
   }
 }
-
-:root {
-  --body-pad: 1rem;
-  --body-pad-lg: 2rem;
-
-  --name-size-home: 6rem;
-  --name-size-home-lg: 10rem;
-  --name-size-home-2xl: 12rem;
-  --name-size-home-3xl: 14rem;
-}
-
-@keyframes slideUp {
-  to {
-    transform: translateY(
-      calc(-100vh + calc(var(--body-pad-lg) + var(--name-size-home-3xl)))
-    );
-  }
-}
-
-@keyframes slideDown {
-  from {
-    transform: translateY(
-      calc(-100vh + calc(var(--body-pad-lg) + var(--name-size-home-3xl)))
-    );
-  }
-}

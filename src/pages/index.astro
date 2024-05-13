@@ -1,31 +1,14 @@
 ---
+import { fade } from "astro:transitions";
+import { slide } from "astro:transitions";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { slide } from 'astro:transitions';
-
-const anim = {
-  old: {
-    name: "slideUp",
-    duration: "0.5s",
-    easing: "linear",
-    fillMode: "forwards",
-  },
-  new: {
-    name: "slideDown",
-    duration: "0.5s",
-    easing: "linear",
-    fillMode: "backwards",
-  },
-};
-
-const nameAnimation = {
-  forwards: anim,
-  backwards: anim,
-};
 ---
 
 <BaseLayout>
-  <div transition:animate={slide({ duration: '0.3s' })} class="grid grid-cols-5 gap-8">
-    <div class="col-span-5 md:col-span-4 xl:col-span-2">
+  <div
+    class="grid grid-cols-5 gap-8"
+  >
+    <div transition:animate={fade({ duration: "0.5s" })} class="col-span-5 md:col-span-4 xl:col-span-2">
       <p>
         Thanks for visiting! I'm a Cloud & DevOps Engineer based in the United
         States with a development and sysadmin background. I enjoy designing
@@ -46,6 +29,7 @@ const nameAnimation = {
     </div>
 
     <div
+    transition:animate={fade({ duration: "1s" })}
       class="col-span-5 grid grid-rows-2 gap-y-4 md:col-span-4 md:col-start-2 lg:gap-y-8 xl:col-span-2 xl:col-start-4"
     >
       <div class="grid grid-cols-3">
@@ -72,9 +56,9 @@ const nameAnimation = {
   </div>
 
   <div
-    transition:animate={nameAnimation}
+  transition:animate={slide({ duration: "1.5s" })}
     class="text-8xl lg:text-[10rem] 2xl:text-[12rem] 3xl:text-[14rem] absolute bottom-0"
   >
-    Ethan Hassett
+    <p>Ethan Hassett</p>
   </div>
 </BaseLayout>
