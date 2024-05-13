@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: "Goli";
-  src: url("./assets/fonts/Goli/Goli.ttf");
+  src: url("fonts/Goli/Goli.ttf") format("truetype");
 }
 
 @layer components {
