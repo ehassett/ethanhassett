@@ -2,15 +2,63 @@
 import { fade } from "astro:transitions";
 import { slide } from "astro:transitions";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Footer from "../components/Footer.astro";
 ---
 
 <BaseLayout>
-  <div class="mt-4 lg:mt-8">
+  <div class="mt-4 lg:mt-2">
     <a
       transition:animate={fade({ duration: "0.3s" })}
-      class="text-4xl lg:text-[5rem] 2xl:text-[6rem] 3xl:text-[7rem]"
+      class="text-5xl md:text-6xl 2xl:text-[6rem] 3xl:text-[7rem]"
       href="/">Ethan Hassett</a
     >
+    <p class="font-thin text-3xl md:text-4xl 2xl:text-5xl 2xl:ml-1">
+      Cloud Engineering & DevOps
+    </p>
   </div>
-  <p>Cloud Engineering & DevOps</p>
+
+  <div class="text-center">
+    <hr class="md:hidden w-3/4 m-auto mt-4" />
+    <p class="mt-4 text-3xl">Certifications</p>
+    <div class="mt-4 grid grid-cols-2 justify-items-center">
+      <a
+        href="https://www.credly.com/badges/145c2fc3-35d5-4745-a6e7-df9176a27388/public_url"
+      >
+        <img class="w-32" src="assets/terraform_gray.png" />
+      </a>
+      <a
+        href="https://credentials.databricks.com/4d5a6718-6c13-4c8e-9d88-3e62d8feeb06"
+      >
+        <img class="w-32" src="assets/databricks_gray.png" />
+      </a>
+    </div>
+    <p class="mt-4 text-3xl">Experience</p>
+    <div>
+      <p class="experience-date">August 2023 - Present</p>
+      <p class="experience-title">Cloud Engineer @ Auction Edge</p>
+      <p class="experience-date">June 2020 - July 2023</p>
+      <p class="experience-title">DevOps Engineer @ Hyland</p>
+      <p class="experience-date">March 2020 - August 2020</p>
+      <p class="experience-title">Consultant @ WLMB-TV 40</p>
+    </div>
+    <hr class="md:hidden w-3/4 m-auto mt-4" />
+
+    <!-- <div class="mt-4 text-light-400">
+      <p>
+        Download my full resume <a class="underline hover:cursor-pointer"
+          >here</a
+        >
+      </p>
+      <div class="underline mt-4 font-light">
+        <a class="connect-link" href="https://github.com/ehassett">GitHub</a>
+        <a class="connect-link" href="https://linkedin.com/in/ehassett"
+          >LinkedIn</a
+        >
+        <a class="connect-link" href="mailto:ethan@hassett.io"
+          >ethan@hassett.io</a
+        >
+      </div>
+    </div> -->
+</div>
+  <Footer />
 </BaseLayout>
