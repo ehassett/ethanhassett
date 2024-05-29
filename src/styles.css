@@ -11,10 +11,4 @@
   .connect-link {
     @apply mr-2 hover:cursor-pointer lg:mr-4;
   }
-  .experience-date {
-    @apply mt-2 text-left text-xl font-thin;
-  }
-  .experience-title {
-    @apply text-right text-xl;
-  }
 }
