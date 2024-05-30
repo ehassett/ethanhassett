@@ -1,6 +1,7 @@
 ---
 import { fade } from "astro:transitions";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/ResumeSection.astro";
 ---
 
 <BaseLayout>
@@ -10,15 +11,57 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       class="text-5xl md:text-6xl 2xl:text-[6rem] 3xl:text-[7rem]"
       href="/">Ethan Hassett</a
     >
-    <p class="font-thin text-3xl md:text-4xl 2xl:text-5xl 2xl:ml-1">
-      Cloud Engineering & DevOps
+    <p class="font-thin text-3xl md:text-4xl 2xl:text-5xl 2xl:ml-2">
+      DevOps & Cloud Engineering
     </p>
   </div>
 
   <div class="mt-4 text-center">
     <hr class="md:hidden w-3/4 m-auto" />
 
-    <div class="mt-4">
+    <div class="xl:grid xl:grid-cols-3">
+    <div class="-ml-2 2xl:ml-0 xl:col-span-2">
+      <Section title="Cloud Engineer @ Auction Edge">
+        <p class="pl-8 text-2xl h-8">August 2023 - Present</p>
+        <ul class="pl-12 text-xl list-disc">
+          <li>
+            Creating and modernizing infrastructure-as-code workflows to improve
+            developer efficiency and operational safety.
+          </li>
+          <li>
+            Architecting the infrastructure layout of a next-gen data pipeline
+            backed by Databricks and MongoDB Atlas.
+          </li>
+          <li>
+            Supporting the AWS implementation of two major platforms:
+            <ol class="list-decimal pl-8">
+              <li>
+                A multi-account, event-driven architecture platform, against
+                which applications can be easily developed to access both global
+                and application-specific events.
+              </li>
+              <li>
+                A bid engine system utilizing a unified GraphQL API and multiple
+                serverless AWS services, such as Lambda and DynamoDB.
+              </li>
+            </ol>
+          </li>
+        </ul>
+      </Section>
+    </div>
+    <div class="-ml-2 2xl:ml-0">
+      <Section title="Technologies" sidebar=true>
+        <ul class="pl-12 text-xl list-disc">
+          <li>Blah</li>
+          <li>Blah</li>
+          <li>Blah</li>
+        </ul>
+      </Section>
+    </div>
+    </div>
+
+
+    <div class="mt-4 md:hidden">
       <p class="text-3xl">Experience</p>
       <div class="text-xl font-light grid grid-cols-2 justify-between">
         <p class="mt-2 text-left">Since 2023:</p>
@@ -49,7 +92,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </div>
     </div>
 
-    <div class="mt-4">
+    <div class="mt-4 md:hidden">
       <p class="text-3xl">Certifications</p>
       <div class="font-light text-xl">
         <p class="mt-2">Terraform Associate (003)</p>

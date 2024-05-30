@@ -1,0 +1,32 @@
+---
+const { title, sidebar } = Astro.props;
+---
+
+<section class="hidden md:flex text-left">
+  <!-- TODO: figure out dynamic hiding of collapsible on sidebar -->
+  <label class:list={[sidebar? "xl:hidden" : ""]}>
+    <input
+      class="peer relative appearance-none shrink-0 w-0 h-0"
+      type="checkbox"
+    />
+    <svg
+      class="absolute w-8 h-8 pointer-events-none stroke-light-200 fill-light-200 peer-checked:rotate-90 duration-300"
+      xmlns="http://www.w3.org/2000/svg"
+      clip-rule="evenodd"
+      fill-rule="evenodd"
+      stroke-linejoin="round"
+      stroke-miterlimit="2"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="m10.211 7.155c-.141-.108-.3-.157-.456-.157-.389 0-.755.306-.755.749v8.501c0 .445.367.75.755.75.157 0 .316-.05.457-.159 1.554-1.203 4.199-3.252 5.498-4.258.184-.142.29-.36.29-.592 0-.23-.107-.449-.291-.591-1.299-1.002-3.945-3.044-5.498-4.243z"
+      ></path>
+    </svg>
+    <span
+      class="block max-h-10 overflow-hidden transition-all duration-300 peer-checked:max-h-fit"
+    >
+      <p class="flex pl-8 text-4xl h-10 cursor-pointer font-bold">{title}</p>
+      <slot />
+    </span>
+  </label>
+</section>
