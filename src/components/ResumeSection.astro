@@ -1,16 +1,21 @@
 ---
+// ResumeSection is a collapsible section that displays a title (prop) and a collapse icon. When expanded, the <slot/> is shown.
+// The sidebar prop is used to toggle the collapsible feature off for sidebar sections, while still keeping the rest of the component formatted properly.
+
 const { title, sidebar } = Astro.props;
 ---
 
 <section class="hidden md:flex text-left">
-  <!-- TODO: figure out dynamic hiding of collapsible on sidebar -->
-  <label class:list={[sidebar? "xl:hidden" : ""]}>
+  <label>
     <input
       class="peer relative appearance-none shrink-0 w-0 h-0"
       type="checkbox"
     />
     <svg
-      class="absolute w-8 h-8 pointer-events-none stroke-light-200 fill-light-200 peer-checked:rotate-90 duration-300"
+      class:list={[
+        "absolute w-8 h-8 pointer-events-none stroke-light-200 fill-light-200 peer-checked:rotate-90 duration-300",
+        sidebar ? "xl:hidden" : "",
+      ]}
       xmlns="http://www.w3.org/2000/svg"
       clip-rule="evenodd"
       fill-rule="evenodd"
@@ -23,9 +28,19 @@ const { title, sidebar } = Astro.props;
       ></path>
     </svg>
     <span
-      class="block max-h-10 overflow-hidden transition-all duration-300 peer-checked:max-h-fit"
+      class:list={[
+        "max-h-10 block peer-checked:max-h-fit overflow-hidden transition-all duration-300",
+        sidebar ? "xl:max-h-fit" : "",
+      ]}
     >
-      <p class="flex pl-8 text-4xl h-10 cursor-pointer font-bold">{title}</p>
+      <p
+        class:list={[
+          "flex pl-8 text-4xl h-10 font-bold cursor-pointer",
+          sidebar ? "xl:cursor-auto" : "",
+        ]}
+      >
+        {title}
+      </p>
       <slot />
     </span>
   </label>
