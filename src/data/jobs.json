@@ -1,0 +1,98 @@
+[
+  {
+    "title": "Cloud Engineer @ Auction Edge",
+    "start_date": "August 2023",
+    "end_date": "Present",
+    "details": [
+      {
+        "detail": "Creating and modernizing infrastructure-as-code workflows to improve developer efficiency and operational safety.",
+        "subdetails": []
+      },
+      {
+        "detail": "Architecting the infrastructure layout of a next-gen data pipeline backed by Databricks and MongoDB Atlas.",
+        "subdetails": []
+      },
+      {
+        "detail": "Supporting the AWS implementation of two major platforms:",
+        "subdetails": [
+          "A multi-account, event-driven architecture platform, against which applications can be easily developed to access both global and application-specific events.",
+          "A bid engine system utilizing a unified GraphQL API and multiple serverless AWS services, such as Lambda and DynamoDB."
+        ]
+      }
+    ]
+  },
+  {
+    "title": "DevOps Engineer @ Hyland",
+    "start_date": "June 2020",
+    "end_date": "July 2023",
+    "details": [
+      {
+        "detail": "Designed and developed multiple enterprise-scale content management solutions in AWS for customers in diverse sectors such as government, finance, and healthcare.",
+        "subdetails": []
+      },
+      {
+        "detail": "Created team- and department-wide automation workflows utilizing GitHub Actions:",
+        "subdetails": [
+          "A standardized Terraform repo setup that initializes CI/CD, secrets, and repository settings.",
+          "A Git-driven workflow for building and releasing AMIs using Packer and HCP, including a custom Packer plugin written in Go and centralized package repository."
+        ]
+      },
+      {
+        "detail": "Rearchitected the IaC for an Enterprise Imaging solution, used to host and manage multiple petabytes of healthcare imaging and other data.",
+        "subdetails": []
+      },
+      {
+        "detail": "Aided in the configuration and use of DevOps tools such as Dynatrace, Octopus Deploy, and Ansible Tower.",
+        "subdetails": []
+      }
+    ]
+  },
+  {
+    "title": "Contractor @ WLMB-TV 40",
+    "start_date": "March 2020",
+    "end_date": "August 2020",
+    "details": [
+      {
+        "detail": "Recommended and set up a modern shared storage solution for simultaneous editing of 4K footage.",
+        "subdetails": []
+      },
+      {
+        "detail": "Developed two Rails-based websites:",
+        "subdetails": [
+          "A site to host a short-lived, livestreamed show and convert viewers to donors, deployed with Docker.",
+          "Overhauled the site for a subsidiary station including a redesigned donation portal."
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Contractor @ Dot-Tech",
+    "start_date": "September 2018",
+    "end_date": "February 2019",
+    "details": [
+      {
+        "detail": "Built and maintained physical (colocation) and virtual servers for consumer and enterprise clients.",
+        "subdetails": []
+      },
+      {
+        "detail": "Responded to support tickets for various issues relating to customer solutions.",
+        "subdetails": []
+      }
+    ]
+  },
+  {
+    "title": "DevOps Engineer @ Squaremouth",
+    "start_date": "May 2018",
+    "end_date": "August 2018",
+    "details": [
+      {
+        "detail": "Created and improved scripts, CLI tools, and documentation to support development teams.",
+        "subdetails": []
+      },
+      {
+        "detail": "Aided in the automation, containerization, and maintenance of both production and non-production AWS resources.",
+        "subdetails": []
+      }
+    ]
+  }
+]

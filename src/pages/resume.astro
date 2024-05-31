@@ -1,111 +1,102 @@
 ---
-import { fade } from "astro:transitions";
+import jobs from "../data/jobs.json";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Section from "../components/ResumeSection.astro";
+import JobSection from "../components/JobSection.astro"
 ---
 
+<!--
+  TODO:
+  - Consider having first experience section expanded by default
+  - Figure out how to remove extra hidden sections on mobile and use the same elements
+  - Create component for technologies section
+  - Add other sidebar sections
+-->
 <BaseLayout>
-  <div class="lg:mt-2">
-    <a
-      transition:animate={fade({ duration: "0.3s" })}
-      class="text-5xl md:text-6xl 2xl:text-[6rem] 3xl:text-[7rem]"
-      href="/">Ethan Hassett</a
-    >
+  <header class="lg:mt-2">
+    <a class="text-5xl md:text-6xl 2xl:text-[6rem] 3xl:text-[7rem]" href="/">
+      Ethan Hassett
+    </a>
     <p class="font-thin text-3xl md:text-4xl 2xl:text-5xl 2xl:ml-2">
       DevOps & Cloud Engineering
     </p>
-  </div>
+  </header>
 
-  <div class="mt-4 text-center">
-    <hr class="md:hidden w-3/4 m-auto" />
+  <main class="md:flex-1 md:overflow-y-scroll">
+    <div class="mt-4 text-center md:pb-36">
+      <hr class="md:hidden w-3/4 m-auto" />
 
-    <div class="xl:grid xl:grid-cols-3">
-    <div class="-ml-2 2xl:ml-0 xl:col-span-2">
-      <Section title="Cloud Engineer @ Auction Edge">
-        <p class="pl-8 text-2xl h-8">August 2023 - Present</p>
-        <ul class="pl-12 text-xl list-disc">
-          <li>
-            Creating and modernizing infrastructure-as-code workflows to improve
-            developer efficiency and operational safety.
-          </li>
-          <li>
-            Architecting the infrastructure layout of a next-gen data pipeline
-            backed by Databricks and MongoDB Atlas.
-          </li>
-          <li>
-            Supporting the AWS implementation of two major platforms:
-            <ol class="list-decimal pl-8">
-              <li>
-                A multi-account, event-driven architecture platform, against
-                which applications can be easily developed to access both global
-                and application-specific events.
-              </li>
-              <li>
-                A bid engine system utilizing a unified GraphQL API and multiple
-                serverless AWS services, such as Lambda and DynamoDB.
-              </li>
-            </ol>
-          </li>
-        </ul>
-      </Section>
-    </div>
-    <div class="-ml-2 2xl:ml-0">
-      <Section title="Technologies" sidebar=true>
-        <ul class="pl-12 text-xl list-disc">
-          <li>Blah</li>
-          <li>Blah</li>
-          <li>Blah</li>
-        </ul>
-      </Section>
-    </div>
-    </div>
+      <div class="xl:grid xl:grid-cols-3">
+        <div class="-ml-2 2xl:ml-0 xl:col-span-2">
+          {
+            jobs.map((job) => (
+              <JobSection
+              title={job.title}
+              start_date={job.start_date}
+              end_date={job.end_date}
+              details={job.details}
+              />
+            ))
+          }
+        </div>
 
-
-    <div class="mt-4 md:hidden">
-      <p class="text-3xl">Experience</p>
-      <div class="text-xl font-light grid grid-cols-2 justify-between">
-        <p class="mt-2 text-left">Since 2023:</p>
-        <div class="mt-2 text-right">
-          <p>Cloud Engineer</p>
-          <p>Auction Edge</p>
-        </div>
-        <p class="mt-2 text-left">2020 - 2023:</p>
-        <div class="mt-2 text-right">
-          <p>DevOps Engineer</p>
-          <p>Hyland</p>
-        </div>
-        <p class="mt-2 text-left">2020:</p>
-        <div class="mt-2 text-right">
-          <p>Consultant</p>
-          <p>WLMB-TV 40</p>
-        </div>
-        <p class="mt-2 text-left">2018 - 2019:</p>
-        <div class="mt-2 text-right">
-          <p>Consultant</p>
-          <p>Dot-Tech</p>
-        </div>
-        <p class="mt-2 text-left">2018:</p>
-        <div class="mt-2 text-right">
-          <p>DevOps Engineer</p>
-          <p>Squaremouth</p>
+        <div class="-ml-2 2xl:ml-0">
+          <Section title="Technologies" sidebar>
+            <ul class="pl-12 text-xl list-disc">
+              <li>Blah</li>
+              <li>Blah</li>
+              <li>Blah</li>
+            </ul>
+          </Section>
         </div>
       </div>
-    </div>
 
-    <div class="mt-4 md:hidden">
-      <p class="text-3xl">Certifications</p>
-      <div class="font-light text-xl">
-        <p class="mt-2">Terraform Associate (003)</p>
-        <p class="mt-2">Sumo Logic Fundamentals</p>
-        <p class="mt-2">Databricks Lakehouse Fundamentals</p>
+      <div class="mt-4 md:hidden">
+        <p class="text-3xl">Experience</p>
+        <div class="text-xl font-light grid grid-cols-2 justify-between">
+          <p class="mt-2 text-left">Since 2023:</p>
+          <div class="mt-2 text-right">
+            <p>Cloud Engineer</p>
+            <p>Auction Edge</p>
+          </div>
+          <p class="mt-2 text-left">2020 - 2023:</p>
+          <div class="mt-2 text-right">
+            <p>DevOps Engineer</p>
+            <p>Hyland</p>
+          </div>
+          <p class="mt-2 text-left">2020:</p>
+          <div class="mt-2 text-right">
+            <p>Contractor</p>
+            <p>WLMB-TV 40</p>
+          </div>
+          <p class="mt-2 text-left">2018 - 2019:</p>
+          <div class="mt-2 text-right">
+            <p>Contractor</p>
+            <p>Dot-Tech</p>
+          </div>
+          <p class="mt-2 text-left">2018:</p>
+          <div class="mt-2 text-right">
+            <p>DevOps Engineer</p>
+            <p>Squaremouth</p>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <hr class="md:hidden w-3/4 m-auto mt-4" />
-  </div>
+      <div class="mt-4 md:hidden">
+        <p class="text-3xl">Certifications</p>
+        <div class="font-light text-xl">
+          <p class="mt-2">Terraform Associate (003)</p>
+          <p class="mt-2">Sumo Logic Fundamentals</p>
+          <p class="mt-2">Databricks Lakehouse Fundamentals</p>
+        </div>
+      </div>
+
+      <hr class="md:hidden w-3/4 m-auto mt-4" />
+    </div>
+  </main>
 
   <footer
-    class="lg:absolute lg:bottom-4 lg:grid lg:grid-cols-3 text-center lg:w-[calc(100vw-4rem)]"
+    class="md:fixed bg-dark-500 md:bottom-0 md:pb-4 md:grid md:grid-cols-3 text-center md:w-[calc(100vw-4rem)]"
   >
     <div class="mt-4 font-light lg:text-left">
       <p>
