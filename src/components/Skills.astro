@@ -1,0 +1,17 @@
+---
+// Skills displays a grid that contains a title (type of skills) on the left and a list of items (skills) on the right.
+
+interface Props {
+  title: string;
+  items: Array<string>;
+}
+
+const { title, items } = Astro.props;
+---
+
+<div class="grid grid-cols-3">
+  <div class="col-span-1 text-start font-bold">{title}</div>
+  <div class="col-span-2 text-end">
+    {items.map((item) => <p>{item}</p>)}
+  </div>
+</div>

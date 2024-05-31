@@ -2,6 +2,7 @@
 import { fade } from "astro:transitions";
 import { slide } from "astro:transitions";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Skills from "../components/Skills.astro";
 ---
 
 <BaseLayout>
@@ -33,33 +34,32 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       transition:animate={fade({ duration: "1s" })}
       class="col-span-5 grid grid-rows-2 gap-y-4 md:col-span-4 md:col-start-2 lg:gap-y-8 xl:col-span-2 xl:col-start-4"
     >
-      <div class="grid grid-cols-3">
-        <div class="col-span-1 text-start font-bold">Cloud & DevOps</div>
-        <div class="col-span-2 text-end">
-          <p>AWS</p>
-          <p>Infrastructure-as-Code</p>
-          <p>CI/CD Pipelines</p>
-          <p>Docker/Kubernetes</p>
-          <p>Configuration Management</p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-3">
-        <div class="col-span-1 text-start font-bold">Development</div>
-        <div class="col-span-2 text-end">
-          <p>Scripting (Go, Python, Shell)</p>
-          <p>Node, Astro, Rails</p>
-          <p>Tailwind, Bootstrap</p>
-          <p>C++, Java</p>
-        </div>
-      </div>
+      <Skills
+        title="Cloud & DevOps"
+        items={[
+          "AWS",
+          "Infrastructure-as-Code",
+          "CI/CD Pipelines",
+          "Docker/Kubernetes",
+          "Configuration Management",
+        ]}
+      />
+      <Skills
+        title="Development"
+        items={[
+          "Scripting (Go, Python, Shell)",
+          "Node, Astro, Rails",
+          "Tailwind, Bootstrap",
+          "C++, Java",
+        ]}
+      />
     </div>
   </div>
 
-  <div
+  <footer
     transition:animate={slide({ duration: "1.5s" })}
     class="text-8xl lg:text-[10rem] 2xl:text-[12rem] 3xl:text-[14rem] absolute bottom-0"
   >
     <p>Ethan Hassett</p>
-  </div>
+  </footer>
 </BaseLayout>
