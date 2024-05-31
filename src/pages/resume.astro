@@ -2,12 +2,20 @@
 import jobs from "../data/jobs.json";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Section from "../components/ResumeSection.astro";
-import JobSection from "../components/JobSection.astro"
+import JobSection from "../components/JobSection.astro";
 ---
+
+<script is:inline>
+  // Load with first job experience expanded
+  document.addEventListener('astro:page-load', () => {
+    document
+    .querySelector("#experience > section:first-of-type > label:first-of-type input:first-of-type")
+    ?.setAttribute("checked", "true");
+  });
+</script>
 
 <!--
   TODO:
-  - Consider having first experience section expanded by default
   - Figure out how to remove extra hidden sections on mobile and use the same elements
   - Create component for technologies section
   - Add other sidebar sections
@@ -22,19 +30,19 @@ import JobSection from "../components/JobSection.astro"
     </p>
   </header>
 
-  <main class="md:flex-1 md:overflow-y-scroll">
+  <main class="md:flex-1 md:overflow-y-scroll no-scrollbar">
     <div class="mt-4 text-center md:pb-36">
       <hr class="md:hidden w-3/4 m-auto" />
 
       <div class="xl:grid xl:grid-cols-3">
-        <div class="-ml-2 2xl:ml-0 xl:col-span-2">
+        <div id="experience" class="-ml-2 2xl:ml-0 xl:col-span-2">
           {
             jobs.map((job) => (
               <JobSection
-              title={job.title}
-              start_date={job.start_date}
-              end_date={job.end_date}
-              details={job.details}
+                title={job.title}
+                start_date={job.start_date}
+                end_date={job.end_date}
+                details={job.details}
               />
             ))
           }
