@@ -4,10 +4,10 @@
 
 interface Props {
   title: string;
-  sidebar: boolean;
+  sidebar?: boolean;
 }
 
-const { title, sidebar } = Astro.props;
+const { title, sidebar = false } = Astro.props;
 ---
 
 <section class="hidden md:flex text-left mt-4">
