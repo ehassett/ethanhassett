@@ -1,8 +1,9 @@
 [
   {
-    "title": "Cloud Engineer @ Auction Edge",
+    "title": "Cloud Engineer",
+    "company": "Auction Edge",
     "start_date": "August 2023",
-    "end_date": "Present",
+    "end_date": "",
     "details": [
       {
         "detail": "Creating and modernizing infrastructure-as-code workflows to improve developer efficiency and operational safety.",
@@ -22,7 +23,8 @@
     ]
   },
   {
-    "title": "DevOps Engineer @ Hyland",
+    "title": "DevOps Engineer",
+    "company": "Hyland",
     "start_date": "June 2020",
     "end_date": "July 2023",
     "details": [
@@ -48,7 +50,8 @@
     ]
   },
   {
-    "title": "Contractor @ WLMB-TV 40",
+    "title": "Contractor",
+    "company": "WLMB-TV 40",
     "start_date": "March 2020",
     "end_date": "August 2020",
     "details": [
@@ -66,7 +69,8 @@
     ]
   },
   {
-    "title": "Contractor @ Dot-Tech",
+    "title": "Contractor",
+    "company": "Dot-Tech",
     "start_date": "September 2018",
     "end_date": "February 2019",
     "details": [
@@ -81,7 +85,8 @@
     ]
   },
   {
-    "title": "DevOps Engineer @ Squaremouth",
+    "title": "DevOps Engineer",
+    "company": "Squaremouth",
     "start_date": "May 2018",
     "end_date": "August 2018",
     "details": [

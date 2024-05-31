@@ -5,6 +5,7 @@ import Section from "../components/ResumeSection.astro";
 
 interface Props {
   title: string;
+  company: string;
   start_date: string;
   end_date: string;
   details: Array<{
@@ -13,11 +14,18 @@ interface Props {
   }>;
 }
 
-const { title, start_date, end_date, details } = Astro.props;
+const { title, company, start_date, end_date, details } = Astro.props;
+
+const current = end_date === "";
+const start_year = start_date.replace(/^\D+/g, "");
+const end_year = current ? "" : end_date.replace(/^\D+/g, "");
+const single_year = start_year === end_year;
 ---
 
-<Section title={title}>
-  <p class="pl-8 text-2xl h-8 mb-2">{start_date} - {end_date}</p>
+<Section title={title + " @ " + company}>
+  <p class="pl-8 text-2xl h-8 mb-2">
+    {start_date} - {current ? "Present" : end_date}
+  </p>
   <ul class="pl-12 text-xl list-disc">
     {
       details.map((d) => (
@@ -33,3 +41,17 @@ const { title, start_date, end_date, details } = Astro.props;
     }
   </ul>
 </Section>
+
+<p class="text-xl text-thin mt-2 text-left md:hidden">
+  {
+    current
+      ? "Since " + start_year
+      : single_year
+        ? start_year
+        : start_year + " - " + end_year
+  }
+</p>
+<div class="text-xl text-thin mt-2 text-right md:hidden">
+  <p>{title}</p>
+  <p>{company}</p>
+</div>

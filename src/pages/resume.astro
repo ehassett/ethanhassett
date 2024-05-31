@@ -7,16 +7,17 @@ import JobSection from "../components/JobSection.astro";
 
 <script is:inline>
   // Load with first job experience expanded
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener("astro:page-load", () => {
     document
-    .querySelector("#experience > section:first-of-type > label:first-of-type input:first-of-type")
-    ?.setAttribute("checked", "true");
+      .querySelector(
+        "#experience > div:first-of-type > section:first-of-type > label:first-of-type input:first-of-type",
+      )
+      ?.setAttribute("checked", "true");
   });
 </script>
 
 <!--
   TODO:
-  - Figure out how to remove extra hidden sections on mobile and use the same elements
   - Create component for technologies section
   - Add other sidebar sections
 -->
@@ -35,17 +36,21 @@ import JobSection from "../components/JobSection.astro";
       <hr class="md:hidden w-3/4 m-auto" />
 
       <div class="xl:grid xl:grid-cols-3">
-        <div id="experience" class="-ml-2 2xl:ml-0 xl:col-span-2">
-          {
-            jobs.map((job) => (
-              <JobSection
-                title={job.title}
-                start_date={job.start_date}
-                end_date={job.end_date}
-                details={job.details}
-              />
-            ))
-          }
+        <div id="experience" class="md:-ml-2 2xl:ml-0 xl:col-span-2">
+          <p class="mt-4 text-3xl md:hidden">Experience</p>
+          <div class="grid grid-cols-2 md:grid-cols-1 justify-between">
+            {
+              jobs.map((job) => (
+                <JobSection
+                  title={job.title}
+                  company={job.company}
+                  start_date={job.start_date}
+                  end_date={job.end_date}
+                  details={job.details}
+                />
+              ))
+            }
+          </div>
         </div>
 
         <div class="-ml-2 2xl:ml-0">
@@ -56,37 +61,6 @@ import JobSection from "../components/JobSection.astro";
               <li>Blah</li>
             </ul>
           </Section>
-        </div>
-      </div>
-
-      <div class="mt-4 md:hidden">
-        <p class="text-3xl">Experience</p>
-        <div class="text-xl font-light grid grid-cols-2 justify-between">
-          <p class="mt-2 text-left">Since 2023:</p>
-          <div class="mt-2 text-right">
-            <p>Cloud Engineer</p>
-            <p>Auction Edge</p>
-          </div>
-          <p class="mt-2 text-left">2020 - 2023:</p>
-          <div class="mt-2 text-right">
-            <p>DevOps Engineer</p>
-            <p>Hyland</p>
-          </div>
-          <p class="mt-2 text-left">2020:</p>
-          <div class="mt-2 text-right">
-            <p>Contractor</p>
-            <p>WLMB-TV 40</p>
-          </div>
-          <p class="mt-2 text-left">2018 - 2019:</p>
-          <div class="mt-2 text-right">
-            <p>Contractor</p>
-            <p>Dot-Tech</p>
-          </div>
-          <p class="mt-2 text-left">2018:</p>
-          <div class="mt-2 text-right">
-            <p>DevOps Engineer</p>
-            <p>Squaremouth</p>
-          </div>
         </div>
       </div>
 
