@@ -11,7 +11,7 @@ const { title, sidebar = false } = Astro.props;
 ---
 
 <section class="hidden md:flex text-left mt-4">
-  <label class="flex">
+  <label class="flex w-full">
     <input
       class="peer relative appearance-none shrink-0 w-0 h-0"
       type="checkbox"
@@ -36,7 +36,7 @@ const { title, sidebar = false } = Astro.props;
     </div>
     <span
       class:list={[
-        "max-h-10 block peer-checked:max-h-fit overflow-hidden transition-all duration-300",
+        "max-h-10 block peer-checked:max-h-fit overflow-hidden transition-all duration-300 w-full",
         sidebar ? "xl:max-h-fit" : "",
       ]}
     >
