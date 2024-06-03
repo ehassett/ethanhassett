@@ -1,16 +1,153 @@
 ---
-import { fade } from "astro:transitions";
-import { slide } from "astro:transitions";
+import jobs from "../data/jobs.json";
+import skills from "../data/skills.json";
+import technologies from "../data/technologies.json";
+import certifications from "../data/certifications.json";
+
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Collapsible from "../components/Collapsible.astro";
+import Job from "../components/Job.astro";
 ---
 
+<script is:inline>
+  const width = screen.width;
+
+  // Load with certain collapsibles expanded
+  document.addEventListener("astro:page-load", () => {
+    // First job experience section
+    document
+      .querySelector(
+        "#experience > div:first-of-type > section:first-of-type > label:first-of-type > input:first-of-type",
+      )
+      ?.setAttribute("checked", "true");
+
+    if (width >= 1536) {
+      // Technologies section
+      document
+        .querySelector(
+          "#technologies > section:first-of-type > label:first-of-type > input:first-of-type",
+        )
+        ?.setAttribute("checked", "true");
+
+      // Skills section
+      document
+        .querySelector(
+          "#skills > section:first-of-type > label:first-of-type > input:first-of-type",
+        )
+        ?.setAttribute("checked", "true");
+    }
+  });
+</script>
+
 <BaseLayout>
-  <div class="mt-4 lg:mt-8">
-    <a
-      transition:animate={fade({ duration: "0.3s" })}
-      class="text-4xl lg:text-[5rem] 2xl:text-[6rem] 3xl:text-[7rem]"
-      href="/">Ethan Hassett</a
-    >
-  </div>
-  <p>Cloud Engineering & DevOps</p>
+  <header class="lg:mt-2">
+    <a class="text-5xl md:text-6xl 2xl:text-[6rem] 3xl:text-[7rem]" href="/">
+      Ethan Hassett
+    </a>
+    <p class="font-light text-3xl md:text-4xl 2xl:text-5xl 2xl:ml-2">
+      DevOps & Cloud Engineering
+    </p>
+  </header>
+
+  <main class="md:flex-1 md:overflow-y-scroll no-scrollbar">
+    <div class="mt-4 text-center md:pb-36">
+      <hr class="md:hidden w-3/4 m-auto" />
+
+      <div class="2xl:grid 2xl:grid-cols-3">
+        <div id="experience" class="md:-ml-2 2xl:ml-0 xl:col-span-2">
+          <p class="mt-4 text-3xl md:hidden">Experience</p>
+          <div class="grid grid-cols-2 md:grid-cols-1 justify-between">
+            {
+              jobs.map((job) => (
+                <Job
+                  title={job.title}
+                  company={job.company}
+                  start_date={job.start_date}
+                  end_date={job.end_date}
+                  details={job.details}
+                />
+              ))
+            }
+          </div>
+        </div>
+
+        <div id="sidebar">
+          <div id="technologies" class="-ml-2 2xl:ml-0">
+            <Collapsible title="Technologies">
+              <div class="pl-8 text-xl grid grid-cols-2 justify-between w-full">
+                {technologies.map((tech) => <p>{tech}</p>)}
+              </div>
+            </Collapsible>
+          </div>
+
+          <div id="skills" class="-ml-2 2xl:ml-0">
+            <Collapsible title="Skills">
+              <div class="pl-8 text-xl grid grid-cols-2 justify-between w-full">
+                {skills.map((skill) => <p>{skill}</p>)}
+              </div>
+            </Collapsible>
+          </div>
+
+          <div id="certifications" class="-ml-2 2xl:ml-0">
+            <Collapsible title="Certifications">
+              <div class="pl-8 text-xl w-full">
+                {
+                  certifications.map((cert) => (
+                    <>
+                      <a
+                        class="underline hover:cursor-pointer"
+                        href={cert.link}
+                      >
+                        {cert.name}
+                      </a>
+                      <p class="font-light mb-2 ml-4">({cert.dates})</p>
+                    </>
+                  ))
+                }
+              </div>
+            </Collapsible>
+          </div>
+
+          <div id="education" class="-ml-2 2xl:ml-0">
+            <Collapsible title="Education">
+              <div class="pl-8 text-xl w-full">
+                <p>BS Computer Science & Engineering</p>
+                <p class="font-light mb-2 ml-4">The University of Toledo</p>
+              </div>
+            </Collapsible>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="md:hidden w-3/4 m-auto mt-4" />
+  </main>
+
+  <footer
+    class="md:fixed bg-dark-500 md:bottom-0 md:pb-4 md:grid md:grid-cols-3 text-center md:w-[calc(100vw-4rem)]"
+  >
+    <div class="mt-4 font-light lg:text-left">
+      <p>
+        Download my <a class="underline hover:cursor-pointer">full resume</a>
+      </p>
+    </div>
+
+    <div class="underline mt-4 font-light">
+      <a class="connect-link" href="https://github.com/ehassett">GitHub</a>
+      <a class="connect-link" href="https://linkedin.com/in/ehassett"
+        >LinkedIn</a
+      >
+      <a class="connect-link" href="mailto:ethan@hassett.io">ethan@hassett.io</a
+      >
+    </div>
+
+    <div class="mt-4 font-light lg:text-right">
+      <p>
+        View this site's <a
+          class="underline hover:cursor-pointer"
+          href="https://github.com/ehassett/ethanhassett.com">code</a
+        >
+      </p>
+    </div>
+  </footer>
 </BaseLayout>

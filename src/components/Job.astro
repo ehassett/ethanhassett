@@ -1,0 +1,63 @@
+---
+// Job extends Collapsible to format job experience for both mobile and desktop.
+// Props
+// - title: job title
+// - company: company name
+// - start_date: start date (Month YYYY)
+// - end_date: end date (Month YYYY) or empty for current position
+// - details: list containing the detail info (string) and any subdetails (list of string)
+
+import Collapsible from "./Collapsible.astro";
+
+interface Props {
+  title: string;
+  company: string;
+  start_date: string;
+  end_date: string;
+  details: Array<{
+    detail: string;
+    subdetails: Array<string>;
+  }>;
+}
+
+const { title, company, start_date, end_date, details } = Astro.props;
+
+const current = end_date === "";
+const start_year = start_date.replace(/^\D+/g, "");
+const end_year = current ? "" : end_date.replace(/^\D+/g, "");
+const single_year = start_year === end_year;
+---
+
+<Collapsible title={title + " @ " + company}>
+  <p class="pl-8 text-2xl h-8 mb-2">
+    {start_date} - {current ? "Present" : end_date}
+  </p>
+  <ul class="pl-12 text-xl list-disc">
+    {
+      details.map((d) => (
+        <>
+          <li>{d.detail}</li>
+          <ol class="list-decimal pl-8">
+            {d.subdetails.map((sd) => (
+              <li>{sd}</li>
+            ))}
+          </ol>
+        </>
+      ))
+    }
+  </ul>
+</Collapsible>
+
+<p class="text-xl text-thin mt-2 text-left md:hidden">
+  {
+    current
+      ? "Since " + start_year
+      : single_year
+        ? start_year
+        : start_year + " - " + end_year
+  }
+</p>
+<div class="text-xl text-thin mt-2 text-right md:hidden">
+  <p>{title}</p>
+  <p>{company}</p>
+</div>

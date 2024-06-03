@@ -1,0 +1,47 @@
+---
+// Collapsible is a section that displays a title and a collapse icon. When expanded, the slotted content is shown.
+// Props
+// - title: the title of the section to display
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<section class="hidden md:flex text-left mt-4">
+  <label class="flex w-full">
+    <input
+      class="peer relative appearance-none shrink-0 w-0 h-0"
+      type="checkbox"
+    />
+    <div class="h-fit w-fit peer-checked:rotate-90 duration-300">
+      <svg
+        class:list={[
+          "h-8 w-8 pointer-events-none stroke-light-200 fill-light-200",
+        ]}
+        xmlns="http://www.w3.org/2000/svg"
+        clip-rule="evenodd"
+        fill-rule="evenodd"
+        stroke-linejoin="round"
+        stroke-miterlimit="2"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="m10.211 7.155c-.141-.108-.3-.157-.456-.157-.389 0-.755.306-.755.749v8.501c0 .445.367.75.755.75.157 0 .316-.05.457-.159 1.554-1.203 4.199-3.252 5.498-4.258.184-.142.29-.36.29-.592 0-.23-.107-.449-.291-.591-1.299-1.002-3.945-3.044-5.498-4.243z"
+        ></path>
+      </svg>
+    </div>
+    <span
+      class:list={[
+        "max-h-10 block peer-checked:max-h-fit overflow-hidden transition-all duration-300 w-full",
+      ]}
+    >
+      <p class:list={["flex pl-8 text-4xl h-10 cursor-pointer mb-2"]}>
+        {title}
+      </p>
+      <slot />
+    </span>
+  </label>
+</section>
