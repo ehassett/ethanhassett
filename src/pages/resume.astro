@@ -1,5 +1,8 @@
 ---
 import jobs from "../data/jobs.json";
+import skills from "../data/skills.json";
+import technologies from "../data/technologies.json";
+import certifications from "../data/certifications.json";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Section from "../components/ResumeSection.astro";
 import JobSection from "../components/JobSection.astro";
@@ -18,15 +21,14 @@ import JobSection from "../components/JobSection.astro";
 
 <!--
   TODO:
-  - Create component for technologies section
-  - Add other sidebar sections
+  - DRY components and classes (check nested classes to not duplicate)
 -->
 <BaseLayout>
   <header class="lg:mt-2">
     <a class="text-5xl md:text-6xl 2xl:text-[6rem] 3xl:text-[7rem]" href="/">
       Ethan Hassett
     </a>
-    <p class="font-thin text-3xl md:text-4xl 2xl:text-5xl 2xl:ml-2">
+    <p class="font-light text-3xl md:text-4xl 2xl:text-5xl 2xl:ml-2">
       DevOps & Cloud Engineering
     </p>
   </header>
@@ -53,28 +55,66 @@ import JobSection from "../components/JobSection.astro";
           </div>
         </div>
 
-        <div class="-ml-2 2xl:ml-0">
-          <Section title="Technologies" sidebar>
-            <ul class="pl-12 text-xl list-disc">
-              <li>Blah</li>
-              <li>Blah</li>
-              <li>Blah</li>
-            </ul>
-          </Section>
+
+        <div id="sidebar">
+          <div class="-ml-2 2xl:ml-0">
+            <Section title="Technologies" sidebar>
+              <div class="pl-8 text-xl grid grid-cols-2 justify-between w-full">
+                {technologies.map((tech) => <p>{tech}</p>)}
+              </div>
+            </Section>
+          </div>
+          
+          <div class="-ml-2 2xl:ml-0">
+            <Section title="Skills" sidebar>
+              <div class="pl-8 text-xl grid grid-cols-2 justify-between w-full">
+                {skills.map((skill) => <p>{skill}</p>)}
+              </div>
+            </Section>
+          </div>
+
+          <div class="-ml-2 2xl:ml-0">
+            <Section title="Certifications">
+              <div class="pl-8 text-xl w-full">
+                {
+                  certifications.map((cert) => (
+                    <>
+                      <a
+                        class="underline hover:cursor-pointer"
+                        href={cert.link}
+                      >
+                        {cert.name}
+                      </a>
+                      <p class="font-light mb-2 ml-4">({cert.dates})</p>
+                    </>
+                  ))
+                }
+              </div>
+            </Section>
+          </div>
+
+          <div class="-ml-2 2xl:ml-0">
+            <Section title="Education">
+              <div class="pl-8 text-xl w-full">
+                <p>BS Computer Science & Engineering</p>
+                <p class="font-light mb-2 ml-4">The University of Toledo</p>
+              </div>
+            </Section>
+          </div>
         </div>
       </div>
-
-      <div class="mt-4 md:hidden">
-        <p class="text-3xl">Certifications</p>
-        <div class="font-light text-xl">
-          <p class="mt-2">Terraform Associate (003)</p>
-          <p class="mt-2">Sumo Logic Fundamentals</p>
-          <p class="mt-2">Databricks Lakehouse Fundamentals</p>
-        </div>
-      </div>
-
-      <hr class="md:hidden w-3/4 m-auto mt-4" />
     </div>
+
+    <div class="mt-4 md:hidden text-center">
+      <p class="text-3xl">Certifications</p>
+      <div class="font-light text-xl">
+        <p class="mt-2">Terraform Associate (003)</p>
+        <p class="mt-2">Sumo Logic Fundamentals</p>
+        <p class="mt-2">Databricks Lakehouse Fundamentals</p>
+      </div>
+    </div>
+
+    <hr class="md:hidden w-3/4 m-auto mt-4" />
   </main>
 
   <footer
