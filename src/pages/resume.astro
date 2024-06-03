@@ -55,18 +55,17 @@ import JobSection from "../components/JobSection.astro";
           </div>
         </div>
 
-
         <div id="sidebar">
           <div class="-ml-2 2xl:ml-0">
-            <Section title="Technologies" sidebar>
+            <Section title="Technologies" collapsible={false}>
               <div class="pl-8 text-xl grid grid-cols-2 justify-between w-full">
                 {technologies.map((tech) => <p>{tech}</p>)}
               </div>
             </Section>
           </div>
-          
+
           <div class="-ml-2 2xl:ml-0">
-            <Section title="Skills" sidebar>
+            <Section title="Skills" collapsible={false}>
               <div class="pl-8 text-xl grid grid-cols-2 justify-between w-full">
                 {skills.map((skill) => <p>{skill}</p>)}
               </div>
