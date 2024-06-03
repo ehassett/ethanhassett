@@ -3,26 +3,42 @@ import jobs from "../data/jobs.json";
 import skills from "../data/skills.json";
 import technologies from "../data/technologies.json";
 import certifications from "../data/certifications.json";
+
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Section from "../components/ResumeSection.astro";
-import JobSection from "../components/JobSection.astro";
+import Collapsible from "../components/Collapsible.astro";
+import Job from "../components/Job.astro";
 ---
 
 <script is:inline>
-  // Load with first job experience expanded
+  const width = screen.width;
+
+  // Load with certain collapsibles expanded
   document.addEventListener("astro:page-load", () => {
+    // First job experience section
     document
       .querySelector(
-        "#experience > div:first-of-type > section:first-of-type > label:first-of-type input:first-of-type",
+        "#experience > div:first-of-type > section:first-of-type > label:first-of-type > input:first-of-type",
       )
       ?.setAttribute("checked", "true");
+
+    if (width >= 1536) {
+      // Technologies section
+      document
+        .querySelector(
+          "#technologies > section:first-of-type > label:first-of-type > input:first-of-type",
+        )
+        ?.setAttribute("checked", "true");
+
+      // Skills section
+      document
+        .querySelector(
+          "#skills > section:first-of-type > label:first-of-type > input:first-of-type",
+        )
+        ?.setAttribute("checked", "true");
+    }
   });
 </script>
 
-<!--
-  TODO:
-  - DRY components and classes (check nested classes to not duplicate)
--->
 <BaseLayout>
   <header class="lg:mt-2">
     <a class="text-5xl md:text-6xl 2xl:text-[6rem] 3xl:text-[7rem]" href="/">
@@ -37,13 +53,13 @@ import JobSection from "../components/JobSection.astro";
     <div class="mt-4 text-center md:pb-36">
       <hr class="md:hidden w-3/4 m-auto" />
 
-      <div class="xl:grid xl:grid-cols-3">
+      <div class="2xl:grid 2xl:grid-cols-3">
         <div id="experience" class="md:-ml-2 2xl:ml-0 xl:col-span-2">
           <p class="mt-4 text-3xl md:hidden">Experience</p>
           <div class="grid grid-cols-2 md:grid-cols-1 justify-between">
             {
               jobs.map((job) => (
-                <JobSection
+                <Job
                   title={job.title}
                   company={job.company}
                   start_date={job.start_date}
@@ -56,24 +72,24 @@ import JobSection from "../components/JobSection.astro";
         </div>
 
         <div id="sidebar">
-          <div class="-ml-2 2xl:ml-0">
-            <Section title="Technologies" collapsible={false}>
+          <div id="technologies" class="-ml-2 2xl:ml-0">
+            <Collapsible title="Technologies">
               <div class="pl-8 text-xl grid grid-cols-2 justify-between w-full">
                 {technologies.map((tech) => <p>{tech}</p>)}
               </div>
-            </Section>
+            </Collapsible>
           </div>
 
-          <div class="-ml-2 2xl:ml-0">
-            <Section title="Skills" collapsible={false}>
+          <div id="skills" class="-ml-2 2xl:ml-0">
+            <Collapsible title="Skills">
               <div class="pl-8 text-xl grid grid-cols-2 justify-between w-full">
                 {skills.map((skill) => <p>{skill}</p>)}
               </div>
-            </Section>
+            </Collapsible>
           </div>
 
-          <div class="-ml-2 2xl:ml-0">
-            <Section title="Certifications">
+          <div id="certifications" class="-ml-2 2xl:ml-0">
+            <Collapsible title="Certifications">
               <div class="pl-8 text-xl w-full">
                 {
                   certifications.map((cert) => (
@@ -89,27 +105,18 @@ import JobSection from "../components/JobSection.astro";
                   ))
                 }
               </div>
-            </Section>
+            </Collapsible>
           </div>
 
-          <div class="-ml-2 2xl:ml-0">
-            <Section title="Education">
+          <div id="education" class="-ml-2 2xl:ml-0">
+            <Collapsible title="Education">
               <div class="pl-8 text-xl w-full">
                 <p>BS Computer Science & Engineering</p>
                 <p class="font-light mb-2 ml-4">The University of Toledo</p>
               </div>
-            </Section>
+            </Collapsible>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div class="mt-4 md:hidden text-center">
-      <p class="text-3xl">Certifications</p>
-      <div class="font-light text-xl">
-        <p class="mt-2">Terraform Associate (003)</p>
-        <p class="mt-2">Sumo Logic Fundamentals</p>
-        <p class="mt-2">Databricks Lakehouse Fundamentals</p>
       </div>
     </div>
 

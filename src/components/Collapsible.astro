@@ -1,13 +1,13 @@
 ---
-// ResumeSection is a collapsible section that displays a title (prop) and a collapse icon. When expanded, the <slot/> is shown.
-// The collapsible prop is used to toggle the collapsible feature off for sections, while still keeping the rest of the component formatted properly.
+// Collapsible is a section that displays a title and a collapse icon. When expanded, the slotted content is shown.
+// Props
+// - title: the title of the section to display
 
 interface Props {
   title: string;
-  collapsible?: boolean;
 }
 
-const { title, collapsible = true } = Astro.props;
+const { title } = Astro.props;
 ---
 
 <section class="hidden md:flex text-left mt-4">
@@ -20,7 +20,6 @@ const { title, collapsible = true } = Astro.props;
       <svg
         class:list={[
           "h-8 w-8 pointer-events-none stroke-light-200 fill-light-200",
-          collapsible ? "" : "xl:hidden",
         ]}
         xmlns="http://www.w3.org/2000/svg"
         clip-rule="evenodd"
@@ -37,15 +36,9 @@ const { title, collapsible = true } = Astro.props;
     <span
       class:list={[
         "max-h-10 block peer-checked:max-h-fit overflow-hidden transition-all duration-300 w-full",
-        collapsible ? "" : "xl:max-h-fit",
       ]}
     >
-      <p
-        class:list={[
-          "flex pl-8 text-4xl h-10 cursor-pointer mb-2",
-          collapsible ? "" : "xl:cursor-auto",
-        ]}
-      >
+      <p class:list={["flex pl-8 text-4xl h-10 cursor-pointer mb-2"]}>
         {title}
       </p>
       <slot />

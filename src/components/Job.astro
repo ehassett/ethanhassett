@@ -1,7 +1,13 @@
 ---
-// JobSection uses ResumeSection to format job experience.
+// Job extends Collapsible to format job experience for both mobile and desktop.
+// Props
+// - title: job title
+// - company: company name
+// - start_date: start date (Month YYYY)
+// - end_date: end date (Month YYYY) or empty for current position
+// - details: list containing the detail info (string) and any subdetails (list of string)
 
-import Section from "../components/ResumeSection.astro";
+import Collapsible from "./Collapsible.astro";
 
 interface Props {
   title: string;
@@ -22,7 +28,7 @@ const end_year = current ? "" : end_date.replace(/^\D+/g, "");
 const single_year = start_year === end_year;
 ---
 
-<Section title={title + " @ " + company}>
+<Collapsible title={title + " @ " + company}>
   <p class="pl-8 text-2xl h-8 mb-2">
     {start_date} - {current ? "Present" : end_date}
   </p>
@@ -40,7 +46,7 @@ const single_year = start_year === end_year;
       ))
     }
   </ul>
-</Section>
+</Collapsible>
 
 <p class="text-xl text-thin mt-2 text-left md:hidden">
   {
