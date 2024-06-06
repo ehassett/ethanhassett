@@ -1,4 +1,7 @@
 ---
+import { fade } from "astro:transitions";
+import { slide } from "astro:transitions";
+
 import jobs from "../data/jobs.json";
 import skills from "../data/skills.json";
 import technologies from "../data/technologies.json";
@@ -40,7 +43,7 @@ import Job from "../components/Job.astro";
 </script>
 
 <BaseLayout>
-  <header class="lg:mt-2">
+  <header transition:animate={slide({ duration: "1.5s" })} class="lg:mt-2">
     <a class="text-5xl md:text-6xl 2xl:text-[6rem] 3xl:text-[7rem]" href="/">
       Ethan Hassett
     </a>
@@ -49,12 +52,12 @@ import Job from "../components/Job.astro";
     </p>
   </header>
 
-  <main class="md:flex-1 md:overflow-y-scroll no-scrollbar">
+  <main  class="md:flex-1 md:overflow-y-scroll no-scrollbar">
     <div class="mt-4 text-center md:pb-36">
       <hr class="md:hidden w-3/4 m-auto" />
 
       <div class="2xl:grid 2xl:grid-cols-3">
-        <div id="experience" class="md:-ml-2 2xl:ml-0 xl:col-span-2">
+        <div transition:animate={fade({ duration: "1s" })} id="experience" class="md:-ml-2 2xl:ml-0 xl:col-span-2">
           <p class="mt-4 text-3xl md:hidden">Experience</p>
           <div class="grid grid-cols-2 md:grid-cols-1 justify-between">
             {
@@ -71,7 +74,7 @@ import Job from "../components/Job.astro";
           </div>
         </div>
 
-        <div id="sidebar">
+        <div transition:animate={fade({ duration: "1.25s" })} id="sidebar">
           <div id="technologies" class="-ml-2 2xl:ml-0">
             <Collapsible title="Technologies">
               <div class="pl-8 text-xl grid grid-cols-2 justify-between w-full">
@@ -124,6 +127,7 @@ import Job from "../components/Job.astro";
   </main>
 
   <footer
+  transition:animate={fade({ duration: "1.5s" })}
     class="md:fixed bg-dark-500 md:bottom-0 md:pb-4 md:grid md:grid-cols-3 text-center md:w-[calc(100vw-4rem)]"
   >
     <div class="mt-4 font-light lg:text-left">
