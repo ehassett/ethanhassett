@@ -8,7 +8,8 @@ export default {
         "mikado-yellow": "#FFC300",
       },
       fontFamily: {
-        scp: ["Source Code Pro", "monospace"],
+        arvo: ["Arvo", "serif"],
+        "source-code-pro": ["Source Code Pro", "monospace"],
       },
       screens: {
         "3xl": "1792px",

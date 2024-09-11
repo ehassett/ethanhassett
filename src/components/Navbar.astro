@@ -12,13 +12,13 @@ const pathname = new URL(Astro.request.url).pathname;
       <circle cx="50" cy="50" r="50" fill="#FFC300"></circle>
     </svg>
   </a>
-  <h1 class="block mb-4 text-2xl font-bold font-scp lg:hidden">
+  <h1 class="block mb-4 text-2xl font-bold font-source-code-pro lg:hidden">
     <a href="/" aria-label="About">Ethan Hassett</a>
   </h1>
   <ul>
     <li>
       <a
-        class="font-scp"
+        class="font-source-code-pro"
         class:list={pathname === "/"
           ? "text-mikado-yellow"
           : "text-slate-200 hover:text-slate-400"}
