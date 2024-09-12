@@ -1,0 +1,62 @@
+name: IaC Checks
+
+on:
+  pull_request_target:
+    types: [assigned, opened, synchronize, reopened, edited]
+    paths:
+      - "infrastructure/*.tf"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+env:
+  GITHUB_TOKEN: ${{ github.token }}
+
+jobs:
+  iac-checks:
+    name: IaC Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Set up OpenTofu
+        uses: opentofu/setup-opentofu@v1
+
+      - name: Set up tflint
+        uses: terraform-linters/setup-tflint@v4
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.8
+
+      - name: Initialize OpenTofu
+        run: tofu init
+        shell: bash
+
+      - name: Validate OpenTofu formatting
+        run: tofu fmt -check
+        shell: bash
+
+      - name: Validate OpenTofu configuration
+        run: tofu validate
+        shell: bash
+
+      - name: Initialize tflint
+        run: tflint --init
+        shell: bash
+
+      - name: Run tflint
+        run: tflint -f compact
+        shell: bash
+
+      - name: Run checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          framework: terraform
+          download_external_modules: true
