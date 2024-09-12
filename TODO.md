@@ -1,2 +1,3 @@
 - [ ] Figure out deployment process
 - [ ] Add images to S3
+- [ ] Update README
