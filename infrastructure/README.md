@@ -1,10 +1,10 @@
-# tofu-template
+# ethanhassett.com
 
-Hassett.io OpenTofu repository template.
+OpenTofu codebase for https://ethanhassett.com.
 
 # Contents
 
-- [tofu-template](#tofu-template)
+- [ethanhassett.com](#ethanhassettcom)
 - [Contents](#contents)
 - [Best Practices](#best-practices)
 - [Tofu Documentation](#tofu-documentation)
