@@ -23,7 +23,7 @@ jobs:
           ref: ${{ github.base_ref }}
 
       - name: Run terraform-docs and push README
-        uses: terraform-docs/gh-actions@v1.2.0
+        uses: terraform-docs/gh-actions@v1.2.2
         with:
           config-file: .terraform-docs.yml
           find-dir: "./infrastructure"
