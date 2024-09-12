@@ -40,7 +40,7 @@ No inputs.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_img_urls"></a> [img\_urls](#output\_img\_urls) | Media URLs for objects in img folder. |
+| <a name="output_img_urls"></a> [img\_urls](#output\_img\_urls) | URLs for objects in public/img. |
 
 ## Modules
 
@@ -51,8 +51,8 @@ No modules.
 | Name | Type |
 |------|------|
 | [google_storage_bucket.this](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) | resource |
-| [google_storage_bucket_access_control.public_read_access](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_access_control) | resource |
 | [google_storage_bucket_object.img](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object) | resource |
-| [google_storage_default_object_access_control.public_read_access](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_default_object_access_control) | resource |
+| [google_storage_managed_folder.public](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_managed_folder) | resource |
+| [google_storage_managed_folder_iam_binding.public](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_managed_folder_iam_binding) | resource |
 | [hcp_vault_secrets_secret.google_credentials](https://registry.terraform.io/providers/hashicorp/hcp/latest/docs/data-sources/vault_secrets_secret) | data source |
 <!-- END_TF_DOCS -->
