@@ -38,9 +38,7 @@ No inputs.
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_img_urls"></a> [img\_urls](#output\_img\_urls) | URLs for objects in public/img. |
+No outputs.
 
 ## Modules
 
@@ -50,6 +48,11 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [google_compute_backend_bucket.cdn](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_backend_bucket) | resource |
+| [google_compute_global_address.cdn](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) | resource |
+| [google_compute_global_forwarding_rule.cdn](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) | resource |
+| [google_compute_target_http_proxy.cdn](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_target_http_proxy) | resource |
+| [google_compute_url_map.cdn](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_url_map) | resource |
 | [google_storage_bucket.this](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) | resource |
 | [google_storage_bucket_object.img](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object) | resource |
 | [google_storage_managed_folder.public](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_managed_folder) | resource |
