@@ -1,3 +1,7 @@
+locals {
+  objects_path = "${path.module}/objects"
+}
+
 resource "google_storage_bucket" "this" {
   name     = "ethanhassett.com"
   location = "US"
@@ -23,10 +27,10 @@ resource "google_storage_default_object_access_control" "allow_public_read_acces
   entity = "allUsers"
 }
 
-resource "google_storage_bucket_object" "icons" {
-  for_each = fileset("${path.module}/objects/img", "*")
+resource "google_storage_bucket_object" "img" {
+  for_each = fileset("${local.objects_path}/img", "*")
 
   bucket = google_storage_bucket.this.name
   name   = "img/${each.key}"
-  source = "${path.module}/objects/img/${each.key}"
+  source = "${local.objects_path}/img/${each.key}"
 }
