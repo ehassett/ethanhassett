@@ -32,6 +32,6 @@ resource "google_storage_managed_folder" "public" {
 resource "google_storage_managed_folder_iam_binding" "public" {
   bucket         = google_storage_managed_folder.public.bucket
   managed_folder = google_storage_managed_folder.public.name
-  role           = "roles/storage.objectViewer"
+  role           = "roles/storage.objects.get"
   members        = ["allUsers"]
 }
