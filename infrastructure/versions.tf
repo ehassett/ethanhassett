@@ -25,6 +25,6 @@ provider "google" {
   credentials = data.hcp_vault_secrets_secret.google_credentials.secret_value
 
   default_labels = {
-    repo = "ehassett/ethanhassett.com"
+    repo = "ethanhassett-com"
   }
 }
