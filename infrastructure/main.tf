@@ -15,13 +15,13 @@ resource "google_storage_bucket" "this" {
   #checkov:skip=CKV_GCP_114:no need for public_access_prevention at this time
 }
 
-resource "google_storage_bucket_access_control" "allow_public_read_access" {
+resource "google_storage_bucket_access_control" "public_read_access" {
   bucket = google_storage_bucket.this.name
   role   = "READER"
   entity = "allUsers"
 }
 
-resource "google_storage_default_object_access_control" "allow_public_read_access" {
+resource "google_storage_default_object_access_control" "public_read_access" {
   bucket = google_storage_bucket.this.name
   role   = "READER"
   entity = "allUsers"
