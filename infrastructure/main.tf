@@ -24,9 +24,9 @@ resource "google_storage_default_object_access_control" "allow_public_read_acces
 }
 
 resource "google_storage_bucket_object" "icons" {
-  for_each = fileset("${path.module}/objects/icons", "*")
+  for_each = fileset("${path.module}/objects/img", "*")
 
   bucket = google_storage_bucket.this.name
-  name   = "icons/${each.key}"
-  source = "${path.module}/objects/icons/${each.key}"
+  name   = "img/${each.key}"
+  source = "${path.module}/objects/img/${each.key}"
 }
