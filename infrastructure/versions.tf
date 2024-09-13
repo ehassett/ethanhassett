@@ -16,11 +16,11 @@ terraform {
 
 data "hcp_vault_secrets_secret" "google_credentials" {
   app_name    = "spacelift"
-  secret_name = "GOOGLE_CREDENTIALS_ETHANHASSETT"
+  secret_name = "GOOGLE_CREDENTIALS"
 }
 
 provider "google" {
-  project     = "ethanhassett"
+  project     = "ethanhassett-com"
   region      = "us-east5"
   credentials = data.hcp_vault_secrets_secret.google_credentials.secret_value
 
