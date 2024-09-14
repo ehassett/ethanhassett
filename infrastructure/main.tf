@@ -1,15 +1,21 @@
 locals {
   objects_path = "${path.module}/objects"
-  domain_name  = "ethanhassett.com"
+  domain_names = ["ethanhassett.com", "ehassett.com"]
 }
 
 data "cloudflare_zone" "ethanhassett_com" {
-  name = local.domain_name
+  for_each = toset(local.domain_names)
+  name     = each.key
+}
+# TODO: rmove after apply
+moved {
+  from = cloudflare_zone.ethanhassett_com
+  to   = cloudflate_zone.this["ethanhassett.com"]
 }
 
 # Backend Storage Bucket
 resource "google_storage_bucket" "this" {
-  name          = local.domain_name
+  name          = local.domain_name[0]
   location      = "US"
   storage_class = "STANDARD"
 
@@ -49,7 +55,7 @@ resource "google_compute_global_address" "this" {
 
 resource "google_compute_backend_bucket" "cdn" {
   name        = "ethanhassett-com-backend-bucket"
-  description = "Backend bucket for ${local.domain_name}"
+  description = "Backend bucket for ${local.domain_name[0]}"
   bucket_name = google_storage_bucket.this.name
   enable_cdn  = true
   cdn_policy {
@@ -84,16 +90,18 @@ resource "google_compute_global_forwarding_rule" "cdn" {
 # DNS
 resource "cloudflare_record" "a" {
   zone_id = data.cloudflare_zone.ethanhassett_com.zone_id
-  name    = local.domain_name
+  name    = local.domain_name[0]
   content = google_compute_global_address.this.address
   type    = "A"
   ttl     = 300
 }
 
 resource "cloudflare_record" "cname" {
-  zone_id = data.cloudflare_zone.ethanhassett_com.zone_id
+  for_each = toset([local.domain_names])
+
+  zone_id = data.cloudflare_zone.this[each.key].zone_id
   name    = "www"
-  content = "@"
+  content = each.key
   type    = "CNAME"
   ttl     = 300
 }
