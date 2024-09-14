@@ -30,9 +30,9 @@ OpenTofu codebase for https://ethanhassett.com.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_cloudflare"></a> [cloudflare](#provider\_cloudflare) | ~> 4.0 |
-| <a name="provider_google"></a> [google](#provider\_google) | ~> 6.0 |
-| <a name="provider_hcp"></a> [hcp](#provider\_hcp) | ~> 0.79 |
+| <a name="provider_cloudflare"></a> [cloudflare](#provider\_cloudflare) | 4.41.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | 6.2.0 |
+| <a name="provider_hcp"></a> [hcp](#provider\_hcp) | 0.95.1 |
 
 ## Inputs
 
@@ -61,7 +61,7 @@ No modules.
 | [google_storage_bucket_object.img](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_object) | resource |
 | [google_storage_managed_folder.public](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_managed_folder) | resource |
 | [google_storage_managed_folder_iam_binding.public](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_managed_folder_iam_binding) | resource |
-| [cloudflare_zone.ethanhassett_com](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/data-sources/zone) | data source |
+| [cloudflare_zone.this](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/data-sources/zone) | data source |
 | [hcp_vault_secrets_secret.cloudflare_api_token](https://registry.terraform.io/providers/hashicorp/hcp/latest/docs/data-sources/vault_secrets_secret) | data source |
 | [hcp_vault_secrets_secret.google_credentials](https://registry.terraform.io/providers/hashicorp/hcp/latest/docs/data-sources/vault_secrets_secret) | data source |
 <!-- END_TF_DOCS -->
