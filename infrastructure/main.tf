@@ -89,7 +89,7 @@ resource "google_compute_global_forwarding_rule" "cdn" {
 
 # DNS
 resource "cloudflare_record" "a" {
-  zone_id = data.cloudflare_zone.this[0].zone_id # Use the first domain, which is ethanhassett.com
+  zone_id = data.cloudflare_zone.this[local.domain_names[0]].zone_id # Use the first domain, which is ethanhassett.com
   name    = local.domain_names[0]
   content = google_compute_global_address.this.address
   type    = "A"
