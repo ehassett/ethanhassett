@@ -1,10 +1,15 @@
 locals {
   objects_path = "${path.module}/objects"
+  domain_name  = "ethanhassett.com"
+}
+
+data "cloudflare_zone" "ethanhassett_com" {
+  name = local.domain_name
 }
 
 # Backend Storage Bucket
 resource "google_storage_bucket" "this" {
-  name          = "ethanhassett.com"
+  name          = local.domain_name
   location      = "US"
   storage_class = "STANDARD"
 
@@ -38,13 +43,13 @@ resource "google_storage_managed_folder_iam_binding" "public" {
 }
 
 # CDN
-resource "google_compute_global_address" "cdn" {
-  name = "ethanhassett-com-cdn"
+resource "google_compute_global_address" "this" {
+  name = "ethanhassett-com"
 }
 
 resource "google_compute_backend_bucket" "cdn" {
   name        = "ethanhassett-com-backend-bucket"
-  description = "Backend bucket for ethanhassett.com"
+  description = "Backend bucket for ${local.domain_name}"
   bucket_name = google_storage_bucket.this.name
   enable_cdn  = true
   cdn_policy {
@@ -73,5 +78,22 @@ resource "google_compute_global_forwarding_rule" "cdn" {
   load_balancing_scheme = "EXTERNAL"
   port_range            = "80"
   target                = google_compute_target_http_proxy.cdn.id
-  ip_address            = google_compute_global_address.cdn.id
+  ip_address            = google_compute_global_address.this.id
+}
+
+# DNS
+resource "cloudflare_record" "a" {
+  zone_id = data.cloudflare_zone.ethanhassett_com.zone_id
+  name    = local.domain_name
+  content = google_compute_global_address.this.address
+  type    = "A"
+  ttl     = 300
+}
+
+resource "cloudflare_record" "cname" {
+  zone_id = data.cloudflare_zone.ethanhassett_com.zone_id
+  name    = "www"
+  content = "@"
+  type    = "CNAME"
+  ttl     = 300
 }
