@@ -10,7 +10,7 @@ data "cloudflare_zone" "this" {
 # TODO: rmove after apply
 moved {
   from = cloudflare_zone.ethanhassett_com
-  to   = cloudflate_zone.this["ethanhassett.com"]
+  to   = cloudflare_zone.this["ethanhassett.com"]
 }
 
 # Backend Storage Bucket
