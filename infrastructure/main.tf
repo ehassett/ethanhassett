@@ -3,7 +3,7 @@ locals {
   domain_names = ["ethanhassett.com", "ehassett.com"]
 }
 
-data "cloudflare_zone" "ethanhassett_com" {
+data "cloudflare_zone" "this" {
   for_each = toset(local.domain_names)
   name     = each.key
 }
@@ -89,7 +89,7 @@ resource "google_compute_global_forwarding_rule" "cdn" {
 
 # DNS
 resource "cloudflare_record" "a" {
-  zone_id = data.cloudflare_zone.ethanhassett_com.zone_id
+  zone_id = data.cloudflare_zone.this[0].zone_id # Use the first domain, which is ethanhassett.com
   name    = local.domain_names[0]
   content = google_compute_global_address.this.address
   type    = "A"
@@ -97,7 +97,7 @@ resource "cloudflare_record" "a" {
 }
 
 resource "cloudflare_record" "cname" {
-  for_each = toset([local.domain_names])
+  for_each = toset(local.domain_names)
 
   zone_id = data.cloudflare_zone.this[each.key].zone_id
   name    = "www"
