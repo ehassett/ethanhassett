@@ -52,8 +52,8 @@ jobs:
     needs: check_version
     if: ${{ (github.event.pull_request.merged == true) && (needs.check_version.outputs.package_version != needs.check_version.outputs.previous_version) }}
     env:
-      REGISTRY: "ghcr.io"
-      IMAGE_NAME: "ehassett/ethanhassett-com"
+      DOCKERHUB_USERNAME: "hassett"
+      IMAGE_NAME: "ethanhassett-com"
       VERSION: ${{ needs.check_version.outputs.package_version }}
     steps:
       - name: Checkout code
@@ -64,9 +64,8 @@ jobs:
       - name: Login to registry
         uses: docker/login-action@v3.3.0
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ env.DOCKERHUB_USERNAME}}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push image
         uses: docker/build-push-action@v6.9.0
@@ -74,8 +73,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.DOCKERHUB_USERNAME}}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+            ${{ env.DOCKERHUB_USERNAME}}/${{ env.IMAGE_NAME }}:latest
 
   release:
     name: Release and Tag New Version
@@ -121,13 +120,13 @@ jobs:
 
       - name: Deploy Stack
         run: |
-          unconfirmed=$(spacectl stack run list --id tofu-ethanhassett-com | grep -c UNCONFIRMED)
-          if [[ $unconfirmed == 1 ]]; then
-            spacectl stack confirm --id tofu-ethanhassett-com
-          elif [[ $unconfirmed == 0 ]]; then
-            echo "::error title=NO-UNCONFIRMED-RUNS::No unconfirmed Spacelift runs found"
-            exit 1
-          elif [[ $unconfirmed -gt 1 ]]; then
-            echo "::error title=MULTIPLE-UNCONFIRMED-RUNS::Multiple unconfirmed Spacelift runs found"
-            exit 1
+          if [[ $(spacectl stack run list --id tofu-ethanhassett-com | grep -c UNCONFIRMED) -gt 0 ]]; then
+            run_id=$(spacectl stack run list --id tofu-ethanhassett-com \
+              | grep -m 1 UNCONFIRMED \
+              | cut -d "|" -f 1 \
+              | tr -d " \t\n\r" \
+              | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g")
+            spacectl stack confirm --id tofu-ethanhassett-com --run "$run_id"
+          else
+            echo "No runs need confirmation!"
           fi
