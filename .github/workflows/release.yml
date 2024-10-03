@@ -1,0 +1,132 @@
+name: Release New Version
+
+on:
+  pull_request_target:
+    types: [closed]
+
+permissions:
+  pull-requests: read
+  contents: write
+  packages: write
+  attestations: write
+  id-token: write
+
+jobs:
+  check_version:
+    name: Check Version
+    runs-on: ubuntu-latest
+    if: ${{ (github.event.pull_request.merged == true) }}
+    outputs:
+      package_version: ${{ steps.package_version.outputs.version }}
+      previous_version: ${{ steps.previous_version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref }}
+
+      - name: Get package version
+        id: package_version
+        run: |
+          PACKAGE_VERSION=$(cat ./app/package.json \
+            | grep version \
+            | head -1 \
+            | awk -F: '{ print $2 }' \
+            | sed 's/[",]//g')
+
+          echo "version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Get previous version
+        id: previous_version
+        run: |
+          if [[ $(git tag -l) ]]; then
+            echo "version=$(git describe --tags --abbrev=0)" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=0.0.0" >> "$GITHUB_OUTPUT"
+          fi
+
+  docker_image:
+    name: Docker Image
+    runs-on: ubuntu-latest
+    needs: check_version
+    if: ${{ (github.event.pull_request.merged == true) && (needs.check_version.outputs.package_version != needs.check_version.outputs.previous_version) }}
+    env:
+      REGISTRY: "ghcr.io"
+      IMAGE_NAME: "ethanhassett.com"
+      VERSION: ${{ needs.check_version.outputs.package_version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref }}
+
+      - name: Login to registry
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6.9.0
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+  release:
+    name: Release and Tag New Version
+    runs-on: ubuntu-latest
+    needs: check_version
+    if: ${{ (github.event.pull_request.merged == true) && (needs.check_version.outputs.package_version != needs.check_version.outputs.previous_version) }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      VERSION: ${{ needs.check_version.outputs.package_version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref }}
+
+      - name: Push tag
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git tag ${{ env.VERSION }}
+          git push origin ${{ env.VERSION }}
+
+      - name: Create release
+        run: |
+          gh release create ${{ env.VERSION }} \
+            --repo="${{ env.GITHUB_REPOSITORY }}" \
+            --title="${{ env.VERSION }}" \
+            --generate-notes
+
+  deploy:
+    name: Deploy Spacelift Stack
+    runs-on: ubuntu-latest
+    needs: docker_image
+    if: ${{ (github.event.pull_request.merged == true) && (needs.docker_image.result == 'success') || (needs.docker_image.result == 'skipped') }}
+    env:
+      SPACELIFT_API_KEY_ENDPOINT: ${{ secrets.SPACELIFT_API_KEY_ENDPOINT }}
+      SPACELIFT_API_KEY_ID: ${{ secrets.SPACELIFT_API_KEY_ID }}
+      SPACELIFT_API_KEY_SECRET: ${{ secrets.SPACELIFT_API_KEY_SECRET }}
+    steps:
+      - name: Setup spacectl
+        uses: spacelift-io/setup-spacectl@v1.3.0
+
+      - name: Deploy Stack
+        run: |
+          unconfirmed=$(spacectl stack run list --id tofu-ethanhassett-com | grep -c UNCONFIRMED)
+          if [[ $unconfirmed == 1 ]]; then
+            spacectl stack confirm --id tofu-ethanhassett-com
+          elif [[ $unconfirmed == 0 ]]; then
+            echo "::error title=NO-UNCONFIRMED-RUNS::No unconfirmed Spacelift runs found"
+            exit 1
+          elif [[ $unconfirmed -gt 1 ]]; then
+            echo "::error title=MULTIPLE-UNCONFIRMED-RUNS::Multiple unconfirmed Spacelift runs found"
+            exit 1
+          fi
