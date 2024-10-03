@@ -53,7 +53,7 @@ jobs:
     if: ${{ (github.event.pull_request.merged == true) && (needs.check_version.outputs.package_version != needs.check_version.outputs.previous_version) }}
     env:
       REGISTRY: "ghcr.io"
-      IMAGE_NAME: "ethanhassett.com"
+      IMAGE_NAME: "ehassett/ethanhassett-com"
       VERSION: ${{ needs.check_version.outputs.package_version }}
     steps:
       - name: Checkout code
