@@ -32,7 +32,7 @@ jobs:
             | grep version \
             | head -1 \
             | awk -F: '{ print $2 }' \
-            | sed 's/[",]//g'\
+            | sed 's/[",]//g' \
             | tr -d " \t\n\r")
 
           echo "version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
