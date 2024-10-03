@@ -1,0 +1,56 @@
+---
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="http://ethanhassett.com/public/img/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="http://ethanhassett.com/public/img/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="http://ethanhassett.com/public/img/favicon-16x16.png"
+    />
+    <link
+      rel="shortcut icon"
+      href="http://ethanhassett.com/public/img/favicon.ico"
+    />
+    <title>{title}</title>
+  </head>
+  <body class="bg-oxford-blue text-slate-200">
+    <main
+      class="w-screen h-screen pb-24 grid grid-rows-5 lg:grid-rows-1 lg:grid-cols-4 lg:p-20 2xl:grid-cols-6 2xl:p-24"
+    >
+      <Navbar />
+      <div class="relative px-4 row-span-4 lg:p-0 lg:col-span-2">
+        <h1
+          class="hidden text-4xl font-source-code-pro font-bold mb-16 lg:block 2xl:mb-20"
+        >
+          <a href="/" aria-label="About">Ethan Hassett</a>
+        </h1>
+        <slot />
+        <Footer />
+      </div>
+    </main>
+  </body>
+</html>
