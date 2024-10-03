@@ -1,5 +1,1 @@
 # ethanhassett.com
-
-## Development
-
-## Deployment
