@@ -52,6 +52,7 @@ No modules.
 |------|------|
 | [cloudflare_record.a](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/record) | resource |
 | [cloudflare_record.cname](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/record) | resource |
+| [google_cloud_run_v2_service.this](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_run_v2_service) | resource |
 | [google_compute_backend_bucket.cdn](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_backend_bucket) | resource |
 | [google_compute_global_address.this](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) | resource |
 | [google_compute_global_forwarding_rule.cdn](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) | resource |
@@ -62,6 +63,7 @@ No modules.
 | [google_storage_managed_folder.public](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_managed_folder) | resource |
 | [google_storage_managed_folder_iam_binding.public](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_managed_folder_iam_binding) | resource |
 | [cloudflare_zone.this](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/data-sources/zone) | data source |
+| [google_client_openid_userinfo.this](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/client_openid_userinfo) | data source |
 | [hcp_vault_secrets_secret.cloudflare_api_token](https://registry.terraform.io/providers/hashicorp/hcp/latest/docs/data-sources/vault_secrets_secret) | data source |
 | [hcp_vault_secrets_secret.google_credentials](https://registry.terraform.io/providers/hashicorp/hcp/latest/docs/data-sources/vault_secrets_secret) | data source |
 <!-- END_TF_DOCS -->
