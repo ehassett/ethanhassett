@@ -3,14 +3,11 @@ locals {
   domain_names = ["ethanhassett.com", "ehassett.com"]
 }
 
+data "google_client_openid_userinfo" "this" {}
+
 data "cloudflare_zone" "this" {
   for_each = toset(local.domain_names)
   name     = each.key
-}
-# TODO: rmove after apply
-moved {
-  from = cloudflare_zone.ethanhassett_com
-  to   = cloudflare_zone.this["ethanhassett.com"]
 }
 
 # Backend Storage Bucket
@@ -104,4 +101,34 @@ resource "cloudflare_record" "cname" {
   content = each.key
   type    = "CNAME"
   ttl     = 300
+}
+
+# Cloud Run
+resource "google_cloud_run_v2_service" "this" {
+  name        = "ethanhassett-com"
+  description = "Cloud Run service for ethanhassett.com"
+  location    = "us-east5"
+  ingress     = "INGRESS_TRAFFIC_ALL"
+
+  template {
+    service_account                  = data.google_client_openid_userinfo.this.email
+    execution_environment            = "EXECUTION_ENVIRONMENT_GEN1"
+    max_instance_request_concurrency = 1000
+
+    containers {
+      image = "docker.io/hassett/ethanhassett-com:0.0.1"
+
+      ports {
+        container_port = 4321
+      }
+
+      resources {
+        cpu_idle = true
+        limits = {
+          memory = 4
+          cpu    = 4
+        }
+      }
+    }
+  }
 }
