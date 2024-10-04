@@ -1,6 +1,6 @@
 locals {
   objects_path = "${path.module}/objects"
-  domain_names = ["ethanhassett.com", "ehassett.com"]
+  domain_name  = "ethanhassett.com"
   prefix       = "ethanhassett-com"
   region       = "us-east5"
 }
@@ -8,13 +8,12 @@ locals {
 data "google_project" "this" {}
 
 data "cloudflare_zone" "this" {
-  for_each = toset(local.domain_names)
-  name     = each.key
+  name = local.domain_name
 }
 
 # Backend Storage Bucket
 resource "google_storage_bucket" "this" {
-  name          = local.domain_names[0]
+  name          = local.domain_name
   location      = "US"
   storage_class = "STANDARD"
 
@@ -47,6 +46,28 @@ resource "google_storage_managed_folder_iam_binding" "public" {
   members        = ["allUsers"]
 }
 
+# SSL
+resource "random_id" "this" {
+  byte_length = 4
+  prefix      = "${local.prefix}-cert-"
+
+  keepers = {
+    domains = join(",", [local.domain_name, "*.${local.domain_name}"])
+  }
+}
+
+resource "google_compute_managed_ssl_certificate" "this" {
+  name = random_id.this.hex
+
+  managed {
+    domains = [local.domain_name, "*.${local.domain_name}"]
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 # Networking
 resource "google_compute_global_address" "this" {
   name = local.prefix
@@ -62,9 +83,21 @@ resource "google_compute_region_network_endpoint_group" "this" {
   }
 }
 
+resource "google_compute_health_check" "https" {
+  name = "https-health-check"
+
+  timeout_sec        = 1
+  check_interval_sec = 1
+
+  https_health_check {
+    port = "443"
+  }
+}
+
 resource "google_compute_backend_service" "this" {
   name                  = "${local.prefix}-backend-service"
   load_balancing_scheme = "EXTERNAL_MANAGED"
+  health_checks         = [google_compute_health_check.https.id]
 
   backend {
     group = google_compute_region_network_endpoint_group.this.id
@@ -73,7 +106,7 @@ resource "google_compute_backend_service" "this" {
 
 resource "google_compute_backend_bucket" "this" {
   name        = "${local.prefix}-backend-bucket"
-  description = "Backend bucket for ${local.domain_names[0]}"
+  description = "Backend bucket for ${local.domain_name}"
   bucket_name = google_storage_bucket.this.name
   enable_cdn  = true
 
@@ -92,7 +125,7 @@ resource "google_compute_url_map" "this" {
   default_service = google_compute_backend_service.this.id
 
   host_rule {
-    hosts        = ["ethanhassett.com"]
+    hosts        = [local.domain_name]
     path_matcher = "site"
   }
 
@@ -101,43 +134,47 @@ resource "google_compute_url_map" "this" {
     default_service = google_compute_backend_service.this.id
 
     path_rule {
-      paths   = ["/static"]
+      paths   = ["/public/*"]
       service = google_compute_backend_bucket.this.id
     }
   }
 }
 
-resource "google_compute_target_http_proxy" "this" {
-  name    = "${local.prefix}-http-proxy"
-  url_map = google_compute_url_map.this.id
+resource "google_compute_target_https_proxy" "this" {
+  name             = "${local.prefix}-https-proxy"
+  url_map          = google_compute_url_map.this.id
+  ssl_certificates = [google_compute_managed_ssl_certificate.this.id]
 }
 
 resource "google_compute_global_forwarding_rule" "this" {
   name                  = "${local.prefix}-forwarding-rule"
   ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
-  port_range            = "80"
-  target                = google_compute_target_http_proxy.this.id
+  port_range            = "443"
+  target                = google_compute_target_https_proxy.this.id
   ip_address            = google_compute_global_address.this.id
 }
 
 # DNS
 resource "cloudflare_record" "a" {
-  zone_id = data.cloudflare_zone.this[local.domain_names[0]].zone_id # Use the first domain, which is ethanhassett.com
-  name    = local.domain_names[0]
+  zone_id = data.cloudflare_zone.this.zone_id
+  name    = local.domain_name
   content = google_compute_global_address.this.address
   type    = "A"
   ttl     = 300
 }
 
 resource "cloudflare_record" "cname" {
-  for_each = toset(local.domain_names)
-
-  zone_id = data.cloudflare_zone.this[each.key].zone_id
+  zone_id = data.cloudflare_zone.this.zone_id
   name    = "www"
-  content = each.key
+  content = local.domain_name
   type    = "CNAME"
   ttl     = 300
+}
+# TODO: remove after apply
+moved {
+  from = cloudflare_record.cname["ethanhassett.com"]
+  to   = cloudflare_record.cname
 }
 
 # Cloud Run
@@ -164,7 +201,7 @@ resource "google_project_iam_binding" "service_account_user" {
 
 resource "google_cloud_run_v2_service" "this" {
   name        = local.prefix
-  description = "Cloud Run service for ethanhassett.com"
+  description = "Cloud Run service for ${local.domain_name}"
   location    = local.region
   ingress     = "INGRESS_TRAFFIC_ALL"
 

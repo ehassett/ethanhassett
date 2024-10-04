@@ -35,11 +35,7 @@ jobs:
             | sed 's/[",]//g' \
             | tr -d " \t\n\r")
 
-          if [[ $(git tag -l) ]]; then
-            previous_version=$(git describe --tags --abbrev=0)
-          else
-            previous_version=0.0.0
-          fi
+          previous_version=$(git describe --tags --abbrev=0)
 
           echo "Current Version: $current_version"
           echo "Previous Version: $previous_version"

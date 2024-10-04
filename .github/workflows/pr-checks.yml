@@ -25,3 +25,54 @@ jobs:
             The subject "{subject}" found in the pull request title "{title}"
             didn't match the configured pattern. Please ensure that the subject
             doesn't start with an uppercase character.
+
+  validate-version:
+    name: Validate version update
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check app directory for changes
+        id: changed_files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: app/*
+
+      - name: Check if version is updated
+        if: steps.changed_files.outputs.any_changed == 'true'
+        run: |
+          tag_version=$(git describe --tags --abbrev=0)
+          package_version=$(cat ./app/package.json \
+            | grep version \
+            | head -1 \
+            | awk -F: '{ print $2 }' \
+            | sed 's/[",]//g' \
+            | tr -d " \t\n\r")
+          package_lock_version=$(cat ./app/package-lock.json \
+            | grep version \
+            | head -1 \
+            | awk -F: '{ print $2 }' \
+            | sed 's/[",]//g' \
+            | tr -d " \t\n\r")
+          cloud_run_version=$(cat ./infrastructure/main.tf \
+            | grep image \
+            | head -1 \
+            | awk -F: '{ print $2 }' \
+            | sed 's/["]//g' \
+            | tr -d " \t\n\r")
+
+          if [ "$package_version" != "$tag_version" ] && [ "$package_lock_version" != "$tag_version" ] && [ "$cloud_run_version" != "$tag_version" ]; then
+            exit 0
+          else
+            if [[ "$package_version" == "$tag_version" ]]; then
+              echo "ERROR: version in package.json must be updated"
+            fi
+            if [[ "$package_lock_version" == "$tag_version" ]]; then
+              echo "ERROR: version in package-lock.json must be updated"
+            fi
+            if [[ "$cloud_run_version" == "$tag_version" ]]; then
+              echo "ERROR: version in main.tf Cloud Run image must be updated"
+            fi
+            exit 1
+          fi
