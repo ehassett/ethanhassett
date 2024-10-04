@@ -148,9 +148,10 @@ resource "google_compute_url_map" "this" {
 }
 
 resource "google_compute_target_https_proxy" "this" {
-  name            = "${local.prefix}-https-proxy"
-  url_map         = google_compute_url_map.this.id
-  certificate_map = google_certificate_manager_certificate_map.this.id
+  name    = "${local.prefix}-https-proxy"
+  url_map = google_compute_url_map.this.id
+  # Keep an eye on this, it may need to be updated: https://github.com/hashicorp/terraform-provider-google/issues/17176
+  certificate_map = "//certificatemanager.googleapis.com/${google_certificate_manager_certificate_map.this.id}"
 }
 
 resource "google_compute_global_forwarding_rule" "this" {
