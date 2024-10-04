@@ -83,21 +83,9 @@ resource "google_compute_region_network_endpoint_group" "this" {
   }
 }
 
-resource "google_compute_health_check" "https" {
-  name = "https-health-check"
-
-  timeout_sec        = 1
-  check_interval_sec = 1
-
-  https_health_check {
-    port = "443"
-  }
-}
-
 resource "google_compute_backend_service" "this" {
   name                  = "${local.prefix}-backend-service"
   load_balancing_scheme = "EXTERNAL_MANAGED"
-  health_checks         = [google_compute_health_check.https.id]
 
   backend {
     group = google_compute_region_network_endpoint_group.this.id
