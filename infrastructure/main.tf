@@ -146,8 +146,8 @@ resource "google_cloud_run_v2_service" "this" {
       resources {
         cpu_idle = true
         limits = {
-          memory = 1
-          cpu    = 2
+          memory = "1024Mi"
+          cpu    = "2"
         }
       }
     }
