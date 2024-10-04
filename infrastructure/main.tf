@@ -101,7 +101,7 @@ resource "google_compute_url_map" "this" {
     default_service = google_compute_backend_service.this.id
 
     path_rule {
-      paths   = ["/static"]
+      paths   = ["/public/*"]
       service = google_compute_backend_bucket.this.id
     }
   }
