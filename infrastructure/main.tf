@@ -3,7 +3,7 @@ locals {
   domain_names = ["ethanhassett.com", "ehassett.com"]
 }
 
-data "google_client_openid_userinfo" "this" {}
+data "google_project" "this" {}
 
 data "cloudflare_zone" "this" {
   for_each = toset(local.domain_names)
@@ -104,6 +104,27 @@ resource "cloudflare_record" "cname" {
 }
 
 # Cloud Run
+resource "google_service_account" "this" {
+  account_id   = "cloudrun"
+  display_name = "cloudrun"
+  description  = "Service account for Cloud Run"
+}
+
+resource "google_project_iam_binding" "cloud_run_admin" {
+  project = data.google_project.this.project_id
+  role    = "roles/run.admin"
+  members = ["serviceAccount:${google_service_account.this.email}"]
+}
+
+resource "google_project_iam_binding" "service_account_user" {
+  project = data.google_project.this.project_id
+  role    = "roles/iam.serviceAccountUser"
+  members = ["serviceAccount:${google_service_account.this.email}"]
+
+  #checkov:skip=CKV_GCP_41:project-scoped roles are fine at this time
+  #checkov:skip=CKV_GCP_49:basic roles are fine at this time
+}
+
 resource "google_cloud_run_v2_service" "this" {
   name        = "ethanhassett-com"
   description = "Cloud Run service for ethanhassett.com"
@@ -111,7 +132,7 @@ resource "google_cloud_run_v2_service" "this" {
   ingress     = "INGRESS_TRAFFIC_ALL"
 
   template {
-    service_account                  = data.google_client_openid_userinfo.this.email
+    service_account                  = google_service_account.this.email
     execution_environment            = "EXECUTION_ENVIRONMENT_GEN1"
     max_instance_request_concurrency = 1000
 
@@ -125,8 +146,8 @@ resource "google_cloud_run_v2_service" "this" {
       resources {
         cpu_idle = true
         limits = {
-          memory = 4
-          cpu    = 4
+          memory = 1
+          cpu    = 2
         }
       }
     }

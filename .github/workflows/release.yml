@@ -123,6 +123,13 @@ jobs:
 
       - name: Deploy Stack
         run: |
+          counter=0
+          while [[ $counter -lt 60 && $(spacectl stack run list --id tofu-ethanhassett-com | grep -Ec 'QUEUED|READY|PREPARING|INITIALIZING|PLANNING') -gt 0 ]]; do
+            echo "Waiting for plan to complete..."
+            sleep 5
+            counter=$((counter + 1))
+          done
+
           if [[ $(spacectl stack run list --id tofu-ethanhassett-com | grep -c UNCONFIRMED) -gt 0 ]]; then
             run_id=$(spacectl stack run list --id tofu-ethanhassett-com \
               | grep -m 1 UNCONFIRMED \
