@@ -52,14 +52,14 @@ resource "google_compute_global_address" "this" {
 }
 
 resource "google_compute_network" "this" {
-  name                    = "${local.prefix}-neg-network"
+  name                    = "${local.prefix}-network"
   auto_create_subnetworks = false
 
   #checkov:skip=CKV2_GCP_18:default firewall rules are fine at this time
 }
 
 resource "google_compute_subnetwork" "this" {
-  name          = "${local.prefix}-neg-subnetwork"
+  name          = "${local.prefix}-subnetwork"
   ip_cidr_range = "10.0.0.0/16"
   network       = google_compute_network.this.id
 
