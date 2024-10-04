@@ -86,11 +86,6 @@ resource "google_compute_backend_bucket" "this" {
     serve_while_stale = 86400
   }
 }
-# TODO: remove once applied
-moved {
-  from = google_compute_backend_bucket.cdn
-  to   = google_compute_backend_bucket.this
-}
 
 resource "google_compute_url_map" "this" {
   name            = "${local.prefix}-url-map"
@@ -111,34 +106,19 @@ resource "google_compute_url_map" "this" {
     }
   }
 }
-# TODO: remove once applied
-moved {
-  from = google_compute_url_map.cdn
-  to   = google_compute_url_map.this
-}
 
 resource "google_compute_target_http_proxy" "this" {
   name    = "${local.prefix}-http-proxy"
   url_map = google_compute_url_map.this.id
 }
-# TODO: remove once applied
-moved {
-  from = google_compute_target_http_proxy.cdn
-  to   = google_compute_target_http_proxy.this
-}
 
 resource "google_compute_global_forwarding_rule" "this" {
   name                  = "${local.prefix}-forwarding-rule"
   ip_protocol           = "TCP"
-  load_balancing_scheme = "EXTERNAL"
+  load_balancing_scheme = "EXTERNAL_MANAGED"
   port_range            = "80"
   target                = google_compute_target_http_proxy.this.id
   ip_address            = google_compute_global_address.this.id
-}
-# TODO: remove once applied
-moved {
-  from = google_compute_global_forwarding_rule.cdn
-  to   = google_compute_global_forwarding_rule.this
 }
 
 # DNS
@@ -209,4 +189,13 @@ resource "google_cloud_run_v2_service" "this" {
       }
     }
   }
+}
+
+resource "google_cloud_run_service_iam_binding" "this" {
+  location = google_cloud_run_v2_service.this.location
+  service  = google_cloud_run_v2_service.this.name
+  role     = "roles/run.invoker"
+  members  = ["allUsers"]
+
+  #checkov:skip=CKV_GCP_102:everyone should be able to access the site
 }
