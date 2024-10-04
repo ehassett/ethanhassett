@@ -1,6 +1,6 @@
 locals {
   objects_path = "${path.module}/objects"
-  domain_names = ["ethanhassett.com", "ehassett.com"]
+  domain_name  = "ethanhassett.com"
   prefix       = "ethanhassett-com"
   region       = "us-east5"
 }
@@ -8,13 +8,12 @@ locals {
 data "google_project" "this" {}
 
 data "cloudflare_zone" "this" {
-  for_each = toset(local.domain_names)
-  name     = each.key
+  name = local.domain_name
 }
 
 # Backend Storage Bucket
 resource "google_storage_bucket" "this" {
-  name          = local.domain_names[0]
+  name          = local.domain_name
   location      = "US"
   storage_class = "STANDARD"
 
@@ -73,7 +72,7 @@ resource "google_compute_backend_service" "this" {
 
 resource "google_compute_backend_bucket" "this" {
   name        = "${local.prefix}-backend-bucket"
-  description = "Backend bucket for ${local.domain_names[0]}"
+  description = "Backend bucket for ${local.domain_name}"
   bucket_name = google_storage_bucket.this.name
   enable_cdn  = true
 
@@ -92,7 +91,7 @@ resource "google_compute_url_map" "this" {
   default_service = google_compute_backend_service.this.id
 
   host_rule {
-    hosts        = ["ethanhassett.com"]
+    hosts        = [local.domain_name]
     path_matcher = "site"
   }
 
@@ -123,19 +122,17 @@ resource "google_compute_global_forwarding_rule" "this" {
 
 # DNS
 resource "cloudflare_record" "a" {
-  zone_id = data.cloudflare_zone.this[local.domain_names[0]].zone_id # Use the first domain, which is ethanhassett.com
-  name    = local.domain_names[0]
+  zone_id = data.cloudflare_zone.this.zone_id
+  name    = local.domain_name
   content = google_compute_global_address.this.address
   type    = "A"
   ttl     = 300
 }
 
 resource "cloudflare_record" "cname" {
-  for_each = toset(local.domain_names)
-
-  zone_id = data.cloudflare_zone.this[each.key].zone_id
+  zone_id = data.cloudflare_zone.this.zone_id
   name    = "www"
-  content = each.key
+  content = local.domain_name
   type    = "CNAME"
   ttl     = 300
 }
@@ -164,7 +161,7 @@ resource "google_project_iam_binding" "service_account_user" {
 
 resource "google_cloud_run_v2_service" "this" {
   name        = local.prefix
-  description = "Cloud Run service for ethanhassett.com"
+  description = "Cloud Run service for ${local.domain_name}"
   location    = local.region
   ingress     = "INGRESS_TRAFFIC_ALL"
 
