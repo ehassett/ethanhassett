@@ -7,9 +7,6 @@ on:
 permissions:
   pull-requests: read
   contents: write
-  packages: write
-  attestations: write
-  id-token: write
 
 jobs:
   check_version:
