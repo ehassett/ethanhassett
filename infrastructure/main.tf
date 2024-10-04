@@ -1,6 +1,6 @@
 locals {
   objects_path = "${path.module}/objects"
-  domain_name  = "ethanhassett.com"
+  domain       = "ethanhassett.com"
   prefix       = "ethanhassett-com"
   region       = "us-east5"
 }
@@ -8,12 +8,12 @@ locals {
 data "google_project" "this" {}
 
 data "cloudflare_zone" "this" {
-  name = local.domain_name
+  name = local.domain
 }
 
 # Backend Storage Bucket
 resource "google_storage_bucket" "this" {
-  name          = local.domain_name
+  name          = local.domain
   location      = "US"
   storage_class = "STANDARD"
 
@@ -49,23 +49,42 @@ resource "google_storage_managed_folder_iam_binding" "public" {
 # SSL
 resource "random_id" "this" {
   byte_length = 4
-  prefix      = "${local.prefix}-cert-"
 
   keepers = {
-    domains = join(",", [local.domain_name, "*.${local.domain_name}"])
+    domains = join(",", [local.domain, "*.${local.domain}"])
   }
 }
 
-resource "google_compute_managed_ssl_certificate" "this" {
-  name = random_id.this.hex
+resource "google_certificate_manager_dns_authorization" "this" {
+  name        = "${local.prefix}-dnsauth-${random_id.this.hex}"
+  description = "DNS authorization for ${local.domain}"
+  domain      = local.domain
+}
+
+resource "google_certificate_manager_certificate" "this" {
+  name        = "${local.prefix}-cert-${random_id.this.hex}"
+  description = "Wildcard certificate for ${local.domain}"
 
   managed {
-    domains = [local.domain_name, "*.${local.domain_name}"]
+    domains            = [local.domain, "*.${local.domain}"]
+    dns_authorizations = [google_certificate_manager_dns_authorization.this.id]
   }
 
   lifecycle {
     create_before_destroy = true
   }
+}
+
+resource "google_certificate_manager_certificate_map" "this" {
+  name        = "${local.prefix}-certmap-${random_id.this.hex}"
+  description = "Certificate map for ${local.domain}"
+}
+
+resource "google_certificate_manager_certificate_map_entry" "this" {
+  name         = "${local.prefix}-${random_id.this.hex}"
+  map          = google_certificate_manager_certificate_map.this.name
+  hostname     = local.domain
+  certificates = [google_certificate_manager_certificate.this.id]
 }
 
 # Networking
@@ -83,21 +102,9 @@ resource "google_compute_region_network_endpoint_group" "this" {
   }
 }
 
-resource "google_compute_health_check" "https" {
-  name = "https-health-check"
-
-  timeout_sec        = 1
-  check_interval_sec = 1
-
-  https_health_check {
-    port = "443"
-  }
-}
-
 resource "google_compute_backend_service" "this" {
   name                  = "${local.prefix}-backend-service"
   load_balancing_scheme = "EXTERNAL_MANAGED"
-  health_checks         = [google_compute_health_check.https.id]
 
   backend {
     group = google_compute_region_network_endpoint_group.this.id
@@ -106,7 +113,7 @@ resource "google_compute_backend_service" "this" {
 
 resource "google_compute_backend_bucket" "this" {
   name        = "${local.prefix}-backend-bucket"
-  description = "Backend bucket for ${local.domain_name}"
+  description = "Backend bucket for ${local.domain}"
   bucket_name = google_storage_bucket.this.name
   enable_cdn  = true
 
@@ -125,7 +132,7 @@ resource "google_compute_url_map" "this" {
   default_service = google_compute_backend_service.this.id
 
   host_rule {
-    hosts        = [local.domain_name]
+    hosts        = [local.domain]
     path_matcher = "site"
   }
 
@@ -141,9 +148,9 @@ resource "google_compute_url_map" "this" {
 }
 
 resource "google_compute_target_https_proxy" "this" {
-  name             = "${local.prefix}-https-proxy"
-  url_map          = google_compute_url_map.this.id
-  ssl_certificates = [google_compute_managed_ssl_certificate.this.id]
+  name            = "${local.prefix}-https-proxy"
+  url_map         = google_compute_url_map.this.id
+  certificate_map = google_certificate_manager_certificate_map.this.id
 }
 
 resource "google_compute_global_forwarding_rule" "this" {
@@ -153,28 +160,6 @@ resource "google_compute_global_forwarding_rule" "this" {
   port_range            = "443"
   target                = google_compute_target_https_proxy.this.id
   ip_address            = google_compute_global_address.this.id
-}
-
-# DNS
-resource "cloudflare_record" "a" {
-  zone_id = data.cloudflare_zone.this.zone_id
-  name    = local.domain_name
-  content = google_compute_global_address.this.address
-  type    = "A"
-  ttl     = 300
-}
-
-resource "cloudflare_record" "cname" {
-  zone_id = data.cloudflare_zone.this.zone_id
-  name    = "www"
-  content = local.domain_name
-  type    = "CNAME"
-  ttl     = 300
-}
-# TODO: remove after apply
-moved {
-  from = cloudflare_record.cname["ethanhassett.com"]
-  to   = cloudflare_record.cname
 }
 
 # Cloud Run
@@ -201,7 +186,7 @@ resource "google_project_iam_binding" "service_account_user" {
 
 resource "google_cloud_run_v2_service" "this" {
   name        = local.prefix
-  description = "Cloud Run service for ${local.domain_name}"
+  description = "Cloud Run service for ${local.domain}"
   location    = local.region
   ingress     = "INGRESS_TRAFFIC_ALL"
 
@@ -235,4 +220,29 @@ resource "google_cloud_run_service_iam_binding" "this" {
   members  = ["allUsers"]
 
   #checkov:skip=CKV_GCP_102:everyone should be able to access the site
+}
+
+# DNS
+resource "cloudflare_record" "a" {
+  zone_id = data.cloudflare_zone.this.zone_id
+  name    = local.domain
+  content = google_compute_global_address.this.address
+  type    = "A"
+  ttl     = 300
+}
+
+resource "cloudflare_record" "cname" {
+  zone_id = data.cloudflare_zone.this.zone_id
+  name    = "www"
+  content = local.domain
+  type    = "CNAME"
+  ttl     = 300
+}
+
+resource "cloudflare_record" "dns_authorization" {
+  zone_id = data.cloudflare_zone.this.zone_id
+  name    = google_certificate_manager_dns_authorization.this.dns_resource_record[0].name
+  content = google_certificate_manager_dns_authorization.this.dns_resource_record[0].data
+  type    = google_certificate_manager_dns_authorization.this.dns_resource_record[0].type
+  ttl     = 300
 }
