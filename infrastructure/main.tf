@@ -46,6 +46,28 @@ resource "google_storage_managed_folder_iam_binding" "public" {
   members        = ["allUsers"]
 }
 
+# SSL
+resource "random_id" "this" {
+  byte_length = 4
+  prefix      = "${local.prefix}-cert-"
+
+  keepers = {
+    domains = join(",", [local.domain_name, "*.${local.domain_name}"])
+  }
+}
+
+resource "google_compute_managed_ssl_certificate" "this" {
+  name = random_id.this.hex
+
+  managed {
+    domains = [local.domain_name, "*.${local.domain_name}"]
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 # Networking
 resource "google_compute_global_address" "this" {
   name = local.prefix
@@ -61,9 +83,21 @@ resource "google_compute_region_network_endpoint_group" "this" {
   }
 }
 
+resource "google_compute_health_check" "https" {
+  name = "https-health-check"
+
+  timeout_sec        = 1
+  check_interval_sec = 1
+
+  https_health_check {
+    port = "443"
+  }
+}
+
 resource "google_compute_backend_service" "this" {
   name                  = "${local.prefix}-backend-service"
   load_balancing_scheme = "EXTERNAL_MANAGED"
+  health_checks         = [google_compute_health_check.https.id]
 
   backend {
     group = google_compute_region_network_endpoint_group.this.id
@@ -106,17 +140,18 @@ resource "google_compute_url_map" "this" {
   }
 }
 
-resource "google_compute_target_http_proxy" "this" {
-  name    = "${local.prefix}-http-proxy"
-  url_map = google_compute_url_map.this.id
+resource "google_compute_target_https_proxy" "this" {
+  name             = "${local.prefix}-https-proxy"
+  url_map          = google_compute_url_map.this.id
+  ssl_certificates = [google_compute_ssl_certificate.this.id]
 }
 
 resource "google_compute_global_forwarding_rule" "this" {
   name                  = "${local.prefix}-forwarding-rule"
   ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
-  port_range            = "80"
-  target                = google_compute_target_http_proxy.this.id
+  port_range            = "443"
+  target                = google_compute_target_https_proxy.this.id
   ip_address            = google_compute_global_address.this.id
 }
 
