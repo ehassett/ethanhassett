@@ -17,44 +17,47 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ (github.event.pull_request.merged == true) }}
     outputs:
-      package_version: ${{ steps.package_version.outputs.version }}
-      previous_version: ${{ steps.previous_version.outputs.version }}
+      current_version: ${{ steps.versions.outputs.current_version }}
+      is_new_release: ${{ steps.versions.outputs.is_new_release }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           ref: ${{ github.base_ref }}
 
-      - name: Get package version
-        id: package_version
+      - name: Get versions
+        id: versions
         run: |
-          PACKAGE_VERSION=$(cat ./app/package.json \
+          current_version=$(cat ./app/package.json \
             | grep version \
             | head -1 \
             | awk -F: '{ print $2 }' \
             | sed 's/[",]//g' \
             | tr -d " \t\n\r")
 
-          echo "version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Get previous version
-        id: previous_version
-        run: |
           if [[ $(git tag -l) ]]; then
-            echo "version=$(git describe --tags --abbrev=0)" >> "$GITHUB_OUTPUT"
+            previous_version=$(git describe --tags --abbrev=0)
           else
-            echo "version=0.0.0" >> "$GITHUB_OUTPUT"
+            previous_version=0.0.0
+          fi
+
+          echo "Current Version: $current_version"
+          echo "Previous Version: $previous_version"
+
+          echo "current_version=$current_version" >> "$GITHUB_OUTPUT"
+          if [[ $current_version != "$previous_version" ]]; then
+            echo "is_new_release=true" >> "$GITHUB_OUTPUT"
           fi
 
   docker_image:
     name: Docker Image
     runs-on: ubuntu-latest
     needs: check_version
-    if: ${{ (github.event.pull_request.merged == true) && (needs.check_version.outputs.package_version != needs.check_version.outputs.previous_version) }}
+    if: ${{ (github.event.pull_request.merged == true) && (needs.check_version.outputs.is_new_release == true) }}
     env:
       DOCKERHUB_USERNAME: "hassett"
       IMAGE_NAME: "ethanhassett-com"
-      VERSION: ${{ needs.check_version.outputs.package_version }}
+      VERSION: ${{ needs.check_version.outputs.current_version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -80,11 +83,11 @@ jobs:
     name: Release and Tag New Version
     runs-on: ubuntu-latest
     needs: check_version
-    if: ${{ (github.event.pull_request.merged == true) && (needs.check_version.outputs.package_version != needs.check_version.outputs.previous_version) }}
+    if: ${{ (github.event.pull_request.merged == true) && (needs.check_version.outputs.is_new_release == true) }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_REPOSITORY: ${{ github.repository }}
-      VERSION: ${{ needs.check_version.outputs.package_version }}
+      VERSION: ${{ needs.check_version.outputs.current_version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
