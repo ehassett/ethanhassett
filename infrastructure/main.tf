@@ -2,6 +2,7 @@ locals {
   objects_path = "${path.module}/objects"
   domain_names = ["ethanhassett.com", "ehassett.com"]
   prefix       = "ethanhassett-com"
+  region       = "us-east5"
 }
 
 data "google_project" "this" {}
@@ -51,28 +52,14 @@ resource "google_compute_global_address" "this" {
   name = local.prefix
 }
 
-resource "google_compute_network" "this" {
-  name                    = "${local.prefix}-network"
-  auto_create_subnetworks = false
-
-  #checkov:skip=CKV2_GCP_18:default firewall rules are fine at this time
-}
-
-resource "google_compute_subnetwork" "this" {
-  name          = "${local.prefix}-subnetwork"
-  ip_cidr_range = "10.0.0.0/16"
-  network       = google_compute_network.this.id
-
-  #checkov:skip=CKV_GCP_26:flow lgos are not needed at this time
-  #checkov:skip=CKV_GCP_74:private ip connection is not needed at this time
-}
-
-resource "google_compute_network_endpoint_group" "this" {
+resource "google_compute_region_network_endpoint_group" "this" {
   name                  = "${local.prefix}-neg"
-  network               = google_compute_network.this.id
-  subnetwork            = google_compute_subnetwork.this.id
-  zone                  = "us-east5-a"
   network_endpoint_type = "SERVERLESS"
+  region                = local.region
+
+  cloud_run {
+    service = google_cloud_run_v2_service.this.name
+  }
 }
 
 resource "google_compute_backend_service" "this" {
@@ -80,7 +67,7 @@ resource "google_compute_backend_service" "this" {
   load_balancing_scheme = "EXTERNAL_MANAGED"
 
   backend {
-    group = google_compute_network_endpoint_group.this.id
+    group = google_compute_region_network_endpoint_group.this.id
   }
 }
 
@@ -106,7 +93,7 @@ moved {
 }
 
 resource "google_compute_url_map" "this" {
-  name            = "http-lb" # TODO: add prefix
+  name            = "${local.prefix}-url-map"
   default_service = google_compute_backend_service.this.id
 
   host_rule {
@@ -131,7 +118,7 @@ moved {
 }
 
 resource "google_compute_target_http_proxy" "this" {
-  name    = "http-lb-proxy" # TODO: add prefix
+  name    = "${local.prefix}-http-proxy"
   url_map = google_compute_url_map.this.id
 }
 # TODO: remove once applied
@@ -141,7 +128,7 @@ moved {
 }
 
 resource "google_compute_global_forwarding_rule" "this" {
-  name                  = "http-lb-forwarding-rule" # TODO: add prefix
+  name                  = "${local.prefix}-forwarding-rule"
   ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL"
   port_range            = "80"
@@ -198,7 +185,7 @@ resource "google_project_iam_binding" "service_account_user" {
 resource "google_cloud_run_v2_service" "this" {
   name        = local.prefix
   description = "Cloud Run service for ethanhassett.com"
-  location    = "us-east5"
+  location    = local.region
   ingress     = "INGRESS_TRAFFIC_ALL"
 
   template {
