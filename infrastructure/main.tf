@@ -54,12 +54,17 @@ resource "google_compute_global_address" "this" {
 resource "google_compute_network" "this" {
   name                    = "${local.prefix}-neg-network"
   auto_create_subnetworks = false
+
+  #checkov:skip=CKV2_GCP_18:default firewall rules are fine at this time
 }
 
 resource "google_compute_subnetwork" "this" {
   name          = "${local.prefix}-neg-subnetwork"
   ip_cidr_range = "10.0.0.0/16"
   network       = google_compute_network.this.id
+
+  #checkov:skip=CKV_GCP_26:flow lgos are not needed at this time
+  #checkov:skip=CKV_GCP_74:private ip connection is not needed at this time
 }
 
 resource "google_compute_network_endpoint_group" "this" {
