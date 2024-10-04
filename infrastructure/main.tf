@@ -143,7 +143,7 @@ resource "google_compute_url_map" "this" {
 resource "google_compute_target_https_proxy" "this" {
   name             = "${local.prefix}-https-proxy"
   url_map          = google_compute_url_map.this.id
-  ssl_certificates = [google_compute_ssl_certificate.this.id]
+  ssl_certificates = [google_compute_managed_ssl_certificate.this.id]
 }
 
 resource "google_compute_global_forwarding_rule" "this" {
