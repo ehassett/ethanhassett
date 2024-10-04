@@ -1,14 +1,14 @@
-# ethanhassett.com
+# ethanhassett.com infrastructure
 
-OpenTofu codebase for https://ethanhassett.com.
+OpenTofu codebase for the infrastructure for https://ethanhassett.com.
 
 # Contents
 
-- [ethanhassett.com](#ethanhassettcom)
+- [ethanhassett.com infrastructure](#ethanhassettcom-infrastructure)
 - [Contents](#contents)
-- [Best Practices](#best-practices)
+- [Contributing](#contributing)
 
-# Best Practices
+# Contributing
 
+- Follow [conventional commits v1.0.0](https://www.conventionalcommits.org/en/v1.0.0/) for commits _and_ PR titles.
 - Follow [the Terraform best practices](https://www.terraform-best-practices.com) as close as possible.
-- Follow [conventional commits v1.0.0](https://www.conventionalcommits.org/en/v1.0.0/).

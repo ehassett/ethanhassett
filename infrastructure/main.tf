@@ -1,6 +1,7 @@
 locals {
   objects_path = "${path.module}/objects"
   domain_names = ["ethanhassett.com", "ehassett.com"]
+  prefix       = "ethanhassett-com"
 }
 
 data "google_project" "this" {}
@@ -45,16 +46,50 @@ resource "google_storage_managed_folder_iam_binding" "public" {
   members        = ["allUsers"]
 }
 
-# CDN
+# Networking
 resource "google_compute_global_address" "this" {
-  name = "ethanhassett-com"
+  name = local.prefix
 }
 
-resource "google_compute_backend_bucket" "cdn" {
-  name        = "ethanhassett-com-backend-bucket"
+resource "google_compute_network" "this" {
+  name                    = "${local.prefix}-network"
+  auto_create_subnetworks = false
+
+  #checkov:skip=CKV2_GCP_18:default firewall rules are fine at this time
+}
+
+resource "google_compute_subnetwork" "this" {
+  name          = "${local.prefix}-subnetwork"
+  ip_cidr_range = "10.0.0.0/16"
+  network       = google_compute_network.this.id
+
+  #checkov:skip=CKV_GCP_26:flow lgos are not needed at this time
+  #checkov:skip=CKV_GCP_74:private ip connection is not needed at this time
+}
+
+resource "google_compute_network_endpoint_group" "this" {
+  name                  = "${local.prefix}-neg"
+  network               = google_compute_network.this.id
+  subnetwork            = google_compute_subnetwork.this.id
+  zone                  = "us-east5-a"
+  network_endpoint_type = "SERVERLESS"
+}
+
+resource "google_compute_backend_service" "this" {
+  name                  = "${local.prefix}-backend-service"
+  load_balancing_scheme = "EXTERNAL_MANAGED"
+
+  backend {
+    group = google_compute_network_endpoint_group.this.id
+  }
+}
+
+resource "google_compute_backend_bucket" "this" {
+  name        = "${local.prefix}-backend-bucket"
   description = "Backend bucket for ${local.domain_names[0]}"
   bucket_name = google_storage_bucket.this.name
   enable_cdn  = true
+
   cdn_policy {
     cache_mode        = "CACHE_ALL_STATIC"
     client_ttl        = 3600
@@ -64,24 +99,59 @@ resource "google_compute_backend_bucket" "cdn" {
     serve_while_stale = 86400
   }
 }
-
-resource "google_compute_url_map" "cdn" {
-  name            = "http-lb"
-  default_service = google_compute_backend_bucket.cdn.id
+# TODO: remove once applied
+moved {
+  from = google_compute_backend_bucket.cdn
+  to   = google_compute_backend_bucket.this
 }
 
-resource "google_compute_target_http_proxy" "cdn" {
-  name    = "http-lb-proxy"
-  url_map = google_compute_url_map.cdn.id
+resource "google_compute_url_map" "this" {
+  name            = "http-lb" # TODO: add prefix
+  default_service = google_compute_backend_service.this.id
+
+  host_rule {
+    hosts        = ["ethanhassett.com"]
+    path_matcher = "site"
+  }
+
+  path_matcher {
+    name            = "site"
+    default_service = google_compute_backend_service.this.id
+
+    path_rule {
+      paths   = ["/static"]
+      service = google_compute_backend_bucket.this.id
+    }
+  }
+}
+# TODO: remove once applied
+moved {
+  from = google_compute_url_map.cdn
+  to   = google_compute_url_map.this
 }
 
-resource "google_compute_global_forwarding_rule" "cdn" {
-  name                  = "http-lb-forwarding-rule"
+resource "google_compute_target_http_proxy" "this" {
+  name    = "http-lb-proxy" # TODO: add prefix
+  url_map = google_compute_url_map.this.id
+}
+# TODO: remove once applied
+moved {
+  from = google_compute_target_http_proxy.cdn
+  to   = google_compute_target_http_proxy.this
+}
+
+resource "google_compute_global_forwarding_rule" "this" {
+  name                  = "http-lb-forwarding-rule" # TODO: add prefix
   ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL"
   port_range            = "80"
-  target                = google_compute_target_http_proxy.cdn.id
+  target                = google_compute_target_http_proxy.this.id
   ip_address            = google_compute_global_address.this.id
+}
+# TODO: remove once applied
+moved {
+  from = google_compute_global_forwarding_rule.cdn
+  to   = google_compute_global_forwarding_rule.this
 }
 
 # DNS
@@ -126,7 +196,7 @@ resource "google_project_iam_binding" "service_account_user" {
 }
 
 resource "google_cloud_run_v2_service" "this" {
-  name        = "ethanhassett-com"
+  name        = local.prefix
   description = "Cloud Run service for ethanhassett.com"
   location    = "us-east5"
   ingress     = "INGRESS_TRAFFIC_ALL"
@@ -146,8 +216,8 @@ resource "google_cloud_run_v2_service" "this" {
       resources {
         cpu_idle = true
         limits = {
-          memory = 1
-          cpu    = 2
+          memory = "1024Mi"
+          cpu    = "2"
         }
       }
     }
