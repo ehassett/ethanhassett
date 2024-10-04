@@ -39,7 +39,7 @@ jobs:
         id: changed_files
         uses: tj-actions/changed-files@v45
         with:
-          files: app/*
+          files: app/**
 
       - name: Check if version is updated
         if: steps.changed_files.outputs.any_changed == 'true'
