@@ -196,4 +196,6 @@ resource "google_cloud_run_service_iam_binding" "this" {
   service  = google_cloud_run_v2_service.this.name
   role     = "roles/run.invoker"
   members  = ["allUsers"]
+
+  #checkov:skip=CKV_GCP_102:everyone should be able to access the site
 }
