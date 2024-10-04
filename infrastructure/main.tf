@@ -136,6 +136,11 @@ resource "cloudflare_record" "cname" {
   type    = "CNAME"
   ttl     = 300
 }
+# TODO: remove after apply
+moved {
+  from = cloudflare_record.cname["ethanhassett.com"]
+  to   = cloudflare_record.cname
+}
 
 # Cloud Run
 resource "google_service_account" "this" {
