@@ -3,12 +3,9 @@ locals {
   project = "ethanhassett"
   domain  = "ethanhassett.com"
 
-  dns_records = { for record in google_cloud_run_domain_mapping.this.status[0].resource_records :
-    index(google_cloud_run_domain_mapping.this.status[0].resource_records, record) => {
-      content = record.rrdata
-      type    = record.type
-    }
-  }
+  # Due to limitations with the Google Cloud Run Domain Mapping API, these IPs are hardcoded here from the domain mapping settings
+  a_record_ips    = ["216.239.32.21", "216.239.34.21", "216.239.36.21", "216.239.38.21"]
+  aaaa_record_ips = ["2001:4860:4802:32::15", "2001:4860:4802:34::15", "2001:4860:4802:36::15", "2001:4860:4802:38::15"]
 }
 
 data "cloudflare_zone" "this" {
@@ -79,6 +76,19 @@ resource "google_cloud_run_domain_mapping" "this" {
   }
 }
 
+resource "google_cloud_run_domain_mapping" "www" {
+  name     = "www.${local.domain}"
+  location = google_cloud_run_v2_service.this.location
+
+  metadata {
+    namespace = local.project
+  }
+
+  spec {
+    route_name = google_cloud_run_v2_service.this.name
+  }
+}
+
 resource "google_cloud_run_service_iam_binding" "this" {
   location = google_cloud_run_v2_service.this.location
   service  = google_cloud_run_v2_service.this.name
@@ -89,23 +99,30 @@ resource "google_cloud_run_service_iam_binding" "this" {
 }
 
 # DNS
-# Due to limitations with the Google Cloud Run Domain Mapping API, these records must be created on separate run after the domain mapping is created
-resource "cloudflare_record" "this" {
-  for_each = local.dns_records
+resource "cloudflare_record" "a" {
+  for_each = toset(local.a_record_ips)
 
   zone_id = data.cloudflare_zone.this.zone_id
   name    = "@"
-  content = each.value.content
-  type    = each.value.type
+  content = each.key
+  type    = "A"
+  ttl     = 300
+}
+
+resource "cloudflare_record" "aaaa" {
+  for_each = toset(local.aaaa_record_ips)
+
+  zone_id = data.cloudflare_zone.this.zone_id
+  name    = "@"
+  content = each.key
+  type    = "AAAA"
   ttl     = 300
 }
 
 resource "cloudflare_record" "www" {
-  for_each = local.dns_records
-
   zone_id = data.cloudflare_zone.this.zone_id
   name    = "www"
-  content = each.value.content
-  type    = each.value.type
+  content = "ghs.googlehosted.com."
+  type    = "CNAME"
   ttl     = 300
 }
