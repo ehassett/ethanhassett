@@ -64,7 +64,7 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           token_format: access_token
-          workload_identity_provider: "projects/hassettio/locations/global/workloadIdentityPools/github/providers/github"
+          workload_identity_provider: "projects/241837887550/locations/global/workloadIdentityPools/github/providers/github"
           service_account: "spacelift@hassettio.iam.gserviceaccount.com"
           access_token_lifetime: 300s
 
