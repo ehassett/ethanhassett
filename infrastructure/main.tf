@@ -79,7 +79,7 @@ resource "google_cloud_run_service_iam_binding" "this" {
 
 # DNS
 resource "cloudflare_record" "this" {
-  for_each = google_cloud_run_domain_mapping.this.resource_records
+  for_each = google_cloud_run_domain_mapping.this.status.resource_records
 
   zone_id = data.cloudflare_zone.this.zone_id
   name    = each.value.name
