@@ -64,6 +64,11 @@ jobs:
             | sed 's/["]//g' \
             | tr -d " \t\n\r")
 
+          echo "Current version: $tag_version"
+          echo "app/package.json: $package_version"
+          echo "app/package-lock.json: $package_lock_version"
+          echo "infrastructure/main.tf: $cloud_run_version"
+
           if [ "$package_version" != "$tag_version" ] && [ "$package_lock_version" != "$tag_version" ] && [ "$cloud_run_version" != "$tag_version" ]; then
             exit 0
           else
