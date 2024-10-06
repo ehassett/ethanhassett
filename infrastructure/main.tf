@@ -21,6 +21,8 @@ resource "google_artifact_registry_repository" "this" {
   docker_config {
     immutable_tags = false
   }
+
+  #checkov:skip=CKV_GCP_84:not necessary at this time
 }
 
 # Cloud Run
