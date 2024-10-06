@@ -8,7 +8,6 @@ locals {
       name    = record.name != "" ? record.name : "@"
       content = record.rrdata
       type    = record.type
-      ttl     = 300
     }
   }
 }
@@ -97,7 +96,7 @@ resource "cloudflare_record" "this" {
 
   zone_id = data.cloudflare_zone.this.zone_id
   name    = each.value.name
-  content = each.value.rrdata
+  content = each.value.content
   type    = each.value.type
   ttl     = 300
 }
