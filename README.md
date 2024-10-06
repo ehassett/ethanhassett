@@ -1,6 +1,8 @@
 # ethanhassett.com
 
-Repo for https://ethanhassett.com.
+[![Release](https://github.com/ehassett/ethanhassett-com/actions/workflows/release.yml/badge.svg)](https://github.com/ehassett/ethanhassett-com/actions/workflows/release.yml)
+
+Repo for https://ethanhassett.com
 
 # Contents
 
