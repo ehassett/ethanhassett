@@ -63,6 +63,10 @@ resource "google_cloud_run_domain_mapping" "this" {
   name     = local.domain
   location = google_cloud_run_v2_service.this.location
 
+  metadata {
+    namespace = local.project
+  }
+
   spec {
     route_name = google_cloud_run_v2_service.this.name
   }
@@ -78,12 +82,12 @@ resource "google_cloud_run_service_iam_binding" "this" {
 }
 
 # DNS
-resource "cloudflare_record" "this" {
-  for_each = google_cloud_run_domain_mapping.this.status.resource_records
+# resource "cloudflare_record" "this" {
+#   for_each = google_cloud_run_domain_mapping.this.status[0].resource_records
 
-  zone_id = data.cloudflare_zone.this.zone_id
-  name    = each.value.name
-  content = each.value.rrdata
-  type    = each.value.type
-  ttl     = 300
-}
+#   zone_id = data.cloudflare_zone.this.zone_id
+#   name    = each.value.name
+#   content = each.value.rrdata
+#   type    = each.value.type
+#   ttl     = 300
+# }
