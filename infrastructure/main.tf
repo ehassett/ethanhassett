@@ -5,7 +5,6 @@ locals {
 
   dns_records = { for record in google_cloud_run_domain_mapping.this.status[0].resource_records :
     index(google_cloud_run_domain_mapping.this.status[0].resource_records, record) => {
-      name    = record.name != "" ? record.name : "@"
       content = record.rrdata
       type    = record.type
     }
@@ -95,7 +94,17 @@ resource "cloudflare_record" "this" {
   for_each = local.dns_records
 
   zone_id = data.cloudflare_zone.this.zone_id
-  name    = each.value.name
+  name    = "@"
+  content = each.value.content
+  type    = each.value.type
+  ttl     = 300
+}
+
+resource "cloudflare_record" "www" {
+  for_each = local.dns_records
+
+  zone_id = data.cloudflare_zone.this.zone_id
+  name    = "www"
   content = each.value.content
   type    = each.value.type
   ttl     = 300
