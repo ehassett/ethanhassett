@@ -79,6 +79,23 @@ resource "google_cloud_run_domain_mapping" "this" {
   }
 }
 
+resource "google_cloud_run_domain_mapping" "www" {
+  name     = "www.${local.domain}"
+  location = google_cloud_run_v2_service.this.location
+
+  metadata {
+    namespace = local.project
+  }
+
+  spec {
+    route_name = google_cloud_run_v2_service.this.name
+  }
+}
+import {
+  to = google_cloud_run_domain_mapping.www
+  id = "locations/us-east1/namespaces/ethanhassett/domainmappings/www.ethanhassett.com"
+}
+
 resource "google_cloud_run_service_iam_binding" "this" {
   location = google_cloud_run_v2_service.this.location
   service  = google_cloud_run_v2_service.this.name
@@ -101,11 +118,9 @@ resource "cloudflare_record" "this" {
 }
 
 resource "cloudflare_record" "www" {
-  for_each = local.dns_records
-
   zone_id = data.cloudflare_zone.this.zone_id
   name    = "www"
-  content = each.value.content
-  type    = each.value.type
+  content = "ghs.googlehosted.com."
+  type    = "CNAME"
   ttl     = 300
 }
