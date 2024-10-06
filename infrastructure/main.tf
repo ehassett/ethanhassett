@@ -2,6 +2,14 @@ locals {
   region  = "us-east1"
   project = "ethanhassett"
   domain  = "ethanhassett.com"
+
+  dns_records = { for record in google_cloud_run_domain_mapping.this.status[0].resource_records :
+    index(google_cloud_run_domain_mapping.this.status[0].resource_records, record) => {
+      name    = record.name != "" ? record.name : "@"
+      content = record.rrdata
+      type    = record.type
+    }
+  }
 }
 
 data "cloudflare_zone" "this" {
@@ -82,12 +90,13 @@ resource "google_cloud_run_service_iam_binding" "this" {
 }
 
 # DNS
-# resource "cloudflare_record" "this" {
-#   for_each = google_cloud_run_domain_mapping.this.status[0].resource_records
+# Due to limitations with the Google Cloud Run Domain Mapping API, these records must be created on separate run after the domain mapping is created
+resource "cloudflare_record" "this" {
+  for_each = local.dns_records
 
-#   zone_id = data.cloudflare_zone.this.zone_id
-#   name    = each.value.name
-#   content = each.value.rrdata
-#   type    = each.value.type
-#   ttl     = 300
-# }
+  zone_id = data.cloudflare_zone.this.zone_id
+  name    = each.value.name
+  content = each.value.content
+  type    = each.value.type
+  ttl     = 300
+}
