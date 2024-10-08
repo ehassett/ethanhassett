@@ -16,6 +16,7 @@ data "cloudflare_zone" "this" {
 resource "google_artifact_registry_repository" "this" {
   repository_id = local.project
   description   = "Docker repository for ${local.domain}"
+  location      = local.region
   format        = "DOCKER"
 
   docker_config {
@@ -27,7 +28,7 @@ resource "google_artifact_registry_repository" "this" {
 # TODO: remove after applied to state
 import {
   to = google_artifact_registry_repository.this
-  id = "ethanhassett"
+  id = "projects/ethanhassett/locations/us-east1/repositories/ethanhassett"
 }
 
 # Cloud Run
