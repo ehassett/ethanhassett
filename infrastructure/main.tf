@@ -79,6 +79,8 @@ resource "google_cloud_run_v2_service" "this" {
       }
     }
   }
+
+  depends_on = [google_artifact_registry_repository.this]
 }
 
 resource "google_cloud_run_domain_mapping" "this" {
