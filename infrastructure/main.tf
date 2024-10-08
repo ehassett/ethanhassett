@@ -25,11 +25,6 @@ resource "google_artifact_registry_repository" "this" {
 
   #checkov:skip=CKV_GCP_84:not necessary at this time
 }
-# TODO: remove after applied to state
-import {
-  to = google_artifact_registry_repository.this
-  id = "projects/ethanhassett/locations/us-east1/repositories/ethanhassett"
-}
 
 # Cloud Run
 resource "google_service_account" "cloud_run" {
