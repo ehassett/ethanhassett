@@ -17,11 +17,17 @@ jobs:
     name: Test Google Authentication
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref }}
+          fetch-depth: 0
+
       - name: Test Google Authentication
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: "projects/241837887550/locations/global/workloadIdentityPools/github/providers/github"
+          workload_identity_provider: "projects/241837887550/locations/global/workloadIdentityPools/github/providers/github.com/ehassett"
           service_account: "github-actions@hassettio.iam.gserviceaccount.com"
           token_format: "access_token"
 
