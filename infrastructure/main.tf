@@ -12,6 +12,25 @@ data "cloudflare_zone" "this" {
   name = local.domain
 }
 
+# Artifact Registry
+resource "google_artifact_registry_repository" "this" {
+  repository_id = local.project
+  description   = "Docker repository for ${local.domain}"
+  location      = local.region
+  format        = "DOCKER"
+
+  docker_config {
+    immutable_tags = false
+  }
+
+  #checkov:skip=CKV_GCP_84:not necessary at this time
+}
+# TODO: remove after applied to state
+import {
+  to = google_artifact_registry_repository.this
+  id = "projects/ethanhassett/locations/us-east1/repositories/ethanhassett"
+}
+
 # Cloud Run
 resource "google_service_account" "cloud_run" {
   account_id   = "cloudrun"
@@ -46,7 +65,7 @@ resource "google_cloud_run_v2_service" "this" {
     max_instance_request_concurrency = 1000
 
     containers {
-      image = "docker.io/hassett/ethanhassett:0.0.2"
+      image = "us-east1-docker.pkg.dev/ethanhassett/ethanhassett/ethanhassett:0.0.3"
 
       ports {
         container_port = 4321
@@ -61,6 +80,8 @@ resource "google_cloud_run_v2_service" "this" {
       }
     }
   }
+
+  depends_on = [google_artifact_registry_repository.this]
 }
 
 resource "google_cloud_run_domain_mapping" "this" {
