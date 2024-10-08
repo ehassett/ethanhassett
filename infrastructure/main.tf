@@ -12,19 +12,6 @@ data "cloudflare_zone" "this" {
   name = local.domain
 }
 
-# Artifact Registry
-resource "google_artifact_registry_repository" "this" {
-  repository_id = local.project
-  description   = "Docker repository for ${local.domain}"
-  format        = "DOCKER"
-
-  docker_config {
-    immutable_tags = false
-  }
-
-  #checkov:skip=CKV_GCP_84:not necessary at this time
-}
-
 # Cloud Run
 resource "google_service_account" "cloud_run" {
   account_id   = "cloudrun"
@@ -59,7 +46,7 @@ resource "google_cloud_run_v2_service" "this" {
     max_instance_request_concurrency = 1000
 
     containers {
-      image = "us-east1-docker.pkg.dev/ethanhassett/ethanhassett/ethanhassett:0.0.3"
+      image = "docker.io/hassett/ethanhassett:0.0.2"
 
       ports {
         container_port = 4321
