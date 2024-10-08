@@ -84,7 +84,6 @@ jobs:
     name: Release and Tag New Version
     runs-on: ubuntu-latest
     needs: [check_version, docker_image]
-    if: needs.check_version.outputs.is_new_release == 'true' && needs.docker_image.result != 'failed' && needs.docker_image.result != 'cancelled'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_REPOSITORY: ${{ github.repository }}
@@ -111,7 +110,7 @@ jobs:
     name: Deploy Spacelift Stack
     runs-on: ubuntu-latest
     needs: docker_image
-    if: needs.docker_image.result != 'failed' && needs.docker_image.result != 'cancelled'
+    if: ${{ ! failure() && ! cancelled() }}
     env:
       SPACELIFT_API_KEY_ENDPOINT: ${{ secrets.SPACELIFT_API_KEY_ENDPOINT }}
       SPACELIFT_API_KEY_ID: ${{ secrets.SPACELIFT_API_KEY_ID }}
