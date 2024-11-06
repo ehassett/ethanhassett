@@ -27,7 +27,18 @@ resource "google_artifact_registry_repository" "this" {
     id     = "keep-latest-2-versions"
     action = "KEEP"
     most_recent_versions {
-      keep_count = 2
+      keep_count            = 2
+      package_name_prefixes = [local.project]
+    }
+  }
+
+  cleanup_policies {
+    id     = "keep-latest-tag"
+    action = "KEEP"
+    condition {
+      tag_state             = "TAGGED"
+      tag_prefixes          = ["latest"]
+      package_name_prefixes = [local.project]
     }
   }
 
@@ -35,8 +46,9 @@ resource "google_artifact_registry_repository" "this" {
     id     = "delete-after-30-days"
     action = "DELETE"
     condition {
-      tag_state  = "TAGGED"
-      older_than = "2592000s"
+      tag_state             = "TAGGED"
+      older_than            = "2592000s"
+      package_name_prefixes = [local.project]
     }
   }
 
