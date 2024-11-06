@@ -23,7 +23,36 @@ resource "google_artifact_registry_repository" "this" {
     immutable_tags = false
   }
 
-  #checkov:skip=CKV_GCP_84:not necessary at this time
+  cleanup_policies {
+    id     = "keep-latest-2-versions"
+    action = "KEEP"
+    most_recent_versions {
+      keep_count            = 2
+      package_name_prefixes = [local.project]
+    }
+  }
+
+  cleanup_policies {
+    id     = "keep-latest-tag"
+    action = "KEEP"
+    condition {
+      tag_state             = "TAGGED"
+      tag_prefixes          = ["latest"]
+      package_name_prefixes = [local.project]
+    }
+  }
+
+  cleanup_policies {
+    id     = "delete-after-30-days"
+    action = "DELETE"
+    condition {
+      tag_state             = "TAGGED"
+      older_than            = "2592000s"
+      package_name_prefixes = [local.project]
+    }
+  }
+
+  #checkov:skip=CKV_GCP_84:CSEK not necessary at this time
 }
 
 # Cloud Run
@@ -60,7 +89,7 @@ resource "google_cloud_run_v2_service" "this" {
     max_instance_request_concurrency = 1000
 
     containers {
-      image = "us-east1-docker.pkg.dev/ethanhassett/ethanhassett/ethanhassett:0.1.0"
+      image = "us-east1-docker.pkg.dev/ethanhassett/ethanhassett/ethanhassett:0.1.1"
 
       ports {
         container_port = 4321
