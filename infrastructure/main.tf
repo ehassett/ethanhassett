@@ -23,7 +23,24 @@ resource "google_artifact_registry_repository" "this" {
     immutable_tags = false
   }
 
-  #checkov:skip=CKV_GCP_84:not necessary at this time
+  cleanup_policies {
+    id     = "keep-latest-2-versions"
+    action = "KEEP"
+    most_recent_versions {
+      keep_count = 2
+    }
+  }
+
+  cleanup_policies {
+    id     = "delete-after-30-days"
+    action = "DELETE"
+    condition {
+      tag_state  = "TAGGED"
+      older_than = "2592000s"
+    }
+  }
+
+  #checkov:skip=CKV_GCP_84:CSEK not necessary at this time
 }
 
 # Cloud Run
