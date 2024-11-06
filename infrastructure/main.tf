@@ -77,7 +77,7 @@ resource "google_cloud_run_v2_service" "this" {
     max_instance_request_concurrency = 1000
 
     containers {
-      image = "us-east1-docker.pkg.dev/ethanhassett/ethanhassett/ethanhassett:0.1.0"
+      image = "us-east1-docker.pkg.dev/ethanhassett/ethanhassett/ethanhassett:0.1.1"
 
       ports {
         container_port = 4321
