@@ -1,7 +1,7 @@
 {
   "name": "ethanhassett.com",
   "type": "module",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -14,7 +14,7 @@
     "@astrojs/node": "9.0.x",
     "@astrojs/sitemap": "3.2.x",
     "@astrojs/tailwind": "5.1.x",
-    "astro": "5.0.x",
+    "astro": "5.1.x",
     "tailwindcss": "3.4.x",
     "typescript": "5.7.x"
   }

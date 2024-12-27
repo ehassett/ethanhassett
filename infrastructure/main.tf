@@ -1,7 +1,8 @@
 locals {
-  region  = "us-east1"
-  project = "ethanhassett"
-  domain  = "ethanhassett.com"
+  region        = "us-east1"
+  project       = "ethanhassett"
+  domain        = "ethanhassett.com"
+  image_version = "0.1.3"
 
   # Due to limitations with the Google Cloud Run Domain Mapping API, these IPs are hardcoded here from the domain mapping settings
   a_record_ips    = ["216.239.32.21", "216.239.34.21", "216.239.36.21", "216.239.38.21"]
@@ -89,7 +90,7 @@ resource "google_cloud_run_v2_service" "this" {
     max_instance_request_concurrency = 1000
 
     containers {
-      image = "us-east1-docker.pkg.dev/ethanhassett/ethanhassett/ethanhassett:0.1.2"
+      image = "us-east1-docker.pkg.dev/ethanhassett/ethanhassett/ethanhassett:${local.image_version}"
 
       ports {
         container_port = 4321
