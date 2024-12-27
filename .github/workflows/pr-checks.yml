@@ -14,7 +14,7 @@ env:
 jobs:
   validate-title:
     name: Validate PR title
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Run semantic-pull-request
         uses: amannn/action-semantic-pull-request@v5
@@ -28,7 +28,7 @@ jobs:
 
   validate-version:
     name: Validate version update
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -45,7 +45,8 @@ jobs:
       - name: Check if version is updated
         if: steps.changed_files.outputs.any_changed == 'true'
         run: |
-          tag_version=$(git describe --tags --abbrev=0)
+          regex="^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
+          current_version=$(git describe --tags --abbrev=0)
           package_version=$(cat ./app/package.json \
             | grep version \
             | head -1 \
@@ -59,28 +60,31 @@ jobs:
             | sed 's/[",]//g' \
             | tr -d " \t\n\r")
           cloud_run_version=$(cat ./infrastructure/main.tf \
-            | grep image \
+            | grep "image_version" \
             | head -1 \
-            | awk -F: '{ print $2 }' \
+            | awk -F= '{ print $2 }' \
             | sed 's/["]//g' \
             | tr -d " \t\n\r")
+          fileArray=("package.json" "package-lock.json" "main.tf")
+          versionArray=("$package_version" "$package_lock_version" "$cloud_run_version")
 
-          echo "Current version: $tag_version"
-          echo "app/package.json: $package_version"
-          echo "app/package-lock.json: $package_lock_version"
-          echo "infrastructure/main.tf: $cloud_run_version"
+          echo "Current version: $current_version"
+          for i in "${!fileArray[@]}"; do
+            echo "${fileArray[$i]}: ${versionArray[$i]}"
+          done
 
-          if [ "$package_version" != "$tag_version" ] && [ "$package_lock_version" != "$tag_version" ] && [ "$cloud_run_version" != "$tag_version" ]; then
-            exit 0
-          else
-            if [[ "$package_version" == "$tag_version" ]]; then
-              echo "ERROR: version in package.json must be updated"
+          for i in "${!versionArray[@]}"; do
+            if [[ ! ${versionArray[$i]} =~ $regex ]]; then
+              echo "ERROR: version in ${fileArray[$i]} is not in semver format"
+              failed=true
             fi
-            if [[ "$package_lock_version" == "$tag_version" ]]; then
-              echo "ERROR: version in package-lock.json must be updated"
+
+            if [[ ${versionArray[$i]} == "$current_version" ]]; then
+              echo "ERROR: version in ${fileArray[$i]} must be updated"
+              failed=true
             fi
-            if [[ "$cloud_run_version" == "$tag_version" ]]; then
-              echo "ERROR: version in main.tf Cloud Run image must be updated"
-            fi
+          done
+
+          if [[ $failed ]]; then
             exit 1
           fi

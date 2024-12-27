@@ -13,7 +13,7 @@ permissions:
 jobs:
   check_version:
     name: Check Version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       current_version: ${{ steps.versions.outputs.current_version }}
       is_new_release: ${{ steps.versions.outputs.is_new_release }}
@@ -45,7 +45,7 @@ jobs:
 
   docker_image:
     name: Docker Image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: check_version
     if: needs.check_version.outputs.is_new_release == 'true'
     env:
@@ -82,7 +82,7 @@ jobs:
 
   release:
     name: Release and Tag New Version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [check_version, docker_image]
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -108,7 +108,7 @@ jobs:
 
   deploy:
     name: Deploy Spacelift Stack
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: docker_image
     if: ${{ ! failure() && ! cancelled() }}
     env:
