@@ -72,7 +72,7 @@ jobs:
           password: ${{ steps.auth.outputs.access_token }}
 
       - name: Build and push image
-        uses: docker/build-push-action@v6.11.0
+        uses: docker/build-push-action@v6.12.0
         with:
           context: .
           push: true
