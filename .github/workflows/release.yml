@@ -84,6 +84,7 @@ jobs:
     name: Release and Tag New Version
     runs-on: ubuntu-22.04
     needs: [check_version, docker_image]
+    if: needs.check_version.outputs.is_new_release == 'true'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_REPOSITORY: ${{ github.repository }}
