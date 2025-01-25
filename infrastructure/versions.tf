@@ -25,12 +25,12 @@ terraform {
 }
 
 data "hcp_vault_secrets_secret" "cloudflare_api_token" {
-  app_name    = "spacelift"
+  app_name    = "platform-admin"
   secret_name = "CLOUDFLARE_API_TOKEN"
 }
 
 data "hcp_vault_secrets_secret" "google_credentials" {
-  app_name    = "spacelift"
+  app_name    = "platform-admin"
   secret_name = "GOOGLE_CREDENTIALS"
 }
 
