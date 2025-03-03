@@ -14,7 +14,7 @@
     "@astrojs/node": "9.0.x",
     "@astrojs/sitemap": "3.2.x",
     "@astrojs/tailwind": "5.1.x",
-    "astro": "5.1.x",
+    "astro": "5.4.x",
     "tailwindcss": "3.4.x",
     "typescript": "5.7.x"
   }
