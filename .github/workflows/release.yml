@@ -119,7 +119,7 @@ jobs:
       SPACELIFT_STACK_ID: "ethanhassett"
     steps:
       - name: Setup spacectl
-        uses: spacelift-io/setup-spacectl@v1.5.0
+        uses: spacelift-io/setup-spacectl@v1.6.0
 
       - name: Deploy Stack
         run: |
