@@ -4,15 +4,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        "oxford-blue": "#001D3D",
-        "mikado-yellow": "#FFC300",
+        "dark-100": "#495057",
+        "dark-200": "#3f454c",
+        "dark-300": "#343a40",
+        "dark-400": "#2b3035",
+        "dark-500": "#212529",
+        "light-100": "#f8f9fa",
+        "light-200": "#e9ecef",
+        "light-300": "#dee2e6",
+        "light-400": "#ced4da",
+        "light-500": "#adb5bd",
       },
       fontFamily: {
-        arvo: ["Arvo", "serif"],
-        "source-code-pro": ["Source Code Pro", "monospace"],
-      },
-      screens: {
-        "3xl": "1792px",
+        "departure-mono": ["Departure Mono", "monospace"],
       },
     },
   },

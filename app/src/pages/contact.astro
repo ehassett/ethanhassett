@@ -1,0 +1,95 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Ethan Hassett | Get in Touch">
+  <div class="w-3/4 2xl:w-full">
+    <p class="heading">Get in Touch</p>
+    <form id="contact" class="text-xl mt-6 items-center">
+      <div>
+        <label for="name">name</label>
+        <input class="contact-input" type="text" id="name" name="name" />
+      </div>
+      <div>
+        <label for="email">email</label>
+        <input class="contact-input" type="email" id="email" name="email" />
+      </div>
+      <div>
+        <label for="message">message</label>
+        <textarea class="contact-input" id="message" name="message"></textarea>
+      </div>
+      <button type="submit"> &#8250; submit </button>
+    </form>
+  </div>
+</Layout>
+
+<style>
+  :global(.dark) .contact-input {
+    @apply text-light-500 border-dark-100;
+  }
+
+  input:not(input:-webkit-autofill)::-webkit-contacts-auto-fill-button {
+    @apply bg-dark-100 hover:bg-dark-500;
+  }
+
+  :global(.dark)
+    input:not(input:-webkit-autofill)::-webkit-contacts-auto-fill-button {
+    @apply bg-light-500 hover:bg-light-100;
+  }
+
+  /* TODO: fix autofill background always using dark mode */
+  input:autofill,
+  input:-webkit-autofill {
+    color: #f8f9fa;
+    box-shadow: 0 0 0 50px #fff inset;
+    caret-color: #f8f9fa;
+    -webkit-box-shadow: 0 0 0 50px #fff inset;
+    -webkit-text-fill-color: #f8f9fa;
+  }
+
+  :global(.dark) input:autofill,
+  input:-webkit-autofill {
+    color: #f8f9fa;
+    caret-color: #f8f9fa;
+    box-shadow: 0 0 0 50px #212529 inset;
+    -webkit-box-shadow: 0 0 0 50px #212529 inset;
+    -webkit-text-fill-color: #f8f9fa;
+  }
+
+  input:-webkit-autofill::-webkit-contacts-auto-fill-button {
+    @apply bg-dark-100 hover:bg-dark-500;
+  }
+
+  :global(.dark) input:-webkit-autofill::-webkit-contacts-auto-fill-button {
+    @apply bg-light-500 hover:bg-light-100;
+  }
+</style>
+
+<!--
+TODO:
+- [x] Fix border and text color not changing with dark mode (check all global stuff)
+- [x] Remove blue border on selected input
+- [x] Update input text styling
+- [x] Update styling of autofill icon (if possible)
+- [x] Update button styling
+- [ ] Update autofill input styling
+- [ ] Update site-wide selection styling for light and dark modes
+  ```
+    ::selection {
+      background: #ff0099;
+      color: black;
+      text-shadow: none;
+    }
+
+    ::-moz-selection {
+      background: #ff0099;
+      color: #eee;
+      text-shadow: none;
+    }
+  ```
+- [ ] DRY out code (condense styles where possible, use vars where possible)
+  - [ ] Determine global vs local styles
+- [ ] Add form validation
+- [ ] Add form submission
+- [ ] Add form submission success/error messages
+-->
