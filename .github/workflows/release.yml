@@ -2,8 +2,7 @@ name: Release
 
 on:
   push:
-    branches:
-      - main
+    branches: ["main"]
 
 permissions:
   pull-requests: read
@@ -72,7 +71,7 @@ jobs:
           password: ${{ steps.auth.outputs.access_token }}
 
       - name: Build and push image
-        uses: docker/build-push-action@v6.13.0
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
@@ -119,7 +118,7 @@ jobs:
       SPACELIFT_STACK_ID: "ethanhassett"
     steps:
       - name: Setup spacectl
-        uses: spacelift-io/setup-spacectl@v1.5.0
+        uses: spacelift-io/setup-spacectl@v1
 
       - name: Deploy Stack
         run: |
