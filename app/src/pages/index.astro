@@ -1,9 +1,79 @@
 ---
+import Divider from "../components/Divider.astro";
 import Layout from "../layouts/Layout.astro";
-import Home from "../components/Home.astro";
-import "../styles/fonts.css";
 ---
 
 <Layout title="Ethan Hassett">
-  <Home />
+  <div class="w-fit">
+    <p class="heading">Ethan Hassett</p>
+    <div class="h-6">
+      <div class="inline-block text-2xl md:text-3xl">
+        <span id="title"></span>
+      </div>
+    </div>
+    <Divider />
+    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-y-4">
+      <a
+        href="https://github.com/ehassett"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        &#8250; view my work
+      </a>
+      <a
+        href="https://linkedin.com/in/ehassett"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="md:text-right"
+      >
+        &#8250; get in touch
+      </a>
+    </div>
+  </div>
+
+  <script>
+    let titles = [
+      "Cloud Engineer",
+      "Techno Snob",
+      "Globetrotter",
+      "Terraform Certified",
+      "Home Chef",
+      "Hobbyist DJ",
+    ];
+    let reverse = false;
+    let i = 0;
+    let j = 0;
+
+    function typeTitle() {
+      var jitter = Math.floor(Math.random() * 25 + 45);
+
+      if (reverse) {
+        if (document.getElementById("title")!.innerHTML.length > 0) {
+          document.getElementById("title")!.innerHTML = document
+            .getElementById("title")!
+            .innerHTML.slice(0, -1);
+          setTimeout(typeTitle, jitter);
+        } else {
+          j = (j + 1) % titles.length;
+          reverse = false;
+          setTimeout(typeTitle, 1000);
+        }
+      } else {
+        if (i === titles[j].length) {
+          i = 0;
+          reverse = true;
+          setTimeout(typeTitle, 3000);
+        } else {
+          if (i < titles[j].length) {
+            document.getElementById("title")!.innerHTML =
+              document.getElementById("title")!.innerHTML + titles[j].charAt(i);
+            i++;
+            setTimeout(typeTitle, jitter);
+          }
+        }
+      }
+    }
+
+    typeTitle();
+  </script>
 </Layout>

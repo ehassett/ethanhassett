@@ -1,0 +1,13 @@
+---
+import Menu from "./Menu.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+---
+
+<header class="w-full px-3 py-2 grid grid-cols-2">
+  <div>
+    <Menu classes="hidden md:inline" />
+  </div>
+  <div class="text-right">
+    <ThemeToggle />
+  </div>
+</header>

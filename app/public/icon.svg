@@ -1,0 +1,36 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  xml:space="preserve"
+  style="
+    fill-rule: evenodd;
+    clip-rule: evenodd;
+    stroke-linejoin: round;
+    stroke-miterlimit: 2;
+  "
+  viewBox="0 0 2000 1180"
+>
+  <path
+    d="M.216-.591c-.105 0-.151.073-.151.162v.284c0 .08.047.145.166.145l.42-.001v-.132H.205v-.06h.446l.001-.185v-.031c0-.028.008-.182-.202-.182zm.299.213L.514-.32.205-.321v-.083a.06.06 0 0 1 .059-.059l.173-.001c.077 0 .078.05.078.056z"
+    style="fill-rule: nonzero"
+    transform="matrix(1601.164 0 0 1601.096 -104.076 946.248)"
+  />
+  <path
+    d="M.538-.279H.239V-.7H.09V0h.149v-.147h.299V0h.149v-.7H.538z"
+    style="fill-rule: nonzero"
+    transform="matrix(1601.164 0 0 1601.096 900 1180)"
+  />
+  <path
+    d="M932.81 1125.39h331.875v171.474H932.81z"
+    transform="matrix(1.11564 0 0 1.23359 -116.288 -654.952)"
+  />
+  <style>
+    svg path {
+      fill: #212529;
+    }
+    @media (prefers-color-scheme: dark) {
+      svg path {
+        fill: #ebebeb;
+      }
+    }
+  </style>
+</svg>
