@@ -11,7 +11,7 @@ const { title } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" class="w-full h-full">
+<html lang="en" class="h-full w-full">
   <head>
     <meta
       name="description"
@@ -26,9 +26,11 @@ const { title } = Astro.props;
     <title>{title}</title>
   </head>
 
-  <body class="w-full h-full font-departure-mono bg-light-100 text-dark-500">
+  <body
+    class="h-full w-full bg-light-100 font-departure-mono text-dark-500 dark:bg-dark-500 dark:text-light-100"
+  >
     <Header />
-    <div class="w-full h-3/4 grid grid-cols-1 grid-rows-3 2xl:grid-cols-3">
+    <div class="grid h-3/4 w-full grid-cols-1 grid-rows-3 2xl:grid-cols-3">
       <div
         class="row-start-2 flex flex-col items-center justify-center 2xl:col-start-2"
       >
@@ -38,9 +40,3 @@ const { title } = Astro.props;
     <Footer />
   </body>
 </html>
-
-<style>
-  :global(.dark) body {
-    @apply bg-dark-500 text-light-100;
-  }
-</style>
