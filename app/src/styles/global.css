@@ -1,6 +1,25 @@
+@import "tailwindcss";
+
 @font-face {
   font-family: "Departure Mono";
   src: url("/fonts/DepartureMono/DepartureMono.woff") format("woff");
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-departure-mono: "Departure Mono", monospace;
+
+  --color-dark-100: #495057;
+  --color-dark-200: #3f454c;
+  --color-dark-300: #343a40;
+  --color-dark-400: #2b3035;
+  --color-dark-500: #212529;
+  --color-light-100: #f8f9fa;
+  --color-light-200: #e9ecef;
+  --color-light-300: #dee2e6;
+  --color-light-400: #ced4da;
+  --color-light-500: #adb5bd;
 }
 
 .heading {
@@ -8,11 +27,7 @@
 }
 
 #contact div {
-  @apply w-full grid gap-y-2 gap-x-4 mb-4 md:grid-cols-5;
-}
-
-.contact-input {
-  @apply col-span-4 w-full bg-transparent cursor-pointer text-base focus:outline-none text-dark-100 border-light-500 px-2;
+  @apply mb-4 grid w-full gap-x-4 gap-y-2 md:grid-cols-5;
 }
 
 #contact div input {
@@ -20,5 +35,40 @@
 }
 
 #contact div textarea {
-  @apply min-h-60 border-2 resize-none;
+  @apply min-h-60 resize-none border-2;
 }
+
+.contact-input {
+  @apply col-span-4 w-full cursor-pointer border-light-500 bg-transparent px-2 text-base text-dark-100 focus:outline-none dark:border-dark-100 dark:text-light-500;
+}
+
+/* TODO: fix autofill styling */
+/* input:not(input:-webkit-autofill)::-webkit-contacts-auto-fill-button {
+  @apply bg-dark-100 hover:bg-dark-500 dark:bg-light-500 dark:hover:bg-light-100;
+}
+
+input:autofill,
+input:-webkit-autofill {
+  color: #f8f9fa;
+  box-shadow: 0 0 0 50px #fff inset;
+  caret-color: #f8f9fa;
+  -webkit-box-shadow: 0 0 0 50px #fff inset;
+  -webkit-text-fill-color: #f8f9fa;
+}
+
+:global(.dark) input:autofill,
+input:-webkit-autofill {
+  color: #f8f9fa;
+  caret-color: #f8f9fa;
+  box-shadow: 0 0 0 50px #212529 inset;
+  -webkit-box-shadow: 0 0 0 50px #212529 inset;
+  -webkit-text-fill-color: #f8f9fa;
+}
+
+input:-webkit-autofill::-webkit-contacts-auto-fill-button {
+  @apply bg-dark-100 hover:bg-dark-500;
+}
+
+:global(.dark) input:-webkit-autofill::-webkit-contacts-auto-fill-button {
+  @apply bg-light-500 hover:bg-light-100;
+} */

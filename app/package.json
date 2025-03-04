@@ -13,9 +13,14 @@
     "@astrojs/check": "0.x",
     "@astrojs/node": "9.x",
     "@astrojs/sitemap": "3.x",
-    "@astrojs/tailwind": "5.x",
+    "@tailwindcss/vite": "4.x",
     "astro": "5.x",
-    "tailwindcss": "3.x",
+    "tailwindcss": "4.x",
     "typescript": "5.x"
+  },
+  "devDependencies": {
+    "prettier": "3.x",
+    "prettier-plugin-astro": "0.14.x",
+    "prettier-plugin-tailwindcss": "0.6.x"
   }
 }

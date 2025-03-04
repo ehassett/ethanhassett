@@ -5,7 +5,7 @@ import Layout from "../layouts/Layout.astro";
 <Layout title="Ethan Hassett | Get in Touch">
   <div class="w-3/4 2xl:w-full">
     <p class="heading">Get in Touch</p>
-    <form id="contact" class="text-xl mt-6 items-center">
+    <form id="contact" class="mt-6 items-center text-xl">
       <div>
         <label for="name">name</label>
         <input class="contact-input" type="text" id="name" name="name" />
@@ -22,48 +22,6 @@ import Layout from "../layouts/Layout.astro";
     </form>
   </div>
 </Layout>
-
-<style>
-  :global(.dark) .contact-input {
-    @apply text-light-500 border-dark-100;
-  }
-
-  input:not(input:-webkit-autofill)::-webkit-contacts-auto-fill-button {
-    @apply bg-dark-100 hover:bg-dark-500;
-  }
-
-  :global(.dark)
-    input:not(input:-webkit-autofill)::-webkit-contacts-auto-fill-button {
-    @apply bg-light-500 hover:bg-light-100;
-  }
-
-  /* TODO: fix autofill background always using dark mode */
-  input:autofill,
-  input:-webkit-autofill {
-    color: #f8f9fa;
-    box-shadow: 0 0 0 50px #fff inset;
-    caret-color: #f8f9fa;
-    -webkit-box-shadow: 0 0 0 50px #fff inset;
-    -webkit-text-fill-color: #f8f9fa;
-  }
-
-  :global(.dark) input:autofill,
-  input:-webkit-autofill {
-    color: #f8f9fa;
-    caret-color: #f8f9fa;
-    box-shadow: 0 0 0 50px #212529 inset;
-    -webkit-box-shadow: 0 0 0 50px #212529 inset;
-    -webkit-text-fill-color: #f8f9fa;
-  }
-
-  input:-webkit-autofill::-webkit-contacts-auto-fill-button {
-    @apply bg-dark-100 hover:bg-dark-500;
-  }
-
-  :global(.dark) input:-webkit-autofill::-webkit-contacts-auto-fill-button {
-    @apply bg-light-500 hover:bg-light-100;
-  }
-</style>
 
 <!--
 TODO:
