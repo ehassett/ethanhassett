@@ -2,7 +2,7 @@ locals {
   region        = "us-east1"
   project       = "ethanhassett"
   domain        = "ethanhassett.com"
-  image_version = "0.1.4"
+  image_version = "0.1.5"
 
   # Due to limitations with the Google Cloud Run Domain Mapping API, these IPs are hardcoded here from the domain mapping settings
   a_record_ips    = ["216.239.32.21", "216.239.34.21", "216.239.36.21", "216.239.38.21"]
