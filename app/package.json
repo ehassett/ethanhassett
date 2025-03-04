@@ -1,7 +1,7 @@
 {
   "name": "ethanhassett.com",
   "type": "module",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -10,12 +10,12 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "0.9.x",
-    "@astrojs/node": "9.0.x",
-    "@astrojs/sitemap": "3.2.x",
-    "@astrojs/tailwind": "5.1.x",
-    "astro": "5.1.x",
-    "tailwindcss": "3.4.x",
-    "typescript": "5.7.x"
+    "@astrojs/check": "0.x",
+    "@astrojs/node": "9.x",
+    "@astrojs/sitemap": "3.x",
+    "@astrojs/tailwind": "5.x",
+    "astro": "5.x",
+    "tailwindcss": "3.x",
+    "typescript": "5.x"
   }
 }
