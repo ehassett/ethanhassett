@@ -26,6 +26,10 @@
   @apply mb-2 text-4xl md:text-5xl;
 }
 
+.divider {
+  @apply mt-4 border-light-500 dark:border-dark-100;
+}
+
 #contact div {
   @apply mb-4 grid w-full gap-x-4 gap-y-2 md:grid-cols-5;
 }
