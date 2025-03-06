@@ -1,11 +1,13 @@
 ---
+import MenuLink from "./MenuLink.astro";
+
 const { classes } = Astro.props;
 ---
 
 <div class:list={classes}>
-  <span class="menu-link"><a href="/">home</a></span>
-  <span class="menu-link"><a href="/work">work</a></span>
-  <span class="menu-link"><a href="/posts">posts</a></span>
-  <span class="menu-link"><a href="/resume">resume</a></span>
-  <span class="menu-link"><a href="/contact">contact</a></span>
+  <MenuLink path="/" text="home" />
+  <MenuLink path="/work" text="work" />
+  <MenuLink path="/posts" text="posts" />
+  <MenuLink path="/resume" text="resume" />
+  <MenuLink path="/contact" text="contact" />
 </div>

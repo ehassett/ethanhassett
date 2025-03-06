@@ -75,11 +75,25 @@
   }
 
   .menu-link:after {
-    content: " / ";
+    @apply text-dark-500;
+    content: " /";
   }
 
-  .menu-link:last-child:after {
-    content: "";
+  .dark .menu-link:after {
+    @apply text-light-100;
+  }
+
+  .menu-link.active {
+    @apply text-light-500 dark:text-light-500;
+  }
+
+  .menu-link.active:after {
+    @apply text-light-500;
+    content: " <";
+  }
+
+  .dark .menu-link.active:after {
+    @apply text-light-500;
   }
 
   .contact-section {

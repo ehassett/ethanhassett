@@ -1,0 +1,8 @@
+---
+const { path, text } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<span class:list={["menu-link", { active: currentPath === path }]}>
+  <a href={path}>{text}</a>
+</span>
