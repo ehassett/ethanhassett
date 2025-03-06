@@ -6,48 +6,50 @@ import Layout from "../layouts/Layout.astro";
   <div class="w-3/4 2xl:w-full">
     <p class="heading">Get in Touch</p>
     <form id="contact" class="mt-6 items-center text-xl">
-      <div>
+      <div class="contact-section">
         <label for="name">name</label>
-        <input class="contact-input" type="text" id="name" name="name" />
+        <input
+          class="contact-input border-b-2"
+          type="text"
+          id="name"
+          name="name"
+        />
       </div>
-      <div>
+      <div class="contact-section">
         <label for="email">email</label>
-        <input class="contact-input" type="email" id="email" name="email" />
+        <input
+          class="contact-input border-b-2"
+          type="email"
+          id="email"
+          name="email"
+        />
       </div>
-      <div>
+      <div class="contact-section">
         <label for="message">message</label>
-        <textarea class="contact-input" id="message" name="message"></textarea>
+        <textarea
+          class="contact-input min-h-60 resize-none border-2"
+          id="message"
+          name="message"></textarea>
       </div>
-      <button type="submit"> &#8250; submit </button>
+      <button class="cursor-pointer" type="submit">&#8250; submit</button>
     </form>
+    <hr class="divider" />
+    <div class="grid grid-cols-2 gap-y-4 md:hidden">
+      <a
+        href="https://linkedin.com/in/ehassett"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        &#8250; linkedin
+      </a>
+      <a
+        href="https://github.com/ehassett"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-right"
+      >
+        &#8250; github
+      </a>
+    </div>
   </div>
 </Layout>
-
-<!--
-TODO:
-- [x] Fix border and text color not changing with dark mode (check all global stuff)
-- [x] Remove blue border on selected input
-- [x] Update input text styling
-- [x] Update styling of autofill icon (if possible)
-- [x] Update button styling
-- [ ] Update autofill input styling
-- [ ] Update site-wide selection styling for light and dark modes
-  ```
-    ::selection {
-      background: #ff0099;
-      color: black;
-      text-shadow: none;
-    }
-
-    ::-moz-selection {
-      background: #ff0099;
-      color: #eee;
-      text-shadow: none;
-    }
-  ```
-- [ ] DRY out code (condense styles where possible, use vars where possible)
-  - [ ] Determine global vs local styles
-- [ ] Add form validation
-- [ ] Add form submission
-- [ ] Add form submission success/error messages
--->
