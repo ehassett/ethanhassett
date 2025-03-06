@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @font-face {
   font-family: "Departure Mono";
   src: url("/fonts/DepartureMono/DepartureMono.woff") format("woff");
 }
-
-@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-departure-mono: "Departure Mono", monospace;
@@ -20,59 +20,74 @@
   --color-light-300: #dee2e6;
   --color-light-400: #ced4da;
   --color-light-500: #adb5bd;
+
+  --autofill-dark: inset 0 0 0px 1000px var(--color-dark-500);
+  --autofill-light: inset 0 0 0px 1000px var(--color-light-100);
 }
 
-.heading {
-  @apply mb-2 text-4xl md:text-5xl;
+@layer base {
+  ::selection {
+    @apply bg-light-300 text-dark-500;
+    -webkit-text-fill-color: var(--color-dark-500) !important;
+  }
+
+  ::-moz-selection {
+    @apply bg-light-300 text-dark-500;
+    -webkit-text-fill-color: var(--color-dark-500) !important;
+  }
+
+  :-webkit-autofill,
+  :-webkit-autofill:focus {
+    @apply text-dark-100;
+    -webkit-text-fill-color: var(--color-dark-100) !important;
+  }
+
+  ::-webkit-contacts-auto-fill-button {
+    @apply bg-dark-100;
+  }
+
+  ::-webkit-contacts-auto-fill-button:hover {
+    @apply bg-dark-500;
+  }
+
+  .dark :-webkit-autofill,
+  .dark :-webkit-autofill:focus {
+    @apply text-light-500;
+    -webkit-text-fill-color: var(--color-light-500) !important;
+  }
+
+  .dark ::-webkit-contacts-auto-fill-button {
+    @apply bg-light-500;
+  }
+
+  .dark ::-webkit-contacts-auto-fill-button:hover {
+    @apply bg-light-100;
+  }
 }
 
-.divider {
-  @apply mt-4 border-light-500 dark:border-dark-100;
-}
+@layer components {
+  .heading {
+    @apply mb-2 text-4xl md:text-5xl;
+  }
 
-#contact div {
-  @apply mb-4 grid w-full gap-x-4 gap-y-2 md:grid-cols-5;
-}
+  .divider {
+    @apply mt-4 mb-4 border-light-500 dark:border-dark-100;
+  }
 
-#contact div input {
-  @apply border-b-2;
-}
+  .menu-link:after {
+    content: " / ";
+  }
 
-#contact div textarea {
-  @apply min-h-60 resize-none border-2;
-}
+  .menu-link:last-child:after {
+    content: "";
+  }
 
-.contact-input {
-  @apply col-span-4 w-full cursor-pointer border-light-500 bg-transparent px-2 text-base text-dark-100 focus:outline-none dark:border-dark-100 dark:text-light-500;
-}
+  .contact-section {
+    @apply mb-4 grid w-full gap-x-4 gap-y-2 md:grid-cols-5;
+  }
 
-/* TODO: fix autofill styling */
-/* input:not(input:-webkit-autofill)::-webkit-contacts-auto-fill-button {
-  @apply bg-dark-100 hover:bg-dark-500 dark:bg-light-500 dark:hover:bg-light-100;
+  .contact-input {
+    @apply col-span-4 w-full border-light-500 bg-transparent px-2 text-base text-dark-100 focus:outline-none dark:border-dark-100 dark:text-light-500;
+    @apply autofill:text-dark-100 autofill:caret-dark-100 autofill:shadow-(--autofill-light) dark:autofill:text-light-500 dark:autofill:caret-light-500 dark:autofill:shadow-(--autofill-dark);
+  }
 }
-
-input:autofill,
-input:-webkit-autofill {
-  color: #f8f9fa;
-  box-shadow: 0 0 0 50px #fff inset;
-  caret-color: #f8f9fa;
-  -webkit-box-shadow: 0 0 0 50px #fff inset;
-  -webkit-text-fill-color: #f8f9fa;
-}
-
-:global(.dark) input:autofill,
-input:-webkit-autofill {
-  color: #f8f9fa;
-  caret-color: #f8f9fa;
-  box-shadow: 0 0 0 50px #212529 inset;
-  -webkit-box-shadow: 0 0 0 50px #212529 inset;
-  -webkit-text-fill-color: #f8f9fa;
-}
-
-input:-webkit-autofill::-webkit-contacts-auto-fill-button {
-  @apply bg-dark-100 hover:bg-dark-500;
-}
-
-:global(.dark) input:-webkit-autofill::-webkit-contacts-auto-fill-button {
-  @apply bg-light-500 hover:bg-light-100;
-} */
