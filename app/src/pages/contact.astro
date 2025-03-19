@@ -3,53 +3,35 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Ethan Hassett | Get in Touch">
-  <div class="w-3/4 2xl:w-full">
+  <div class="w-full">
     <p class="heading">Get in Touch</p>
-    <form id="contact" class="mt-6 items-center text-xl">
-      <div class="contact-section">
-        <label for="name">name</label>
+    <form id="contact" class="mb-(--space-m) flex w-full">
+      <div class="mr-(--space-s) flex flex-col gap-(--space-m)">
+        <label class="mt-(--space-3xs)" for="name">name</label>
+        <label for="email">email</label>
+        <label class="-mt-(--space-3xs)" for="message">message</label>
+      </div>
+      <div class="flex flex-1 flex-col gap-(--space-m)">
         <input
           class="contact-input border-b-2"
           type="text"
           id="name"
           name="name"
         />
-      </div>
-      <div class="contact-section">
-        <label for="email">email</label>
         <input
           class="contact-input border-b-2"
           type="email"
           id="email"
           name="email"
         />
-      </div>
-      <div class="contact-section">
-        <label for="message">message</label>
         <textarea
-          class="contact-input min-h-60 resize-none border-2"
+          class="contact-input mt-(--space-3xs) min-h-(--space-3xl) border-2"
           id="message"
           name="message"></textarea>
       </div>
-      <button class="cursor-pointer" type="submit">&#8250; submit</button>
     </form>
-    <hr class="divider" />
-    <div class="grid grid-cols-2 gap-y-4 md:hidden">
-      <a
-        href="https://linkedin.com/in/ehassett"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        &#8250; linkedin
-      </a>
-      <a
-        href="https://github.com/ehassett"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-right"
-      >
-        &#8250; github
-      </a>
-    </div>
+    <button class="cursor-pointer" form="contact" type="submit">
+      &#8250; submit
+    </button>
   </div>
 </Layout>

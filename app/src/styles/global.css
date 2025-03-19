@@ -23,6 +23,38 @@
 
   --autofill-dark: inset 0 0 0px 1000px var(--color-dark-500);
   --autofill-light: inset 0 0 0px 1000px var(--color-light-100);
+
+  /* Utopia (https://utopia.fyi) */
+  /* Font */
+  --step--2: clamp(0.7813rem, 0.7323rem + 0.2449vw, 0.96rem);
+  --step--1: clamp(0.9375rem, 0.8656rem + 0.3596vw, 1.2rem);
+  --step-0: clamp(1.125rem, 1.0223rem + 0.5137vw, 1.5rem);
+  --step-1: clamp(1.35rem, 1.2062rem + 0.7192vw, 1.875rem);
+  --step-2: clamp(1.62rem, 1.4217rem + 0.9914vw, 2.3438rem);
+  --step-3: clamp(1.944rem, 1.6739rem + 1.3503vw, 2.9297rem);
+  --step-4: clamp(2.3328rem, 1.9686rem + 1.821vw, 3.6621rem);
+  --step-5: clamp(2.7994rem, 2.3122rem + 2.436vw, 4.5776rem);
+
+  /* Space */
+  --space-3xs: clamp(0.3125rem, 0.2954rem + 0.0856vw, 0.375rem);
+  --space-2xs: clamp(0.5625rem, 0.5111rem + 0.2568vw, 0.75rem);
+  --space-xs: clamp(0.875rem, 0.8065rem + 0.3425vw, 1.125rem);
+  --space-s: clamp(1.125rem, 1.0223rem + 0.5137vw, 1.5rem);
+  --space-m: clamp(1.6875rem, 1.5334rem + 0.7705vw, 2.25rem);
+  --space-l: clamp(2.25rem, 2.0445rem + 1.0274vw, 3rem);
+  --space-xl: clamp(3.375rem, 3.0668rem + 1.5411vw, 4.5rem);
+  --space-2xl: clamp(4.5rem, 4.089rem + 2.0548vw, 6rem);
+  --space-3xl: clamp(6.75rem, 6.1336rem + 3.0822vw, 9rem);
+
+  /* One-up pairs */
+  --space-3xs-2xs: clamp(0.3125rem, 0.1926rem + 0.5993vw, 0.75rem);
+  --space-2xs-xs: clamp(0.5625rem, 0.4084rem + 0.7705vw, 1.125rem);
+  --space-xs-s: clamp(0.875rem, 0.7038rem + 0.8562vw, 1.5rem);
+  --space-s-m: clamp(1.125rem, 0.8168rem + 1.5411vw, 2.25rem);
+  --space-m-l: clamp(1.6875rem, 1.3279rem + 1.7979vw, 3rem);
+  --space-l-xl: clamp(2.25rem, 1.6336rem + 3.0822vw, 4.5rem);
+  --space-xl-2xl: clamp(3.375rem, 2.6558rem + 3.5959vw, 6rem);
+  --space-2xl-3xl: clamp(4.5rem, 3.2671rem + 6.1644vw, 9rem);
 }
 
 @layer base {
@@ -67,41 +99,44 @@
 
 @layer components {
   .heading {
-    @apply mb-2 text-4xl md:text-5xl;
+    @apply text-(length:--step-3);
   }
 
   .divider {
-    @apply mt-4 mb-4 border-light-500 dark:border-dark-100;
+    @apply my-(--space-xs) border-light-500 dark:border-dark-100;
   }
 
-  .menu-link:after {
-    @apply text-dark-500;
-    content: " /";
+  /* Nav Link */
+  .nav-link:after {
+    @apply px-(--space-3xs) content-["/"];
   }
 
-  .dark .menu-link:after {
-    @apply text-light-100;
-  }
-
-  .menu-link.active {
+  .nav-link.active {
     @apply text-light-500 dark:text-light-500;
   }
 
-  .menu-link.active:after {
-    @apply text-light-500;
-    content: " <";
+  .nav-link.active:after {
+    @apply content-["<"];
   }
 
-  .dark .menu-link.active:after {
-    @apply text-light-500;
+  /* Connect Link */
+  .connect-link:after {
+    @apply px-(--space-3xs) content-["/"];
   }
 
-  .contact-section {
-    @apply mb-4 grid w-full gap-x-4 gap-y-2 md:grid-cols-5;
+  .connect-link:last-child:after {
+    @apply content-[""];
   }
 
+  /* Contact Form */
   .contact-input {
-    @apply col-span-4 w-full border-light-500 bg-transparent px-2 text-base text-dark-100 focus:outline-none dark:border-dark-100 dark:text-light-500;
+    @apply border-light-500 bg-transparent text-dark-100 focus:outline-none dark:border-dark-100 dark:text-light-500;
     @apply autofill:text-dark-100 autofill:caret-dark-100 autofill:shadow-(--autofill-light) dark:autofill:text-light-500 dark:autofill:caret-light-500 dark:autofill:shadow-(--autofill-dark);
+  }
+}
+
+@layer utilities {
+  .u-container {
+    @apply mx-auto flex max-w-dvw min-w-[60dvw] flex-grow flex-col items-center justify-center px-(--space-m);
   }
 }

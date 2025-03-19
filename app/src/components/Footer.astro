@@ -1,34 +1,28 @@
----
-import Menu from "./Menu.astro";
----
-
-<footer class="absolute bottom-0 w-full cursor-default px-3 py-2">
-  <div class="hidden grid-cols-2 md:grid">
-    <div>
+<footer class="p-(--space-2xs)">
+  <div class="flex justify-between">
+    <div class="flex flex-wrap">
       <a
         href="https://github.com/ehassett"
         target="_blank"
         rel="noopener noreferrer"
+        class="connect-link">github</a
       >
-        github
-      </a>
-      <span> / </span>
       <a
         href="https://linkedin.com/in/ehassett"
         target="_blank"
         rel="noopener noreferrer"
+        class="connect-link">linkedin</a
       >
-        linkedin
+    </div>
+    <div class="flex">
+      <a
+        href="https://github.com/ehassett/ethanhassett"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="self-end text-nowrap"
+      >
+        view source
       </a>
     </div>
-    <a
-      href="https://github.com/ehassett/ethanhassett"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="text-right"
-    >
-      view source
-    </a>
   </div>
-  <Menu classes="text-center md:hidden" />
 </footer>

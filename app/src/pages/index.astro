@@ -3,17 +3,19 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Ethan Hassett">
-  <div class="w-fit">
+  <div class="pb-(--space-3xl)">
     <p class="heading">Ethan Hassett</p>
-    <div class="h-6">
-      <div class="inline-block text-2xl md:text-3xl">
+    <div class="h-(--step-1)">
+      <div class="inline-block text-(length:--step-1)">
         <span id="title"></span>
       </div>
     </div>
     <hr class="divider" />
-    <div class="grid grid-cols-1 gap-y-4 md:grid-cols-2">
+    <div
+      class="flex flex-row flex-wrap justify-between gap-x-(--space-2xl) gap-y-(--space-xs)"
+    >
       <a href="/work"> &#8250; view my work </a>
-      <a href="/contact" class="md:text-right"> &#8250; get in touch </a>
+      <a href="/contact"> &#8250; get in touch </a>
     </div>
   </div>
 </Layout>
