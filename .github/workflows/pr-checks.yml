@@ -27,6 +27,7 @@ jobs:
             doesn't start with an uppercase character.
 
   validate-version:
+    if: ${{ github.base_ref == 'main' }}
     name: Validate version update
     runs-on: ubuntu-22.04
     steps:
