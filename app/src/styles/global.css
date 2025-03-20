@@ -58,6 +58,10 @@
 }
 
 @layer base {
+  .dark {
+    color-scheme: dark;
+  }
+
   ::selection {
     @apply bg-light-300 text-dark-500;
     -webkit-text-fill-color: var(--color-dark-500) !important;
@@ -130,13 +134,17 @@
 
   /* Contact Form */
   .contact-input {
-    @apply border-light-500 bg-transparent text-dark-100 focus:outline-none dark:border-dark-100 dark:text-light-500;
+    @apply border-light-500 bg-transparent pl-(--space-3xs) text-dark-100 placeholder:text-dark-100 focus:outline-none dark:border-dark-100 dark:text-light-500 dark:placeholder:text-light-500;
     @apply autofill:text-dark-100 autofill:caret-dark-100 autofill:shadow-(--autofill-light) dark:autofill:text-light-500 dark:autofill:caret-light-500 dark:autofill:shadow-(--autofill-dark);
+  }
+
+  .form-error {
+    @apply -mt-(--space-s) h-(--space-2xs) indent-(--space-3xs) text-(length:--step--2) text-red-400;
   }
 }
 
 @layer utilities {
   .u-container {
-    @apply mx-auto flex max-w-dvw min-w-[60dvw] flex-grow flex-col items-center justify-center px-(--space-m);
+    @apply mx-auto flex max-w-dvw min-w-[60dvw] flex-grow flex-col items-center justify-center;
   }
 }

@@ -6,32 +6,85 @@ import Layout from "../layouts/Layout.astro";
   <div class="w-full">
     <p class="heading">Get in Touch</p>
     <form id="contact" class="mb-(--space-m) flex w-full">
-      <div class="mr-(--space-s) flex flex-col gap-(--space-m)">
-        <label class="mt-(--space-3xs)" for="name">name</label>
-        <label for="email">email</label>
-        <label class="-mt-(--space-3xs)" for="message">message</label>
-      </div>
       <div class="flex flex-1 flex-col gap-(--space-m)">
         <input
           class="contact-input border-b-2"
           type="text"
           id="name"
           name="name"
+          placeholder="name"
+          required
         />
+        <span class="form-error"></span>
         <input
           class="contact-input border-b-2"
           type="email"
           id="email"
           name="email"
+          placeholder="email"
+          required
         />
+        <span class="form-error"></span>
         <textarea
           class="contact-input mt-(--space-3xs) min-h-(--space-3xl) border-2"
           id="message"
-          name="message"></textarea>
+          name="message"
+          placeholder="message"
+          required
+          maxlength="2000"></textarea>
+        <span class="form-error"></span>
       </div>
     </form>
-    <button class="cursor-pointer" form="contact" type="submit">
+    <button id="submit" class="cursor-pointer" form="contact" type="submit">
       &#8250; submit
     </button>
   </div>
 </Layout>
+
+<script>
+  document.getElementById("contact")!.addEventListener(
+    "invalid",
+    function (event) {
+      event.preventDefault();
+    },
+    true,
+  );
+
+  function validateInput(element: HTMLFormElement) {
+    if (!(element as HTMLFormElement).checkValidity()) {
+      element.classList.add("border-red-400");
+      switch (element.getAttribute("name")) {
+        case "name":
+          element.nextElementSibling!.textContent = "Please enter your name.";
+          break;
+        case "email":
+          element.nextElementSibling!.textContent =
+            "Please enter a valid email.";
+          break;
+        case "message":
+          element.nextElementSibling!.textContent = "Please enter a message.";
+          break;
+      }
+    } else {
+      element.classList.remove("border-red-400");
+      element.nextElementSibling!.textContent = "";
+    }
+  }
+
+  document.querySelectorAll("input, textarea").forEach((element) => {
+    element.addEventListener("blur", () =>
+      validateInput(element as HTMLFormElement),
+    );
+  });
+
+  document.getElementById("submit")!.addEventListener("click", async () => {
+    if (
+      !(document.getElementById("contact") as HTMLFormElement).checkValidity()
+    ) {
+      document
+        .querySelectorAll("input:invalid, textarea:invalid")
+        .forEach((element) => validateInput(element as HTMLFormElement));
+    } else {
+    }
+  });
+</script>
