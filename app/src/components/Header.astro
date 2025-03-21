@@ -40,7 +40,7 @@ import NavLink from "./NavLink.astro";
   </nav>
 </header>
 
-<script is:inline>
+<script>
   const theme = (() => {
     const localStorageTheme = localStorage?.getItem("theme") ?? "";
     if (["dark", "light"].includes(localStorageTheme)) {

@@ -1,47 +1,96 @@
 ---
 import Layout from "../layouts/Layout.astro";
+
+let failed = false;
+const data = { name: "", email: "", message: "" };
+const errors = { name: "", email: "", message: "" };
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+if (Astro.request.method === "POST") {
+  try {
+    const formData = await Astro.request.formData();
+    data.name = formData.get("name");
+    data.email = formData.get("email");
+    data.message = formData.get("message");
+
+    // Validate the data
+    if (typeof data.name !== "string" || data.name.length < 1) {
+      errors.name += "Please enter your name.";
+    }
+    if (typeof data.email !== "string" || !(emailRegex.test(data.email))) {
+      errors.email += "Please enter a valid email.";
+    }
+    if (typeof data.message !== "string") {
+      errors.message += "Please enter a message.";
+    } else if (data.message.length > 2000) {
+      errors.message += "Message must be less than 2000 characters.";
+    }
+
+    const invalid = Object.values(errors).some(msg => msg)
+    if (!invalid) {
+      // TODO: Send email
+      // TODO: Display success message
+      return Astro.redirect("/contact");
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+      failed = true;
+    }
+  }
+}
 ---
 
 <Layout title="Ethan Hassett | Get in Touch">
   <div class="w-full">
     <p class="heading">Get in Touch</p>
-    <form id="contact" class="mb-(--space-m) flex w-full">
+    <form id="contact" class="mb-(--space-m) flex w-full" method="POST">
       <div class="flex flex-1 flex-col gap-(--space-m)">
         <input
+          class:list={errors.name && "border-red-400"}
           class="contact-input border-b-2"
           type="text"
           id="name"
           name="name"
           placeholder="name"
           required
+          value={data.name}
         />
-        <span class="form-error"></span>
+        <span class="form-error">{errors.name}</span>
         <input
+          class:list={errors.email && "border-red-400"}
           class="contact-input border-b-2"
           type="email"
           id="email"
           name="email"
           placeholder="email"
           required
+          value={data.email}
         />
-        <span class="form-error"></span>
+        <span class="form-error">{errors.email}</span>
         <textarea
+          class:list={errors.message && "border-red-400"}
           class="contact-input mt-(--space-3xs) min-h-(--space-3xl) border-2"
           id="message"
           name="message"
           placeholder="message"
           required
-          maxlength="2000"></textarea>
-        <span class="form-error"></span>
+          maxlength="2000"
+          >{data.message}</textarea>
+        <span class="form-error">{errors.message}</span>
       </div>
     </form>
-    <button id="submit" class="cursor-pointer" form="contact" type="submit">
+    <button id="submit" class="cursor-pointer mr-(--space-3xs)" form="contact" type="submit">
       &#8250; submit
     </button>
   </div>
+  <span class="text-red-400 mt-(--space-3xs) w-full h-(--space-s)">
+    {failed && <p>Sorry, there was an issue. <a class="underline" href="mailto:contact@hassett.io">Reach out directly</a>.</p>}
+  </span>
 </Layout>
 
 <script>
+  // Remove default browser validation bubbles
   document.getElementById("contact")!.addEventListener(
     "invalid",
     function (event) {
@@ -50,6 +99,7 @@ import Layout from "../layouts/Layout.astro";
     true,
   );
 
+  // Style form elements and display error messages
   function validateInput(element: HTMLFormElement) {
     if (!(element as HTMLFormElement).checkValidity()) {
       element.classList.add("border-red-400");
@@ -71,12 +121,14 @@ import Layout from "../layouts/Layout.astro";
     }
   }
 
+  // Update validation styling on blur
   document.querySelectorAll("input, textarea").forEach((element) => {
     element.addEventListener("blur", () =>
       validateInput(element as HTMLFormElement),
     );
   });
 
+  // Update validation styling on submit click
   document.getElementById("submit")!.addEventListener("click", async () => {
     if (
       !(document.getElementById("contact") as HTMLFormElement).checkValidity()
@@ -84,7 +136,16 @@ import Layout from "../layouts/Layout.astro";
       document
         .querySelectorAll("input:invalid, textarea:invalid")
         .forEach((element) => validateInput(element as HTMLFormElement));
-    } else {
     }
   });
+
+  // Submit form data
+  document
+    .getElementById("contact")!
+    .addEventListener("submit", async () => {
+      const formData = new FormData(
+        document.getElementById("contact") as HTMLFormElement,
+      );
+      await fetch("/contact", { method: "POST", body: formData });
+    });
 </script>
