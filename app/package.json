@@ -13,7 +13,7 @@
     "@astrojs/check": "0.x",
     "@astrojs/node": "9.x",
     "@astrojs/sitemap": "3.x",
-    "@astrojs/tailwind": "5.x",
+    "@astrojs/tailwind": "6.x",
     "astro": "5.x",
     "tailwindcss": "3.x",
     "typescript": "5.x"
