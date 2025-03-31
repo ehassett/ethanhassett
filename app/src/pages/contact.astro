@@ -62,7 +62,7 @@ if (Astro.request.method === "POST") {
       const mailgunResponse = await mg.messages.create(
         mailgunDomain || "DOMAIN",
         {
-          from: `Mailgun <postmaster@${mailgunDomain}>`,
+          from: `ethanhassett.com <postmaster@${mailgunDomain}>`,
           to: ["Ethan Hassett <contact@hassett.io>"],
           subject: `Contact Form Submission: ${data.name}`,
           text: `Name: ${data.name}\nEmail: ${data.email}\nMessage: ${data.message}`,
