@@ -1,48 +1,101 @@
 ---
+import Mailgun from "mailgun.js";
+
 import Layout from "../layouts/Layout.astro";
 
-let failed = false;
+const success = Astro.url.searchParams.get("success") || false;
 const data = { name: "", email: "", message: "" };
 const errors = { name: "", email: "", message: "" };
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+let serverError = false;
 
 if (Astro.request.method === "POST") {
   try {
+    // Get the form data
     const formData = await Astro.request.formData();
-    data.name = formData.get("name");
-    data.email = formData.get("email");
-    data.message = formData.get("message");
+    data.name = formData.get("name") as string;
+    data.email = formData.get("email") as string;
+    data.message = formData.get("message") as string;
 
     // Validate the data
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (typeof data.name !== "string" || data.name.length < 1) {
       errors.name += "Please enter your name.";
     }
-    if (typeof data.email !== "string" || !(emailRegex.test(data.email))) {
+    if (typeof data.email !== "string" || !emailRegex.test(data.email)) {
       errors.email += "Please enter a valid email.";
     }
     if (typeof data.message !== "string") {
       errors.message += "Please enter a message.";
-    } else if (data.message.length > 2000) {
+    }
+    if (data.message.length > 2000) {
       errors.message += "Message must be less than 2000 characters.";
     }
 
-    const invalid = Object.values(errors).some(msg => msg)
-    if (!invalid) {
-      // TODO: Send email
-      // TODO: Display success message
-      return Astro.redirect("/contact");
+    if (!Object.values(errors).some((msg) => msg)) {
+      // Verify Turnstile
+      const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+      const turnstileResponse = await fetch(url, {
+        body: JSON.stringify({
+          secret: process.env.TURNSTILE_SECRET_KEY,
+          response: formData.get("cf-turnstile-response"),
+          remoteip: Astro.request.headers.get("CF-Connecting-IP"),
+        }),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const outcome = await turnstileResponse.json();
+      if (!outcome.success) {
+        console.log(outcome);
+        throw new Error("ERROR: Turnstile verification failed");
+      }
+
+      // Send email
+      const mailgunDomain = process.env.MAILGUN_DOMAIN;
+      const mailgun = new Mailgun(FormData);
+      const mg = mailgun.client({
+        username: "api",
+        key: process.env.MAILGUN_API_KEY || "API_KEY",
+      });
+      const mailgunResponse = await mg.messages.create(
+        mailgunDomain || "DOMAIN",
+        {
+          from: `Mailgun <postmaster@${mailgunDomain}>`,
+          to: ["Ethan Hassett <contact@hassett.io>"],
+          subject: `Contact Form Submission: ${data.name}`,
+          text: `Name: ${data.name}\nEmail: ${data.email}\nMessage: ${data.message}`,
+        },
+      );
+
+      if (mailgunResponse.status !== 200) {
+        console.log(mailgunResponse);
+        throw new Error("ERROR: Mailgun failed to send");
+      }
+
+      // Redirect to success page
+      return Astro.redirect("/contact?success=true");
     }
   } catch (error) {
+    serverError = true;
     if (error instanceof Error) {
       console.error(error.message);
-      failed = true;
     }
   }
 }
 ---
 
+<head>
+  <script
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+    async
+    defer
+    is:inline></script>
+</head>
+
 <Layout title="Ethan Hassett | Get in Touch">
-  <div class="w-full">
+  <div class="w-full" class:list={success ? "hidden" : ""}>
     <p class="heading">Get in Touch</p>
     <form id="contact" class="mb-(--space-m) flex w-full" method="POST">
       <div class="flex flex-1 flex-col gap-(--space-m)">
@@ -75,77 +128,82 @@ if (Astro.request.method === "POST") {
           name="message"
           placeholder="message"
           required
-          maxlength="2000"
-          >{data.message}</textarea>
+          maxlength="2000">{data.message}</textarea
+        >
         <span class="form-error">{errors.message}</span>
+        <div class="cf-turnstile" data-sitekey={process.env.TURNSTILE_SITE_KEY}>
+        </div>
       </div>
     </form>
-    <button id="submit" class="cursor-pointer mr-(--space-3xs)" form="contact" type="submit">
+    <span
+      class="mt-(--space-3xs) h-(--space-s) w-full text-red-400"
+      set:html={serverError &&
+        'Sorry, there was an issue. <a class="underline" href="mailto:contact@hassett.io">Reach out directly.</a>'}
+    />
+    <button
+      id="submit"
+      class="mr-(--space-3xs) cursor-pointer"
+      class:list={serverError ? "hidden" : ""}
+      form="contact"
+      type="submit"
+    >
       &#8250; submit
     </button>
   </div>
-  <span class="text-red-400 mt-(--space-3xs) w-full h-(--space-s)">
-    {failed && <p>Sorry, there was an issue. <a class="underline" href="mailto:contact@hassett.io">Reach out directly</a>.</p>}
-  </span>
+  <div class="pb-(--space-3xl)" class:list={success ? "block" : "hidden"}>
+    <p class="heading">Get in Touch</p>
+    <hr class="divider" />
+    <p>
+      Thank you for your message! I will get back to you as soon as possible.
+    </p>
+  </div>
 </Layout>
 
-<script>
-  // Remove default browser validation bubbles
-  document.getElementById("contact")!.addEventListener(
-    "invalid",
-    function (event) {
-      event.preventDefault();
-    },
-    true,
-  );
-
+<script is:inline>
   // Style form elements and display error messages
-  function validateInput(element: HTMLFormElement) {
-    if (!(element as HTMLFormElement).checkValidity()) {
-      element.classList.add("border-red-400");
-      switch (element.getAttribute("name")) {
+  function validateInput(e) {
+    if (!e.checkValidity()) {
+      e.classList.add("border-red-400");
+      switch (e.getAttribute("name")) {
         case "name":
-          element.nextElementSibling!.textContent = "Please enter your name.";
+          e.nextElementSibling.textContent = "Please enter your name.";
           break;
         case "email":
-          element.nextElementSibling!.textContent =
-            "Please enter a valid email.";
+          e.nextElementSibling.textContent = "Please enter a valid email.";
           break;
         case "message":
-          element.nextElementSibling!.textContent = "Please enter a message.";
+          e.nextElementSibling.textContent = "Please enter a message.";
           break;
       }
     } else {
-      element.classList.remove("border-red-400");
-      element.nextElementSibling!.textContent = "";
+      e.classList.remove("border-red-400");
+      e.nextElementSibling.textContent = "";
     }
   }
 
-  // Update validation styling on blur
-  document.querySelectorAll("input, textarea").forEach((element) => {
-    element.addEventListener("blur", () =>
-      validateInput(element as HTMLFormElement),
-    );
+  // Remove default browser validation bubbles
+  document
+    .getElementById("contact")
+    .addEventListener("invalid", (e) => e.preventDefault(), true);
+
+  // Validate on blur
+  document.querySelectorAll("input, textarea").forEach((e) => {
+    e.addEventListener("blur", () => validateInput(e));
   });
 
-  // Update validation styling on submit click
-  document.getElementById("submit")!.addEventListener("click", async () => {
-    if (
-      !(document.getElementById("contact") as HTMLFormElement).checkValidity()
-    ) {
+  // Validate on submit
+  document.getElementById("submit").addEventListener("click", () => {
+    if (!document.getElementById("contact").checkValidity()) {
       document
         .querySelectorAll("input:invalid, textarea:invalid")
-        .forEach((element) => validateInput(element as HTMLFormElement));
+        .forEach((e) => validateInput(e));
     }
   });
 
-  // Submit form data
-  document
-    .getElementById("contact")!
-    .addEventListener("submit", async () => {
-      const formData = new FormData(
-        document.getElementById("contact") as HTMLFormElement,
-      );
-      await fetch("/contact", { method: "POST", body: formData });
-    });
+  // Reset Turnstile on form submit if expired
+  document.getElementById("contact").addEventListener("submit", () => {
+    if (turnstile.isExpired()) {
+      turnstile.reset();
+    }
+  });
 </script>
