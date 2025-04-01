@@ -3,6 +3,8 @@ import Mailgun from "mailgun.js";
 
 import Layout from "../layouts/Layout.astro";
 
+export const prerender = false;
+
 const success = Astro.url.searchParams.get("success") || false;
 const data = { name: "", email: "", message: "" };
 const errors = { name: "", email: "", message: "" };

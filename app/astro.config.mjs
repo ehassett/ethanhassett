@@ -8,7 +8,6 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   site: "https://ethanhassett.com",
   integrations: [sitemap()],
-  output: "server",
   adapter: node({
     mode: "standalone",
   }),
