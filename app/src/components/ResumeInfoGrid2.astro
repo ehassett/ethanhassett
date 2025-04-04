@@ -1,0 +1,14 @@
+---
+interface Props {
+  items: Array<string>;
+}
+
+const { items } = Astro.props;
+---
+
+<hr class="divider" />
+<div
+  class="grid grid-cols-(--resume-info-grid-2) gap-x-(--space-2xs) gap-y-(--space-3xs)"
+>
+  {items.map((item) => <p>&#8250; {item}</p>)}
+</div>

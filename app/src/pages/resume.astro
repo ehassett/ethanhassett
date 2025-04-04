@@ -1,5 +1,101 @@
 ---
+import { getCollection } from "astro:content";
+
 import Layout from "../layouts/Layout.astro";
+import ResumeSection from "../layouts/ResumeSection.astro";
+import ResumeInfoDates from "../components/ResumeInfoDates.astro";
+import ResumeInfoGrid2 from "../components/ResumeInfoGrid2.astro";
+
+const experience = await getCollection("experience");
+const certifications = await getCollection("certifications");
+const skills = await getCollection("skills");
+const languages = await getCollection("languages");
+
+const skillItems = skills.find((item) => item.id === "skills")!.data.items;
+const techItems = skills.find((item) => item.id === "technologies")!.data.items;
+
+const experienceSorted = experience.sort(function (a, b) {
+  return b.data.start.getTime() - a.data.start.getTime();
+});
+
+const dateOpts: Intl.DateTimeFormatOptions = {
+  year: "numeric",
+  month: "short",
+};
 ---
 
-<Layout title="Ethan Hassett | Resume" />
+<Layout title="Ethan Hassett | Resume">
+  <div class="mx-(--space-m) mb-(--space-m) min-w-[40dvw]">
+    <div class="grid grid-cols-1 text-(length:--step--1)">
+      <ResumeSection title="Experience">
+        {
+          experienceSorted.map((item) => (
+            <ResumeInfoDates
+              title={item.data.title}
+              subtitle={item.data.company}
+              date={
+                item.data.end
+                  ? item.data.start.toLocaleDateString("en-US", dateOpts) +
+                    " - " +
+                    item.data.end.toLocaleDateString("en-US", dateOpts)
+                  : item.data.start.toLocaleDateString("en-US", dateOpts) +
+                    " - Present"
+              }
+            />
+          ))
+        }
+      </ResumeSection>
+
+      <ResumeSection title="Certifications">
+        {
+          certifications.map((item) => (
+            <ResumeInfoDates
+              title={item.data.title}
+              link={item.data.link}
+              subtitle={item.data.issuer}
+              date={
+                item.data.expires
+                  ? item.data.expires.toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                    })
+                  : "No Expiration"
+              }
+            />
+          ))
+        }
+      </ResumeSection>
+
+      <ResumeSection title="Technologies">
+        <ResumeInfoGrid2 items={techItems} />
+      </ResumeSection>
+
+      <ResumeSection title="Skills">
+        <ResumeInfoGrid2 items={skillItems} />
+      </ResumeSection>
+
+      <ResumeSection title="Languages">
+        <hr class="divider" />
+        <div
+          class="flex flex-wrap justify-between gap-x-(--space-2xs) gap-y-(--space-3xs)"
+        >
+          {
+            languages.map((item) => (
+              <p class="min-w-fit basis-(--resume-info-basis-3)">
+                &#8250; {item.data.language} ({item.data.level})
+              </p>
+            ))
+          }
+        </div>
+      </ResumeSection>
+
+      <ResumeSection title="Education">
+        <ResumeInfoDates
+          title="The University of Toledo"
+          subtitle="BS Computer Science & Engineering"
+          date="2016 - 2020"
+        />
+      </ResumeSection>
+    </div>
+  </div>
+</Layout>

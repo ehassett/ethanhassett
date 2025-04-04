@@ -55,6 +55,10 @@
   --space-l-xl: clamp(2.25rem, 1.6336rem + 3.0822vw, 4.5rem);
   --space-xl-2xl: clamp(3.375rem, 2.6558rem + 3.5959vw, 6rem);
   --space-2xl-3xl: clamp(4.5rem, 3.2671rem + 6.1644vw, 9rem);
+
+  /* Resume Grid Values */
+  --resume-info-grid-2: repeat(auto-fill, minmax(20rem, 1fr));
+  --resume-info-basis-3: max(0px, (40rem - 100vw) * 1000);
 }
 
 @layer base {
