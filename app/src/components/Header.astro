@@ -46,10 +46,9 @@ import NavLink from "./NavLink.astro";
       </button>
     </div>
   </nav>
+  <script is:inline>
+    document
+      .getElementById("themeToggle")
+      .addEventListener("click", handleThemeToggle);
+  </script>
 </header>
-
-<script is:inline>
-  document
-    .getElementById("themeToggle")
-    .addEventListener("click", handleThemeToggle);
-</script>
