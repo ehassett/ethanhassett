@@ -1,16 +1,17 @@
 // @ts-check
 import { defineConfig } from "astro/config";
-import node from "@astrojs/node";
+import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://ethanhassett.com",
-  integrations: [sitemap()],
-  adapter: node({
-    mode: "standalone",
+  output: "server",
+  adapter: cloudflare({
+    cloudflareModules: false,
   }),
+  integrations: [sitemap()],
   vite: {
     plugins: [tailwindcss()],
   },
