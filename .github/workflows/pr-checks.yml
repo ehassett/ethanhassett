@@ -27,6 +27,7 @@ jobs:
             doesn't start with an uppercase character.
 
   validate-version:
+    if: ${{ github.base_ref == 'main' }}
     name: Validate version update
     runs-on: ubuntu-22.04
     steps:
@@ -59,14 +60,9 @@ jobs:
             | awk -F: '{ print $2 }' \
             | sed 's/[",]//g' \
             | tr -d " \t\n\r")
-          cloud_run_version=$(cat ./infrastructure/main.tf \
-            | grep "image_version" \
-            | head -1 \
-            | awk -F= '{ print $2 }' \
-            | sed 's/["]//g' \
-            | tr -d " \t\n\r")
-          fileArray=("package.json" "package-lock.json" "main.tf")
-          versionArray=("$package_version" "$package_lock_version" "$cloud_run_version")
+
+          fileArray=("package.json" "package-lock.json")
+          versionArray=("$package_version" "$package_lock_version")
 
           echo "Current version: $current_version"
           for i in "${!fileArray[@]}"; do

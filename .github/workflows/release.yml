@@ -42,47 +42,10 @@ jobs:
             echo "is_new_release=true" >> "$GITHUB_OUTPUT"
           fi
 
-  docker_image:
-    name: Docker Image
-    runs-on: ubuntu-22.04
-    needs: check_version
-    if: needs.check_version.outputs.is_new_release == 'true'
-    env:
-      REGISTRY_URL: "us-east1-docker.pkg.dev"
-      IMAGE_NAME: "ethanhassett"
-      VERSION: ${{ needs.check_version.outputs.current_version }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Authenticate with Google Cloud
-        id: auth
-        uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: "projects/241837887550/locations/global/workloadIdentityPools/github/providers/github-ehassett"
-          service_account: "github-actions@hassettio.iam.gserviceaccount.com"
-          token_format: "access_token"
-
-      - name: Login to registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY_URL }}
-          username: "oauth2accesstoken"
-          password: ${{ steps.auth.outputs.access_token }}
-
-      - name: Build and push image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ env.REGISTRY_URL }}/ethanhassett/ethanhassett/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-            ${{ env.REGISTRY_URL }}/ethanhassett/ethanhassett/${{ env.IMAGE_NAME }}:latest
-
   release:
     name: Release and Tag New Version
     runs-on: ubuntu-22.04
-    needs: [check_version, docker_image]
+    needs: [check_version]
     if: needs.check_version.outputs.is_new_release == 'true'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -105,37 +68,3 @@ jobs:
             --repo="${{ env.GITHUB_REPOSITORY }}" \
             --title="${{ env.VERSION }}" \
             --generate-notes
-
-  deploy:
-    name: Deploy Spacelift Stack
-    runs-on: ubuntu-22.04
-    needs: docker_image
-    if: ${{ ! failure() && ! cancelled() }}
-    env:
-      SPACELIFT_API_KEY_ENDPOINT: ${{ secrets.SPACELIFT_API_KEY_ENDPOINT }}
-      SPACELIFT_API_KEY_ID: ${{ secrets.SPACELIFT_API_KEY_ID }}
-      SPACELIFT_API_KEY_SECRET: ${{ secrets.SPACELIFT_API_KEY_SECRET }}
-      SPACELIFT_STACK_ID: "ethanhassett"
-    steps:
-      - name: Setup spacectl
-        uses: spacelift-io/setup-spacectl@v1
-
-      - name: Deploy Stack
-        run: |
-          counter=0
-          while [[ $counter -lt 60 && $(spacectl stack run list --id ${{ env.SPACELIFT_STACK_ID }} | grep -Ec 'QUEUED|READY|PREPARING|INITIALIZING|PLANNING') -gt 0 ]]; do
-            echo "Waiting for plan to complete..."
-            sleep 5
-            counter=$((counter + 1))
-          done
-
-          if [[ $(spacectl stack run list --id ${{ env.SPACELIFT_STACK_ID }} | grep -c UNCONFIRMED) -gt 0 ]]; then
-            run_id=$(spacectl stack run list --id ${{ env.SPACELIFT_STACK_ID }} \
-              | grep -m 1 UNCONFIRMED \
-              | cut -d "|" -f 1 \
-              | tr -d " \t\n\r" \
-              | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g")
-            spacectl stack confirm --id ${{ env.SPACELIFT_STACK_ID }} --run "$run_id"
-          else
-            echo "No runs need confirmation!"
-          fi
