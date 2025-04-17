@@ -1,7 +1,7 @@
 {
   "name": "ethanhassett.com",
   "type": "module",
-  "version": "0.1.5",
+  "version": "1.0.0",
   "scripts": {
     "dev": "source .env && astro dev",
     "start": "source .env && astro dev",
