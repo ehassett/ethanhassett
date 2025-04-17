@@ -1,6 +1,9 @@
 ---
-import Navbar from "../components/Navbar.astro";
+import { ClientRouter } from "astro:transitions";
+
+import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import "../styles/global.css";
 
 interface Props {
   title: string;
@@ -12,33 +15,75 @@ const { title } = Astro.props;
 <!doctype html>
 <html lang="en">
   <head>
-    <meta
-      name="description"
-      content="Cloud & DevOps engineer open to new consulting and contracting opportunities worldwide."
-    />
+    <ClientRouter />
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta
+      name="description"
+      content="Cloud & DevOps engineer open to new opportunities worldwide."
+    />
+
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <link rel="apple-touch-icon" href="/icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+
     <title>{title}</title>
+
+    <script is:inline>
+      function handleThemeToggle() {
+        document.documentElement.classList.toggle("dark");
+        localStorage.setItem(
+          "theme",
+          document.documentElement.classList.contains("dark")
+            ? "dark"
+            : "light",
+        );
+      }
+
+      const theme = (() => {
+        if (
+          typeof localStorage !== "undefined" &&
+          ["dark", "light"].includes(localStorage.getItem("theme"))
+        ) {
+          return localStorage.getItem("theme");
+        }
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          return "dark";
+        }
+        return "light";
+      })();
+
+      const doc = document.documentElement;
+
+      doc.classList[theme === "dark" ? "add" : "remove"]("dark");
+      window.localStorage.setItem("theme", theme);
+
+      document.addEventListener("astro:after-swap", () => {
+        if (localStorage.getItem("theme") === "dark") {
+          doc.classList.toggle("dark", true);
+        }
+
+        // Re-add event listener after Astro swap
+        if (!document.getElementById("themeToggle").hasAttribute("onclick")) {
+          document
+            .getElementById("themeToggle")
+            .addEventListener("click", handleThemeToggle);
+        }
+      });
+    </script>
   </head>
-  <body class="bg-oxford-blue text-slate-200">
-    <main
-      class="w-screen h-screen pb-24 grid grid-rows-5 lg:grid-rows-1 lg:grid-cols-4 lg:p-20 2xl:grid-cols-6 2xl:p-24"
-    >
-      <Navbar />
-      <div class="relative px-4 row-span-4 lg:p-0 lg:col-span-2">
-        <h1
-          class="hidden text-4xl font-source-code-pro font-bold mb-16 lg:block 2xl:mb-20"
-        >
-          <a href="/" aria-label="About">Ethan Hassett</a>
-        </h1>
+
+  <body
+    class="bg-light-100 font-departure-mono text-(length:--step--1) text-dark-500 dark:bg-dark-500 dark:text-light-100"
+  >
+    <main class="flex min-h-screen flex-col justify-between">
+      <Header />
+      <section class="u-container">
         <slot />
-        <Footer />
-      </div>
+      </section>
+      <Footer />
     </main>
   </body>
 </html>

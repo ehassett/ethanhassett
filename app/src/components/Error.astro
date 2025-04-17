@@ -1,0 +1,14 @@
+---
+interface Props {
+  code: string;
+  message: string;
+}
+
+const { code, message } = Astro.props;
+---
+
+<div class="pb-(--space-3xl)">
+  <p class="heading">{code}: {message}</p>
+  <hr class="divider" />
+  <a href="/">&#8250; go home</a>
+</div>

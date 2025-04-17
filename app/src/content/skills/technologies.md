@@ -1,0 +1,16 @@
+---
+items:
+  - Terraform
+  - AWS
+  - Packer
+  - MongoDB
+  - Docker
+  - Git
+  - Go
+  - Python
+  - Octopus Deploy
+  - Sumo Logic
+  - Databricks
+  - Jenkins
+  - GitHub Actions
+---

@@ -1,0 +1,15 @@
+---
+interface Props {
+  path: string;
+  text: string;
+}
+
+const { path, text } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<li>
+  <a class:list={["nav-link", { active: currentPath === path }]} href={path}
+    >{text}</a
+  >
+</li>

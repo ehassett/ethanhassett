@@ -1,0 +1,54 @@
+---
+import NavLink from "./NavLink.astro";
+---
+
+<head>
+  <noscript>
+    <style>
+      #themeToggle {
+        display: none;
+      }
+    </style>
+  </noscript>
+</head>
+
+<header class="p-(--space-2xs)">
+  <nav class="flex justify-between">
+    <ul class="flex flex-wrap">
+      <NavLink path="/" text="home" />
+      <NavLink path="/resume" text="resume" />
+      <NavLink path="/contact" text="contact" />
+    </ul>
+    <div>
+      <button id="themeToggle" class="cursor-pointer align-sub">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 400 400"
+          class="w-(length:--step-0) fill-dark-500 dark:hidden"
+        >
+          <path d="M133.3 53.3V26.7H80v26.6h26.7z"></path>
+          <path
+            d="M160 53.3h26.7V26.7h26.6V0h-80v26.7H160zm-106.7 0H80V80H53.3zm80 0H160V80h-26.7zm-26.6 53.4v106.6h26.6V80h-26.6zm-53.4 0V80H26.7v53.3h26.6zm320 80v26.6h-26.6V240h26.6v26.7H400v-80zM26.7 213.3v-80H0v133.4h26.7V240zm106.6 0H160V240h-26.7zM160 240h26.7v26.7H160zm160 0h26.7v26.7H320zM53.3 266.7H26.7V320h26.6v-26.7zm160 26.6H320v-26.6H186.7v26.6zm133.4 0V320h26.6v-53.3h-26.6zM53.3 320H80v26.7H53.3zm266.7 0h26.7v26.7H320zm-213.3 26.7H80v26.6h53.3v-26.6zm160 0v26.6H320v-26.6h-26.7zm-53.4 26.6h-80V400h133.4v-26.7H240z"
+          ></path>
+        </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 400 400"
+          class="hidden w-(length:--step-0) fill-light-100 dark:block"
+        >
+          <path
+            d="M213.3 26.7V0h-26.6v53.3h26.6zm-160 26.6H80V80H53.3zm266.7 0h26.7V80H320zM80 80h26.7v26.7H80zm133.3 26.7H240V80h-80v26.7h26.7zm80-26.7H320v26.7h-26.7zm-160 26.7H160v26.7h-26.7zm106.7 0h26.7v26.7H240z"
+          ></path>
+          <path
+            d="M106.7 133.3h26.7V160h-26.7zm160 0h26.7V160h-26.7zM53.3 186.7H0v26.6h53.3zm53.4 0V160H80v80h26.7v-26.7zm186.6 26.6V240H320v-80h-26.7v26.7zm80-26.6h-26.6v26.6H400v-26.6zM106.7 240h26.7v26.7h-26.7zm160 0h26.7v26.7h-26.7zm-133.4 26.7H160v26.7h-26.7zm106.7 0h26.7v26.7H240zM80 293.3h26.7V320H80zm106.7 0H160V320h80v-26.7h-26.7zm106.6 0H320V320h-26.7zM53.3 320H80v26.7H53.3zm266.7 0h26.7v26.7H320zm-133.3 53.3V400h26.6v-53.3h-26.6z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+  </nav>
+  <script is:inline>
+    document
+      .getElementById("themeToggle")
+      .addEventListener("click", handleThemeToggle);
+  </script>
+</header>

@@ -1,9 +1,68 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Home from "../components/Home.astro";
-import "../styles/fonts.css";
 ---
 
 <Layout title="Ethan Hassett">
-  <Home />
+  <div class="pb-(--space-3xl)">
+    <p class="heading">Ethan Hassett</p>
+    <div class="h-(--step-1)">
+      <div class="inline-block text-(length:--step-1)">
+        <span id="title"></span>
+        <noscript><span id="title">Cloud Engineer</span></noscript>
+      </div>
+    </div>
+    <hr class="divider" />
+    <div
+      class="flex flex-row flex-wrap justify-between gap-x-(--space-2xl) gap-y-(--space-xs)"
+    >
+      <a href="/work"> &#8250; view my work </a>
+      <a href="/contact"> &#8250; get in touch </a>
+    </div>
+  </div>
 </Layout>
+
+<script>
+  let titles = [
+    "Cloud Engineer",
+    "Techno Snob",
+    "Globetrotter",
+    "Terraform Certified",
+    "Home Chef",
+    "Bedroom DJ",
+  ];
+  let reverse = false;
+  let i = 0;
+  let j = 0;
+
+  function typeTitle() {
+    var jitter = Math.floor(Math.random() * 25 + 45);
+
+    if (reverse) {
+      if (document.getElementById("title")!.innerHTML.length > 0) {
+        document.getElementById("title")!.innerHTML = document
+          .getElementById("title")!
+          .innerHTML.slice(0, -1);
+        setTimeout(typeTitle, jitter);
+      } else {
+        j = (j + 1) % titles.length;
+        reverse = false;
+        setTimeout(typeTitle, 1000);
+      }
+    } else {
+      if (i === titles[j].length) {
+        i = 0;
+        reverse = true;
+        setTimeout(typeTitle, 3000);
+      } else {
+        if (i < titles[j].length) {
+          document.getElementById("title")!.innerHTML =
+            document.getElementById("title")!.innerHTML + titles[j].charAt(i);
+          i++;
+          setTimeout(typeTitle, jitter);
+        }
+      }
+    }
+  }
+
+  typeTitle();
+</script>
