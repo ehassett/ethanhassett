@@ -29,7 +29,7 @@ export const prerender = true;
   </div>
 </Layout>
 
-<script>
+<script is:inline data-astro-rerun>
   let titles = [
     "Cloud Engineer",
     "Techno Snob",
@@ -46,9 +46,9 @@ export const prerender = true;
     var jitter = Math.floor(Math.random() * 25 + 45);
 
     if (reverse) {
-      if (document.getElementById("title")!.innerHTML.length > 0) {
-        document.getElementById("title")!.innerHTML = document
-          .getElementById("title")!
+      if (document.getElementById("title").innerHTML.length > 0) {
+        document.getElementById("title").innerHTML = document
+          .getElementById("title")
           .innerHTML.slice(0, -1);
         setTimeout(typeTitle, jitter);
       } else {
@@ -63,8 +63,8 @@ export const prerender = true;
         setTimeout(typeTitle, 3000);
       } else {
         if (i < titles[j].length) {
-          document.getElementById("title")!.innerHTML =
-            document.getElementById("title")!.innerHTML + titles[j].charAt(i);
+          document.getElementById("title").innerHTML =
+            document.getElementById("title").innerHTML + titles[j].charAt(i);
           i++;
           setTimeout(typeTitle, jitter);
         }
