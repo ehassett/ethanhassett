@@ -6,6 +6,8 @@ import ResumeSection from "../layouts/ResumeSection.astro";
 import ResumeInfoDates from "../components/ResumeInfoDates.astro";
 import ResumeInfoGrid2 from "../components/ResumeInfoGrid2.astro";
 
+export const prerender = true;
+
 const experience = await getCollection("experience");
 const certifications = await getCollection("certifications");
 const skills = await getCollection("skills");
