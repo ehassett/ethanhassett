@@ -23,8 +23,6 @@ Repo for https://ethanhassett.com
 
 # Development
 
-Make sure you're using the versions in the [`.tool-versions`](./.tool-versions) file.
-
 To run the development environment locally, first ensure the following environment variables are defined in `app/.dev.vars`:
 
 - `MAILGUN_API_KEY`
