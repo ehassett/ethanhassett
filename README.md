@@ -23,10 +23,11 @@ Repo for https://ethanhassett.com
 
 # Development
 
+Make sure you're using the versions in the [`.tool-versions`](./.tool-versions) file.
+
 To run the development environment locally, first ensure the following environment variables are defined in `app/.dev.vars`:
 
 - `MAILGUN_API_KEY`
-- `TURNSTILE_SITE_KEY`
 - `TURNSTILE_SECRET_KEY`
 
 Run `cd app && npm run dev` which deploys the development version of the site using [wrangler](https://developers.cloudflare.com/pages/functions/local-development/).

@@ -5,17 +5,22 @@
   "compatibility_flags": ["nodejs_compat"],
   "compatibility_date": "2025-05-07",
   "vars": {
+    "NODE_VERSION": "23.11.0",
     "MAILGUN_DOMAIN": "ethanhassett.com",
-    "NODE_VERSION": "23.10.0"
+    "TURNSTILE_SITE_KEY": "0x4AAAAAABNK4577L8fCL9l5"
   },
   "env": {
     "preview": {
       "vars": {
+        "NODE_VERSION": "23.11.0",
+        "MAILGUN_DOMAIN": "ethanhassett.com",
         "TURNSTILE_SITE_KEY": "0x4AAAAAABNLEpdaRKmabBNe"
       }
     },
     "production": {
       "vars": {
+        "NODE_VERSION": "23.11.0",
+        "MAILGUN_DOMAIN": "ethanhassett.com",
         "TURNSTILE_SITE_KEY": "0x4AAAAAABNLN_PugeImZoys"
       }
     }
