@@ -1,8 +1,9 @@
+// prettier-ignore
 {
   "name": "ethanhassett",
   "pages_build_output_dir": "./dist",
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
-    "MAILGUN_DOMAIN": "ethanhassett.com",
-  },
+    "MAILGUN_DOMAIN": "ethanhassett.com"
+  }
 }

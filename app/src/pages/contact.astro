@@ -52,38 +52,33 @@ if (Astro.request.method === "POST") {
       }
 
       // Send email
-      try {
-        // Due to an issue with the mailgun.js library, we need to use fetch
-        // https://github.com/mailgun/mailgun.js/issues/426
+      // Due to an issue with the mailgun.js library, we need to use fetch
+      // https://github.com/mailgun/mailgun.js/issues/426
 
-        // Set up the Mailgun API request
-        const mailData = new FormData();
-        mailData.append("from", `postmaster@${env.MAILGUN_DOMAIN}`);
-        mailData.append("to", "contact@hassett.io");
-        mailData.append("subject", `Contact Form Submission: ${data.name}`);
-        mailData.append(
-          "text",
-          `Name: ${data.name}\nEmail: ${data.email}\nMessage: ${data.message}`,
-        );
+      // Set up the Mailgun API request
+      const mailData = new FormData();
+      mailData.append("from", `postmaster@${env.MAILGUN_DOMAIN}`);
+      mailData.append("to", "contact@hassett.io");
+      mailData.append("subject", `Contact Form Submission: ${data.name}`);
+      mailData.append(
+        "text",
+        `Name: ${data.name}\nEmail: ${data.email}\nMessage: ${data.message}`,
+      );
 
-        // Send the Mailgun API request
-        const mailgunResponse = await fetch(
-          `https://api.mailgun.net/v3/${env.MAILGUN_DOMAIN}/messages`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Basic ${btoa(`api:${env.MAILGUN_API_KEY}`)}`,
-            },
-            body: mailData,
+      // Send the Mailgun API request
+      const mailgunResponse = await fetch(
+        `https://api.mailgun.net/v3/${env.MAILGUN_DOMAIN}/messages`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Basic ${btoa(`api:${env.MAILGUN_API_KEY}`)}`,
           },
-        );
+          body: mailData,
+        },
+      );
 
-        if (mailgunResponse.status !== 200) {
-          console.error(mailgunResponse);
-          throw new Error("ERROR: Mailgun failed to send");
-        }
-      } catch (error) {
-        console.error(error);
+      if (mailgunResponse.status !== 200) {
+        console.error(mailgunResponse);
         throw new Error("ERROR: Mailgun failed to send");
       }
 
@@ -103,7 +98,7 @@ if (Astro.request.method === "POST") {
 
 <head>
   <script
-    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
     async
     defer
     is:inline></script>
@@ -177,7 +172,7 @@ if (Astro.request.method === "POST") {
           maxlength="2000">{data.message}</textarea
         >
         <span class="form-error">{errors.message}</span>
-        <div class="cf-turnstile" data-sitekey={env.TURNSTILE_SITE_KEY}></div>
+        <div id="cf-turnstile" data-sitekey={env.TURNSTILE_SITE_KEY}></div>
       </div>
     </form>
     <span
@@ -219,29 +214,37 @@ if (Astro.request.method === "POST") {
     }
   }
 
-  // Remove default browser validation bubbles
-  document
-    .getElementById("contact")
-    .addEventListener("invalid", (e) => e.preventDefault(), true);
+  function initForm() {
+    // Check if form already submitted
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });
 
-  // Validate on blur
-  document.querySelectorAll("input, textarea").forEach((e) => {
-    e.addEventListener("blur", () => validateInput(e));
-  });
+    if (!params.success && document.getElementById("cf-turnstile")) {
+      // Render Turnstile
+      turnstile.render("#cf-turnstile");
 
-  // Validate on submit
-  document.getElementById("submit").addEventListener("click", () => {
-    if (!document.getElementById("contact").checkValidity()) {
+      // Remove default browser validation bubbles
       document
-        .querySelectorAll("input:invalid, textarea:invalid")
-        .forEach((e) => validateInput(e));
-    }
-  });
+        .getElementById("contact")
+        .addEventListener("invalid", (e) => e.preventDefault(), true);
 
-  // Reset Turnstile on form submit if expired
-  document.getElementById("contact").addEventListener("submit", () => {
-    if (turnstile.isExpired()) {
-      turnstile.reset();
+      // Validate on blur
+      document.querySelectorAll("input, textarea").forEach((e) => {
+        e.addEventListener("blur", () => validateInput(e));
+      });
+
+      // Validate on submit
+      document.getElementById("submit").addEventListener("click", () => {
+        if (!document.getElementById("contact").checkValidity()) {
+          document
+            .querySelectorAll("input:invalid, textarea:invalid")
+            .forEach((e) => validateInput(e));
+        }
+      });
     }
-  });
+  }
+
+  // Initialize form validation and Turnstile on every page load
+  document.addEventListener("astro:page-load", initForm);
 </script>

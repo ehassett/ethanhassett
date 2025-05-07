@@ -55,14 +55,14 @@ const { title } = Astro.props;
         return "light";
       })();
 
-      const doc = document.documentElement;
-
-      doc.classList[theme === "dark" ? "add" : "remove"]("dark");
+      document.documentElement.classList[theme === "dark" ? "add" : "remove"](
+        "dark",
+      );
       window.localStorage.setItem("theme", theme);
 
       document.addEventListener("astro:after-swap", () => {
         if (localStorage.getItem("theme") === "dark") {
-          doc.classList.toggle("dark", true);
+          document.documentElement.classList.toggle("dark", true);
         }
 
         // Re-add event listener after Astro swap
