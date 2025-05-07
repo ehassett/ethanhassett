@@ -1,24 +1,25 @@
 ---
 import { getCollection } from "astro:content";
-
 import Layout from "../layouts/Layout.astro";
 import ResumeSection from "../layouts/ResumeSection.astro";
 import ResumeInfoDates from "../components/ResumeInfoDates.astro";
-import ResumeInfoGrid2 from "../components/ResumeInfoGrid2.astro";
+import ResumeInfoGrid from "../components/ResumeInfoGrid.astro";
 
 export const prerender = true;
 
-const experience = await getCollection("experience");
 const certifications = await getCollection("certifications");
-const skills = await getCollection("skills");
 const languages = await getCollection("languages");
-
-const skillItems = skills.find((item) => item.id === "skills")!.data.items;
-const techItems = skills.find((item) => item.id === "technologies")!.data.items;
-
-const experienceSorted = experience.sort(function (a, b) {
-  return b.data.start.getTime() - a.data.start.getTime();
-});
+const experience = await getCollection("experience").then((items) =>
+  items.sort((a, b) => {
+    return b.data.start.getTime() - a.data.start.getTime();
+  }),
+);
+const technologies = await getCollection("skills").then(
+  (items) => items.find((item) => item.id === "technologies")!.data.items,
+);
+const skills = await getCollection("skills").then(
+  (items) => items.find((item) => item.id === "skills")!.data.items,
+);
 
 const dateOpts: Intl.DateTimeFormatOptions = {
   year: "numeric",
@@ -31,7 +32,7 @@ const dateOpts: Intl.DateTimeFormatOptions = {
     <div class="grid grid-cols-1 text-(length:--step--1)">
       <ResumeSection title="Experience">
         {
-          experienceSorted.map((item) => (
+          experience.map((item) => (
             <ResumeInfoDates
               title={item.data.title}
               subtitle={item.data.company}
@@ -69,11 +70,11 @@ const dateOpts: Intl.DateTimeFormatOptions = {
       </ResumeSection>
 
       <ResumeSection title="Technologies">
-        <ResumeInfoGrid2 items={techItems} />
+        <ResumeInfoGrid items={technologies} />
       </ResumeSection>
 
       <ResumeSection title="Skills">
-        <ResumeInfoGrid2 items={skillItems} />
+        <ResumeInfoGrid items={skills} />
       </ResumeSection>
 
       <ResumeSection title="Languages">
