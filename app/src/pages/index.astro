@@ -42,7 +42,7 @@ export const prerender = true;
   var i = 0;
   var j = 0;
 
-  function typeTitle() {
+  function typewriter() {
     var jitter = Math.floor(Math.random() * 25 + 45);
     var title = document.getElementById("title");
 
@@ -50,27 +50,28 @@ export const prerender = true;
       if (reverse) {
         if (title.innerHTML.length > 0) {
           title.innerHTML = title.innerHTML.slice(0, -1);
-          setTimeout(typeTitle, jitter);
+          setTimeout(typewriter, jitter);
         } else {
           j = (j + 1) % titles.length;
           reverse = false;
-          setTimeout(typeTitle, 1000);
+          setTimeout(typewriter, 1000);
         }
       } else {
         if (i === titles[j].length) {
           i = 0;
           reverse = true;
-          setTimeout(typeTitle, 3000);
+          setTimeout(typewriter, 3000);
         } else {
           if (i < titles[j].length) {
             title.innerHTML = title.innerHTML + titles[j].charAt(i);
             i++;
-            setTimeout(typeTitle, jitter);
+            setTimeout(typewriter, jitter);
           }
         }
       }
     }
   }
 
-  document.addEventListener("astro:page-load", typeTitle);
+  // Start the typewriter effect on every load
+  document.addEventListener("astro:page-load", typewriter);
 </script>

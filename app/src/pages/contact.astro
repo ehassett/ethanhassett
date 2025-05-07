@@ -103,7 +103,7 @@ if (Astro.request.method === "POST") {
 
 <head>
   <script
-    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
     async
     defer
     is:inline></script>
@@ -177,7 +177,7 @@ if (Astro.request.method === "POST") {
           maxlength="2000">{data.message}</textarea
         >
         <span class="form-error">{errors.message}</span>
-        <div class="cf-turnstile" data-sitekey={env.TURNSTILE_SITE_KEY}></div>
+        <div id="cf-turnstile" data-sitekey={env.TURNSTILE_SITE_KEY}></div>
       </div>
     </form>
     <span
@@ -197,7 +197,7 @@ if (Astro.request.method === "POST") {
   </div>
 </Layout>
 
-<script is:inline data-astro-rerun>
+<script is:inline>
   // Style form elements and display error messages
   function validateInput(e) {
     if (!e.checkValidity()) {
@@ -219,29 +219,37 @@ if (Astro.request.method === "POST") {
     }
   }
 
-  // Remove default browser validation bubbles
-  document
-    .getElementById("contact")
-    .addEventListener("invalid", (e) => e.preventDefault(), true);
+  function initForm() {
+    // Check if form already submitted
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });
 
-  // Validate on blur
-  document.querySelectorAll("input, textarea").forEach((e) => {
-    e.addEventListener("blur", () => validateInput(e));
-  });
+    if (!params.success && document.getElementById("cf-turnstile")) {
+      // Render Turnstile
+      turnstile.render("#cf-turnstile");
 
-  // Validate on submit
-  document.getElementById("submit").addEventListener("click", () => {
-    if (!document.getElementById("contact").checkValidity()) {
+      // Remove default browser validation bubbles
       document
-        .querySelectorAll("input:invalid, textarea:invalid")
-        .forEach((e) => validateInput(e));
-    }
-  });
+        .getElementById("contact")
+        .addEventListener("invalid", (e) => e.preventDefault(), true);
 
-  // Reset Turnstile on form submit if expired
-  document.getElementById("contact").addEventListener("submit", () => {
-    if (turnstile.isExpired()) {
-      turnstile.reset();
+      // Validate on blur
+      document.querySelectorAll("input, textarea").forEach((e) => {
+        e.addEventListener("blur", () => validateInput(e));
+      });
+
+      // Validate on submit
+      document.getElementById("submit").addEventListener("click", () => {
+        if (!document.getElementById("contact").checkValidity()) {
+          document
+            .querySelectorAll("input:invalid, textarea:invalid")
+            .forEach((e) => validateInput(e));
+        }
+      });
     }
-  });
+  }
+
+  // Initialize form validation and Turnstile on every page load
+  document.addEventListener("astro:page-load", initForm);
 </script>
