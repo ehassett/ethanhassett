@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@font-face {
+  font-family: "Departure Mono";
+  src: url("/fonts/DepartureMono/DepartureMono.woff") format("woff");
+}
+
+@theme {
+  --font-departure-mono: "Departure Mono", monospace;
+
+  --color-dark-100: #495057;
+  --color-dark-200: #3f454c;
+  --color-dark-300: #343a40;
+  --color-dark-400: #2b3035;
+  --color-dark-500: #212529;
+  --color-light-100: #f8f9fa;
+  --color-light-200: #e9ecef;
+  --color-light-300: #dee2e6;
+  --color-light-400: #ced4da;
+  --color-light-500: #adb5bd;
+
+  --autofill-dark: inset 0 0 0px 1000px var(--color-dark-500);
+  --autofill-light: inset 0 0 0px 1000px var(--color-light-100);
+
+  /* Utopia (https://utopia.fyi) */
+  /* Font */
+  --step--2: clamp(0.7813rem, 0.7323rem + 0.2449vw, 0.96rem);
+  --step--1: clamp(0.9375rem, 0.8656rem + 0.3596vw, 1.2rem);
+  --step-0: clamp(1.125rem, 1.0223rem + 0.5137vw, 1.5rem);
+  --step-1: clamp(1.35rem, 1.2062rem + 0.7192vw, 1.875rem);
+  --step-2: clamp(1.62rem, 1.4217rem + 0.9914vw, 2.3438rem);
+  --step-3: clamp(1.944rem, 1.6739rem + 1.3503vw, 2.9297rem);
+  --step-4: clamp(2.3328rem, 1.9686rem + 1.821vw, 3.6621rem);
+  --step-5: clamp(2.7994rem, 2.3122rem + 2.436vw, 4.5776rem);
+
+  /* Space */
+  --space-3xs: clamp(0.3125rem, 0.2954rem + 0.0856vw, 0.375rem);
+  --space-2xs: clamp(0.5625rem, 0.5111rem + 0.2568vw, 0.75rem);
+  --space-xs: clamp(0.875rem, 0.8065rem + 0.3425vw, 1.125rem);
+  --space-s: clamp(1.125rem, 1.0223rem + 0.5137vw, 1.5rem);
+  --space-m: clamp(1.6875rem, 1.5334rem + 0.7705vw, 2.25rem);
+  --space-l: clamp(2.25rem, 2.0445rem + 1.0274vw, 3rem);
+  --space-xl: clamp(3.375rem, 3.0668rem + 1.5411vw, 4.5rem);
+  --space-2xl: clamp(4.5rem, 4.089rem + 2.0548vw, 6rem);
+  --space-3xl: clamp(6.75rem, 6.1336rem + 3.0822vw, 9rem);
+
+  /* One-up pairs */
+  --space-3xs-2xs: clamp(0.3125rem, 0.1926rem + 0.5993vw, 0.75rem);
+  --space-2xs-xs: clamp(0.5625rem, 0.4084rem + 0.7705vw, 1.125rem);
+  --space-xs-s: clamp(0.875rem, 0.7038rem + 0.8562vw, 1.5rem);
+  --space-s-m: clamp(1.125rem, 0.8168rem + 1.5411vw, 2.25rem);
+  --space-m-l: clamp(1.6875rem, 1.3279rem + 1.7979vw, 3rem);
+  --space-l-xl: clamp(2.25rem, 1.6336rem + 3.0822vw, 4.5rem);
+  --space-xl-2xl: clamp(3.375rem, 2.6558rem + 3.5959vw, 6rem);
+  --space-2xl-3xl: clamp(4.5rem, 3.2671rem + 6.1644vw, 9rem);
+
+  /* Resume Grid Values */
+  --resume-info-grid-2: repeat(auto-fill, minmax(20rem, 1fr));
+  --resume-info-basis-3: max(0px, (40rem - 100vw) * 1000);
+}
+
+@layer base {
+  .dark {
+    color-scheme: dark;
+  }
+
+  ::selection {
+    @apply bg-light-300 text-dark-500;
+    -webkit-text-fill-color: var(--color-dark-500) !important;
+  }
+
+  ::-moz-selection {
+    @apply bg-light-300 text-dark-500;
+    -webkit-text-fill-color: var(--color-dark-500) !important;
+  }
+
+  :-webkit-autofill,
+  :-webkit-autofill:focus {
+    @apply text-dark-100;
+    -webkit-text-fill-color: var(--color-dark-100) !important;
+  }
+
+  ::-webkit-contacts-auto-fill-button {
+    @apply bg-dark-100;
+  }
+
+  ::-webkit-contacts-auto-fill-button:hover {
+    @apply bg-dark-500;
+  }
+
+  .dark :-webkit-autofill,
+  .dark :-webkit-autofill:focus {
+    @apply text-light-500;
+    -webkit-text-fill-color: var(--color-light-500) !important;
+  }
+
+  .dark ::-webkit-contacts-auto-fill-button {
+    @apply bg-light-500;
+  }
+
+  .dark ::-webkit-contacts-auto-fill-button:hover {
+    @apply bg-light-100;
+  }
+}
+
+@layer components {
+  .heading {
+    @apply text-(length:--step-3);
+  }
+
+  .divider {
+    @apply my-(--space-xs) border-light-500 dark:border-dark-100;
+  }
+
+  /* Nav Link */
+  .nav-link:after {
+    @apply px-(--space-3xs) content-["/"];
+  }
+
+  .nav-link.active {
+    @apply text-light-500 dark:text-light-500;
+  }
+
+  .nav-link.active:after {
+    @apply content-["<"];
+  }
+
+  /* Connect Link */
+  .connect-link:after {
+    @apply px-(--space-3xs) content-["/"];
+  }
+
+  .connect-link:last-child:after {
+    @apply content-[""];
+  }
+
+  /* Contact Form */
+  .contact-input {
+    @apply border-light-500 bg-transparent pl-(--space-3xs) text-dark-100 placeholder:text-dark-100 focus:outline-none dark:border-dark-100 dark:text-light-500 dark:placeholder:text-light-500;
+    @apply autofill:text-dark-100 autofill:caret-dark-100 autofill:shadow-(--autofill-light) dark:autofill:text-light-500 dark:autofill:caret-light-500 dark:autofill:shadow-(--autofill-dark);
+  }
+
+  .form-error {
+    @apply -mt-(--space-s) h-(--space-2xs) indent-(--space-3xs) text-(length:--step--2) text-red-400;
+  }
+}
+
+@layer utilities {
+  .u-container {
+    @apply mx-auto flex max-w-dvw min-w-[60dvw] flex-grow flex-col items-center justify-center;
+  }
+}

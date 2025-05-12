@@ -11,7 +11,8 @@ Repo for https://ethanhassett.com
 - [Contributing](#contributing)
 - [Development](#development)
 - [Deployment](#deployment)
-- [Testing](#testing)
+  - [Staging](#staging)
+  - [Production](#production)
 
 # Contributing
 
@@ -22,44 +23,26 @@ Repo for https://ethanhassett.com
 
 # Development
 
-Make sure you're using the versions in the `.tool-versions` files in both [app](./app/.tool-versions) and [infrastructure](./infrastructure/.tool-versions).
+Make sure you're using the versions in the [`.tool-versions`](./.tool-versions) file.
+
+To run the development environment locally, first ensure the following environment variables are defined in `app/.dev.vars`:
+
+- `MAILGUN_API_KEY`
+- `TURNSTILE_SECRET_KEY`
+
+Run `cd app && npm run dev` which deploys the development version of the site using [wrangler](https://developers.cloudflare.com/pages/functions/local-development/).
 
 # Deployment
 
 The deployment process follows [GitHub Flow](https://githubflow.github.io).
 
+## Staging
+
+When code is merged to the `staging` branch, Cloudflare Pages automatically deploys the new version of the site. This is protected by a OTP, accessible at https://staging.ethanhassett.com.
+
+## Production
+
 When code is merged to `main`:
 
 1. Any changes to the [app](./app/) will trigger a new tag and release based off of the version in `package.json`.
-2. A Docker image is created with the new version.
-3. Infrastructure changes are deployed via Spacelift.
-
-# Testing
-
-To test changes to the application with Astro only:
-
-1. Run `cd app && npm run dev`.
-2. Navigate to `localhost:4321` in your browser.
-3. Verify things are running properly and there are no Astro warnings.
-
-To test changes with Docker:
-
-1. Build the Docker image locally by running `docker build --tag ethanhassett:test .`.
-2. Run the container with:
-
-```bash
-docker run --detach \
-  --name ethanhassett.com \
-  --publish 80:4321 \
-  ethanhassett:test
-```
-
-3. Navigate to `localhost` in your browser.
-4. Verify things are running properly.
-5. (Optional) Stop the container and cleanup with:
-
-```bash
-docker stop ethanhassett.com && \
-  docker container rm ethanhassett.com && \
-  docker image rm ethanhassett:test
-```
+2. Cloudflare Pages automatically deploys the new version to https://ethanhassett.com.

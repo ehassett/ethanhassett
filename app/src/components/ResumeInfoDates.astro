@@ -1,0 +1,27 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+  date: string;
+  link?: string;
+}
+
+const { title, subtitle, date, link } = Astro.props;
+---
+
+<div>
+  <hr class="divider" />
+  {
+    link ? (
+      <a href={link} target="_blank" class="underline">
+        {title}
+      </a>
+    ) : (
+      <p>{title}</p>
+    )
+  }
+  <div class="flex flex-wrap justify-between text-(length:--step--2)">
+    <p class="mt-(--space-3xs)">{subtitle}</p>
+    <p class="mt-(--space-3xs)">{date}</p>
+  </div>
+</div>
