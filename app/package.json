@@ -1,7 +1,7 @@
 {
   "name": "ethanhassett.com",
   "type": "module",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scripts": {
     "dev": "astro check && astro build && wrangler pages dev ./dist",
     "build": "astro check && astro build"
