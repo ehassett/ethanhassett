@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Run semantic-pull-request
-        uses: amannn/action-semantic-pull-request@v5
+        uses: amannn/action-semantic-pull-request@v6
         with:
           # Ensure the subject does not start with an uppercase letter
           subjectPattern: ^(?![A-Z]).+$
