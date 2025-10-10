@@ -2,13 +2,18 @@
 interface Props {
   path: string;
   text: string;
+  external?: boolean;
 }
 
-const { path, text } = Astro.props;
+const { path, text, external = false } = Astro.props;
 const currentPath = Astro.url.pathname;
 const isActive = currentPath === path || currentPath === `${path}/`;
 ---
 
 <li>
-  <a class:list={["nav-link", { active: isActive }]} href={path}>{text}</a>
+  <a
+    class:list={["nav-link", { active: isActive }]}
+    href={path}
+    target={external ? "_blank" : "_self"}>{text}</a
+  >
 </li>
