@@ -18,7 +18,7 @@ jobs:
       is_new_release: ${{ steps.versions.outputs.is_new_release }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -53,7 +53,7 @@ jobs:
       VERSION: ${{ needs.check_version.outputs.current_version }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Push tag
         run: |
