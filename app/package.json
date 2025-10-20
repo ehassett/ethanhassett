@@ -19,7 +19,7 @@
   "devDependencies": {
     "prettier": "3.x",
     "prettier-plugin-astro": "0.14.x",
-    "prettier-plugin-tailwindcss": "0.6.x",
+    "prettier-plugin-tailwindcss": "0.7.x",
     "wrangler": "4.x"
   }
 }
