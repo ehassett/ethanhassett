@@ -1,7 +1,7 @@
 {
   "name": "ethanhassett.com",
   "type": "module",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "scripts": {
     "dev": "astro check && astro build && wrangler pages dev ./dist",
     "build": "astro check && astro build"
@@ -19,7 +19,7 @@
   "devDependencies": {
     "prettier": "3.x",
     "prettier-plugin-astro": "0.14.x",
-    "prettier-plugin-tailwindcss": "0.6.x",
+    "prettier-plugin-tailwindcss": "0.7.x",
     "wrangler": "4.x"
   }
 }
