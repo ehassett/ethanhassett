@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Mailgun from "mailgun.js";
 
 const { env } = Astro.locals.runtime;
 const success = Astro.url.searchParams.get("success") || false;
@@ -52,35 +53,25 @@ if (Astro.request.method === "POST") {
       }
 
       // Send email
-      // Due to an issue with the mailgun.js library, we need to use fetch
-      // https://github.com/mailgun/mailgun.js/issues/426
+      const mailgun = new Mailgun(FormData);
+      const mg = mailgun.client({
+        username: "api",
+        key: env.MAILGUN_API_KEY,
+        useFetch: true,
+      });
 
-      // Set up the Mailgun API request
-      const mailData = new FormData();
-      mailData.append("from", `postmaster@${env.MAILGUN_DOMAIN}`);
-      mailData.append("to", "contact@hassett.io");
-      mailData.append("subject", `Contact Form Submission: ${data.name}`);
-      mailData.append(
-        "text",
-        `Name: ${data.name}\nEmail: ${data.email}\nMessage: ${data.message}`,
-      );
-
-      // Send the Mailgun API request
-      const mailgunResponse = await fetch(
-        `https://api.mailgun.net/v3/${env.MAILGUN_DOMAIN}/messages`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Basic ${btoa(`api:${env.MAILGUN_API_KEY}`)}`,
-          },
-          body: mailData,
-        },
-      );
-
-      if (mailgunResponse.status !== 200) {
-        console.error(mailgunResponse);
-        throw new Error("ERROR: Mailgun failed to send");
-      }
+      await mg.messages
+        .create(env.MAILGUN_DOMAIN, {
+          from: `postmaster@${env.MAILGUN_DOMAIN}`,
+          to: ["contact@hassett.io"],
+          subject: `Contact Form Submission: ${data.name}`,
+          text: `Name: ${data.name}\nEmail: ${data.email}\nMessage: ${data.message}`,
+        })
+        .then((msg) => console.log(msg))
+        .catch((err) => {
+          console.error(err);
+          throw new Error("ERROR: Mailgun failed to send");
+        });
 
       // Redirect to success page
       return Astro.redirect("/contact?success=true");
