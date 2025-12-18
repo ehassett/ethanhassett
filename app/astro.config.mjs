@@ -13,6 +13,7 @@ export default defineConfig({
   }),
   integrations: [sitemap()],
   vite: {
+    // @ts-expect-error - Vite plugin type mismatch
     plugins: [tailwindcss()],
   },
 });
