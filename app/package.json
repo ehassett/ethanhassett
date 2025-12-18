@@ -15,7 +15,7 @@
     "mailgun.js": "12.x",
     "tailwindcss": "4.x",
     "typescript": "5.x",
-    "vite": "6.x"
+    "vite": "7.x"
   },
   "devDependencies": {
     "prettier": "3.x",
