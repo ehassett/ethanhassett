@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
@@ -82,5 +82,35 @@ jobs:
           done
 
           if [[ $failed ]]; then
+            exit 1
+          fi
+
+  validate-node-version:
+    name: Validate Node.js version
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Ensure that .tool-versions matches wrangler config
+        run: |
+          # Extract node version from .tool-versions
+          tool_versions=$(grep 'nodejs ' .tool-versions | awk '{print $2}')
+
+          # Ensure all wrangler config node versions are the same
+          wrangler_versions=$(sed 's|//.*||' ./app/wrangler.jsonc | jq -r '.. | .NODE_VERSION? | select(. != null)' | sort -u)
+          version_count=$(echo "$wrangler_versions" | wc -l | tr -d ' ')
+          if [[ "$version_count" -ne 1 ]]; then
+            echo "ERROR: Multiple different Node.js versions found in wrangler config:"
+            echo "$wrangler_versions"
+            exit 1
+          fi
+
+          # Compare the node version in the wrangler config with .tool-versions
+          if [[ "$tool_versions" != "$wrangler_versions" ]]; then
+            echo "ERROR: Node.js version in .tool-versions does not match wrangler config"
             exit 1
           fi

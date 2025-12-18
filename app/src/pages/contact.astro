@@ -2,98 +2,13 @@
 import Layout from "../layouts/Layout.astro";
 
 const { env } = Astro.locals.runtime;
-const success = Astro.url.searchParams.get("success") || false;
-const data = { name: "", email: "", message: "" };
-const errors = { name: "", email: "", message: "" };
-let serverError = false;
-
-if (Astro.request.method === "POST") {
-  try {
-    // Get the form data
-    const formData = await Astro.request.formData();
-    data.name = formData.get("name") as string;
-    data.email = formData.get("email") as string;
-    data.message = formData.get("message") as string;
-
-    // Validate the data
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (typeof data.name !== "string" || data.name.length < 1) {
-      errors.name += "Please enter your name.";
-    }
-    if (typeof data.email !== "string" || !emailRegex.test(data.email)) {
-      errors.email += "Please enter a valid email.";
-    }
-    if (typeof data.message !== "string") {
-      errors.message += "Please enter a message.";
-    }
-    if (data.message.length > 2000) {
-      errors.message += "Message must be less than 2000 characters.";
-    }
-
-    if (!Object.values(errors).some((msg) => msg)) {
-      // Verify Turnstile
-      const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
-      const turnstileResponse = await fetch(url, {
-        body: JSON.stringify({
-          secret: env.TURNSTILE_SECRET_KEY,
-          response: formData.get("cf-turnstile-response"),
-          remoteip: Astro.request.headers.get("CF-Connecting-IP"),
-        }),
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const outcome: any = await turnstileResponse.json();
-      if (!outcome.success) {
-        console.log(outcome);
-        throw new Error("ERROR: Turnstile verification failed");
-      }
-
-      // Send email
-      // Due to an issue with the mailgun.js library, we need to use fetch
-      // https://github.com/mailgun/mailgun.js/issues/426
-
-      // Set up the Mailgun API request
-      const mailData = new FormData();
-      mailData.append("from", `postmaster@${env.MAILGUN_DOMAIN}`);
-      mailData.append("to", "contact@hassett.io");
-      mailData.append("subject", `Contact Form Submission: ${data.name}`);
-      mailData.append(
-        "text",
-        `Name: ${data.name}\nEmail: ${data.email}\nMessage: ${data.message}`,
-      );
-
-      // Send the Mailgun API request
-      const mailgunResponse = await fetch(
-        `https://api.mailgun.net/v3/${env.MAILGUN_DOMAIN}/messages`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Basic ${btoa(`api:${env.MAILGUN_API_KEY}`)}`,
-          },
-          body: mailData,
-        },
-      );
-
-      if (mailgunResponse.status !== 200) {
-        console.error(mailgunResponse);
-        throw new Error("ERROR: Mailgun failed to send");
-      }
-
-      // Redirect to success page
-      return Astro.redirect("/contact?success=true");
-    }
-  } catch (error) {
-    serverError = true;
-    if (error instanceof Error) {
-      console.error(error.message);
-    } else {
-      console.error(error);
-    }
-  }
-}
+const success = Astro.url.searchParams.get("success");
+const contact = Astro.locals.contact || {
+  name: { value: "", error: "" },
+  email: { value: "", error: "" },
+  message: { value: "", error: "" },
+  serverError: false,
+};
 ---
 
 <head>
@@ -141,49 +56,63 @@ if (Astro.request.method === "POST") {
     >
       <div class="flex flex-1 flex-col gap-(--space-m)">
         <input
-          class:list={errors.name && "border-red-400"}
+          class:list={contact.name.error && "border-red-400"}
           class="contact-input border-b-2"
           type="text"
           id="name"
           name="name"
           placeholder="name"
           required
-          value={data.name}
+          value={contact.name.value}
+          aria-describedby={contact.name.error ? "name-error" : undefined}
+          aria-invalid={contact.name.error ? "true" : "false"}
         />
-        <span class="form-error">{errors.name}</span>
+        <span id="name-error" class="form-error">{contact.name.error}</span>
         <input
-          class:list={errors.email && "border-red-400"}
+          class:list={contact.email.error && "border-red-400"}
           class="contact-input border-b-2"
           type="email"
           id="email"
           name="email"
           placeholder="email"
           required
-          value={data.email}
+          value={contact.email.value}
+          aria-describedby={contact.email.error ? "email-error" : undefined}
+          aria-invalid={contact.email.error ? "true" : "false"}
         />
-        <span class="form-error">{errors.email}</span>
+        <span id="email-error" class="form-error">{contact.email.error}</span>
         <textarea
-          class:list={errors.message && "border-red-400"}
+          class:list={contact.message.error && "border-red-400"}
           class="contact-input mt-(--space-3xs) min-h-(--space-3xl) border-2"
           id="message"
           name="message"
           placeholder="message"
           required
-          maxlength="2000">{data.message}</textarea
+          maxlength="2000"
+          aria-describedby={contact.message.error ? "message-error" : undefined}
+          aria-invalid={contact.message.error ? "true" : "false"}
+          >{contact.message.value}</textarea
         >
-        <span class="form-error">{errors.message}</span>
+        <span id="message-error" class="form-error"
+          >{contact.message.error}</span
+        >
         <div id="cf-turnstile" data-sitekey={env.TURNSTILE_SITE_KEY}></div>
       </div>
     </form>
-    <span
-      class="mt-(--space-3xs) h-(--space-s) w-full text-red-400"
-      set:html={serverError &&
-        'Sorry, there was an issue. <a class="underline" href="mailto:contact@hassett.io">Reach out directly.</a>'}
-    />
+    {
+      contact.serverError && (
+        <span class="mt-(--space-3xs) h-(--space-s) w-full text-red-400">
+          Sorry, there was an issue.{" "}
+          <a class="underline" href="mailto:contact@hassett.io">
+            Reach out directly.
+          </a>
+        </span>
+      )
+    }
     <button
       id="submit"
       class="mr-(--space-3xs) cursor-pointer"
-      class:list={serverError || success ? "hidden" : ""}
+      class:list={contact.serverError || success ? "hidden" : ""}
       form="contact"
       type="submit"
     >
