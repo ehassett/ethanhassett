@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { env } from "cloudflare:workers";
 
-const { env } = Astro.locals.runtime;
 const success = Astro.url.searchParams.get("success");
 const contact = Astro.locals.contact || {
   name: { value: "", error: "" },

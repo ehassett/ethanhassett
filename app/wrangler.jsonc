@@ -1,9 +1,9 @@
 // prettier-ignore
 {
   "name": "ethanhassett",
-  "pages_build_output_dir": "./dist",
+  "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_flags": ["nodejs_compat"],
-  "compatibility_date": "2025-05-07",
+  "compatibility_date": "2026-03-17",
   "vars": {
     "NODE_VERSION": "25.2.1",
     "MAILGUN_DOMAIN": "ethanhassett.com",

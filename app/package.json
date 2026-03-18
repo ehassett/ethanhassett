@@ -1,17 +1,24 @@
 {
   "name": "ethanhassett.com",
   "type": "module",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "scripts": {
-    "dev": "astro check && astro build && wrangler pages dev ./dist",
+    "types:cloudflare": "wrangler types",
+    "caddy:start": "source .env && caddy start --config ./Caddyfile --adapter caddyfile",
+    "astro:start": "astro check && astro build && astro preview --host 0.0.0.0",
+    "predev": "npm run types:cloudflare",
+    "dev": "npm run caddy:start && npm run astro:start",
+    "postdev": "caddy stop",
+    "dev:noproxy": "npm run predev && astro check && astro build && astro preview --host 0.0.0.0",
+    "prebuild": "npm run types:cloudflare",
     "build": "astro check && astro build"
   },
   "dependencies": {
-    "@astrojs/check": "0.x",
-    "@astrojs/cloudflare": "12.x",
-    "@astrojs/sitemap": "3.x",
+    "@astrojs/check": "^0.9.8",
+    "@astrojs/cloudflare": "^13.1.2",
+    "@astrojs/sitemap": "^3.7.1",
     "@tailwindcss/vite": "4.x",
-    "astro": "5.x",
+    "astro": "^6.0.5",
     "mailgun.js": "12.x",
     "tailwindcss": "4.x",
     "typescript": "5.x"

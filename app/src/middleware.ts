@@ -1,5 +1,6 @@
 import type { MiddlewareHandler } from "astro";
 import Mailgun from "mailgun.js";
+import { env } from "cloudflare:workers";
 
 // API URLs
 const TURNSTILE_VERIFY_URL =
@@ -129,7 +130,6 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
 
   // Only handle POST requests to /contact
   if (request.method === "POST" && url.pathname === CONTACT_ROUTE) {
-    const { env } = locals.runtime;
     const contact: ContactData = {
       name: { value: "", error: "" },
       email: { value: "", error: "" },
