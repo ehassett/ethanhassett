@@ -28,19 +28,13 @@ Repo for https://ethanhassett.com
 ## Prerequisites
 
 1. Make sure you're using the versions in the [`.tool-versions`](./.tool-versions) file.
-2. `caddy` with the Cloudflare provider must be installed to use the reverse proxy: [instructions](https://caddyserver.com/docs/modules/dns.providers.cloudflare)
-3. Ensure the following environment variables are defined in `app/.dev.vars`:
+2. Ensure the following environment variables are defined in `app/.dev.vars`:
    - `MAILGUN_API_KEY`
    - `TURNSTILE_SECRET_KEY`
 
 ## Steps
 
-To access the development version of the site using `caddy` as a reverse proxy:
-
-1. Add `CLOUDFLARE_API_TOKEN` to `app/.env`.
-2. Run `cd app && npm run dev`.
-
-To bypass reverse proxy, simply run `cd app && npm run dev:noproxy`.
+Run `cd app && npm run dev`.
 
 # Deployment
 

@@ -4,29 +4,29 @@
   "version": "2.0.0",
   "scripts": {
     "types:cloudflare": "wrangler types",
-    "caddy:start": "source .env && caddy start --config ./Caddyfile --adapter caddyfile",
     "astro:start": "astro check && astro build && astro preview --host 0.0.0.0",
     "predev": "npm run types:cloudflare",
-    "dev": "npm run caddy:start && npm run astro:start",
-    "postdev": "caddy stop",
-    "dev:noproxy": "npm run predev && astro check && astro build && astro preview --host 0.0.0.0",
+    "dev": "npm run astro:start",
     "prebuild": "npm run types:cloudflare",
     "build": "astro check && astro build"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.8",
-    "@astrojs/cloudflare": "^13.1.2",
-    "@astrojs/sitemap": "^3.7.1",
+    "@astrojs/check": "0.9.x",
+    "@astrojs/cloudflare": "13.6.x",
+    "@astrojs/sitemap": "3.7.x",
     "@tailwindcss/vite": "4.x",
-    "astro": "^6.0.5",
-    "mailgun.js": "12.x",
+    "astro": "6.4.x",
+    "mailgun.js": "13.x",
     "tailwindcss": "4.x",
-    "typescript": "5.x"
+    "typescript": "6.x"
+  },
+  "overrides": {
+    "vite": "7.x"
   },
   "devDependencies": {
     "prettier": "3.x",
     "prettier-plugin-astro": "0.14.x",
-    "prettier-plugin-tailwindcss": "0.7.x",
-    "wrangler": "4.x"
+    "prettier-plugin-tailwindcss": "0.8.x",
+    "wrangler": "^4.83.0"
   }
 }
