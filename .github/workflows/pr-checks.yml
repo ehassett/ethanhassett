@@ -97,20 +97,28 @@ jobs:
 
       - name: Ensure that .tool-versions matches wrangler config
         run: |
-          # Extract node version from .tool-versions
-          tool_versions=$(grep 'nodejs ' .tool-versions | awk '{print $2}')
+          # Extract node version from app/.tool-versions
+          tool_version=$(awk '/^nodejs[[:space:]]+/ { print $2; exit }' ./app/.tool-versions)
+          if [[ -z "$tool_version" ]]; then
+            echo "ERROR: Could not find nodejs version in app/.tool-versions"
+            exit 1
+          fi
 
           # Ensure all wrangler config node versions are the same
           wrangler_versions=$(sed 's|//.*||' ./app/wrangler.jsonc | jq -r '.. | .NODE_VERSION? | select(. != null)' | sort -u)
-          version_count=$(echo "$wrangler_versions" | wc -l | tr -d ' ')
+          version_count=$(printf '%s\n' "$wrangler_versions" | sed '/^$/d' | wc -l | tr -d ' ')
           if [[ "$version_count" -ne 1 ]]; then
             echo "ERROR: Multiple different Node.js versions found in wrangler config:"
             echo "$wrangler_versions"
             exit 1
           fi
 
+          wrangler_version=$(printf '%s\n' "$wrangler_versions" | sed '/^$/d' | head -n 1)
+
           # Compare the node version in the wrangler config with .tool-versions
-          if [[ "$tool_versions" != "$wrangler_versions" ]]; then
+          if [[ "$tool_version" != "$wrangler_version" ]]; then
             echo "ERROR: Node.js version in .tool-versions does not match wrangler config"
+            echo "app/.tool-versions: $tool_version"
+            echo "app/wrangler.jsonc: $wrangler_version"
             exit 1
           fi

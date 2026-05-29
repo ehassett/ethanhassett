@@ -1,9 +1,0 @@
-dev.ethanhassett.com {
-	tls {
-		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
-	}
-	reverse_proxy 127.0.0.1:4321 {
-		header_up Host localhost:4321
-		header_up Origin http://localhost:4321
-	}
-}
