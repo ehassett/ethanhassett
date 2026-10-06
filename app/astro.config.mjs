@@ -8,12 +8,13 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   site: "https://ethanhassett.com",
   output: "server",
+  compressHTML: true,
+  session: false,
   adapter: cloudflare({
-    cloudflareModules: false,
+    imageService: "compile",
   }),
   integrations: [sitemap()],
   vite: {
-    // @ts-expect-error - Vite plugin type mismatch
     plugins: [tailwindcss()],
   },
 });

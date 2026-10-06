@@ -30,47 +30,80 @@ export const prerender = true;
 </Layout>
 
 <script>
-  var titles = [
+  const titles = [
     "Cloud Engineer",
     "Globetrotter",
     "Terraform Certified",
     "Home Chef",
     "Bedroom DJ",
   ];
-  var reverse = false;
-  var i = 0;
-  var j = 0;
+  let reverse = false;
+  let characterIndex = 0;
+  let titleIndex = 0;
+  let timeoutId: number | undefined;
 
   function typewriter() {
-    var jitter = Math.floor(Math.random() * 25 + 45);
-    var title = document.getElementById("title");
+    const jitter = Math.floor(Math.random() * 25 + 45);
+    const title = document.getElementById("title");
 
     if (title !== null) {
+      const text = title.textContent ?? "";
       if (reverse) {
-        if (title.innerHTML.length > 0) {
-          title.innerHTML = title.innerHTML.slice(0, -1);
-          setTimeout(typewriter, jitter);
+        if (text.length > 0) {
+          title.textContent = text.slice(0, -1);
+          timeoutId = window.setTimeout(typewriter, jitter);
         } else {
-          j = (j + 1) % titles.length;
+          titleIndex = (titleIndex + 1) % titles.length;
           reverse = false;
-          setTimeout(typewriter, 1000);
+          timeoutId = window.setTimeout(typewriter, 1000);
         }
       } else {
-        if (i === titles[j].length) {
-          i = 0;
+        if (characterIndex === titles[titleIndex].length) {
+          characterIndex = 0;
           reverse = true;
-          setTimeout(typewriter, 3000);
+          timeoutId = window.setTimeout(typewriter, 3000);
         } else {
-          if (i < titles[j].length) {
-            title.innerHTML = title.innerHTML + titles[j].charAt(i);
-            i++;
-            setTimeout(typewriter, jitter);
+          if (characterIndex < titles[titleIndex].length) {
+            title.textContent =
+              text + titles[titleIndex].charAt(characterIndex);
+            characterIndex++;
+            timeoutId = window.setTimeout(typewriter, jitter);
           }
         }
       }
     }
   }
 
-  // Start the typewriter effect on every load
-  document.addEventListener("astro:page-load", typewriter);
+  function stopTypewriter() {
+    window.clearTimeout(timeoutId);
+    timeoutId = undefined;
+  }
+
+  function startTypewriter() {
+    stopTypewriter();
+    const title = document.getElementById("title");
+    if (title === null) return;
+
+    reverse = false;
+    characterIndex = 0;
+    titleIndex = 0;
+    title.textContent = "";
+
+    for (
+      let shuffleIndex = titles.length - 1;
+      shuffleIndex > 1;
+      shuffleIndex--
+    ) {
+      const swapIndex = Math.floor(Math.random() * shuffleIndex) + 1;
+      [titles[shuffleIndex], titles[swapIndex]] = [
+        titles[swapIndex],
+        titles[shuffleIndex],
+      ];
+    }
+
+    typewriter();
+  }
+
+  document.addEventListener("astro:before-swap", stopTypewriter);
+  document.addEventListener("astro:page-load", startTypewriter);
 </script>
