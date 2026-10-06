@@ -1,28 +1,38 @@
-// prettier-ignore
 {
-  "name": "ethanhassett",
-  "pages_build_output_dir": "./dist",
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "ethanhassett-dev",
+  "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_flags": ["nodejs_compat"],
   "compatibility_date": "2025-05-07",
+  "workers_dev": false,
+  "preview_urls": false,
+  "secrets": {
+    "required": ["MAILGUN_API_KEY", "TURNSTILE_SECRET_KEY"],
+  },
   "vars": {
-    "NODE_VERSION": "25.2.1",
     "MAILGUN_DOMAIN": "ethanhassett.com",
-    "TURNSTILE_SITE_KEY": "0x4AAAAAABNK4577L8fCL9l5"
+    "TURNSTILE_SITE_KEY": "0x4AAAAAABNK4577L8fCL9l5",
   },
   "env": {
-    "preview": {
+    "staging": {
+      "name": "ethanhassett-staging",
+      "secrets": {
+        "required": ["MAILGUN_API_KEY", "TURNSTILE_SECRET_KEY"],
+      },
       "vars": {
-        "NODE_VERSION": "25.2.1",
         "MAILGUN_DOMAIN": "ethanhassett.com",
-        "TURNSTILE_SITE_KEY": "0x4AAAAAABNLEpdaRKmabBNe"
-      }
+        "TURNSTILE_SITE_KEY": "0x4AAAAAABNLEpdaRKmabBNe",
+      },
     },
     "production": {
+      "name": "ethanhassett",
+      "secrets": {
+        "required": ["MAILGUN_API_KEY", "TURNSTILE_SECRET_KEY"],
+      },
       "vars": {
-        "NODE_VERSION": "25.2.1",
         "MAILGUN_DOMAIN": "ethanhassett.com",
-        "TURNSTILE_SITE_KEY": "0x4AAAAAABNLN_PugeImZoys"
-      }
-    }
-  }
+        "TURNSTILE_SITE_KEY": "0x4AAAAAABNLN_PugeImZoys",
+      },
+    },
+  },
 }

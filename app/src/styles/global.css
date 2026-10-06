@@ -149,6 +149,6 @@
 
 @layer utilities {
   .u-container {
-    @apply mx-auto flex max-w-dvw min-w-[60dvw] flex-grow flex-col items-center justify-center;
+    @apply mx-auto flex max-w-dvw min-w-[60dvw] grow flex-col items-center justify-center;
   }
 }
