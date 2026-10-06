@@ -1,25 +1,30 @@
 {
   "name": "ethanhassett.com",
   "type": "module",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "scripts": {
-    "dev": "astro check && astro build && wrangler pages dev ./dist",
-    "build": "astro check && astro build"
+    "types": "wrangler types",
+    "check": "npm run types && astro check",
+    "dev": "npm run types && astro dev",
+    "build": "npm run check && astro build",
+    "preview": "astro preview",
+    "deploy": "wrangler deploy",
+    "deploy:preview": "wrangler preview"
   },
   "dependencies": {
-    "@astrojs/check": "0.x",
-    "@astrojs/cloudflare": "12.x",
-    "@astrojs/sitemap": "3.x",
-    "@tailwindcss/vite": "4.x",
-    "astro": "5.x",
-    "mailgun.js": "12.x",
-    "tailwindcss": "4.x",
-    "typescript": "5.x"
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/cloudflare": "^14.3.3",
+    "@astrojs/sitemap": "^3.7.4",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.3.5",
+    "mailgun.js": "^14.0.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3"
   },
   "devDependencies": {
-    "prettier": "3.x",
-    "prettier-plugin-astro": "0.14.x",
-    "prettier-plugin-tailwindcss": "0.7.x",
-    "wrangler": "4.x"
+    "prettier": "^3.9.9",
+    "prettier-plugin-astro": "0.14.1",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "wrangler": "^4.147.0"
   }
 }

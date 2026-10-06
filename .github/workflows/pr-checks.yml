@@ -1,7 +1,7 @@
 name: Pull Request Checks
 
 on:
-  pull_request_target:
+  pull_request:
     types: [assigned, opened, synchronize, reopened, edited]
 
 permissions:
@@ -11,10 +11,15 @@ permissions:
 env:
   GITHUB_TOKEN: ${{ github.token }}
 
+concurrency:
+  group: pr-checks-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   validate-title:
     name: Validate PR title
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
     steps:
       - name: Run semantic-pull-request
         uses: amannn/action-semantic-pull-request@v6
@@ -29,13 +34,20 @@ jobs:
   validate-version:
     if: ${{ github.base_ref == 'main' }}
     name: Validate version update
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
-          ref: ${{ github.head_ref }}
           fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .tool-versions
+          package-manager-cache: false
 
       - name: Check app directory for changes
         id: changed_files
@@ -45,72 +57,72 @@ jobs:
 
       - name: Check if version is updated
         if: steps.changed_files.outputs.any_changed == 'true'
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
         run: |
-          regex="^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
-          current_version=$(git describe --tags --abbrev=0)
-          package_version=$(cat ./app/package.json \
-            | grep version \
-            | head -1 \
-            | awk -F: '{ print $2 }' \
-            | sed 's/[",]//g' \
-            | tr -d " \t\n\r")
-          package_lock_version=$(cat ./app/package-lock.json \
-            | grep version \
-            | head -1 \
-            | awk -F: '{ print $2 }' \
-            | sed 's/[",]//g' \
-            | tr -d " \t\n\r")
-
-          fileArray=("package.json" "package-lock.json")
-          versionArray=("$package_version" "$package_lock_version")
-
-          echo "Current version: $current_version"
-          for i in "${!fileArray[@]}"; do
-            echo "${fileArray[$i]}: ${versionArray[$i]}"
-          done
-
-          for i in "${!versionArray[@]}"; do
-            if [[ ! ${versionArray[$i]} =~ $regex ]]; then
-              echo "ERROR: version in ${fileArray[$i]} is not in semver format"
-              failed=true
-            fi
-
-            if [[ ${versionArray[$i]} == "$current_version" ]]; then
-              echo "ERROR: version in ${fileArray[$i]} must be updated"
-              failed=true
-            fi
-          done
-
-          if [[ $failed ]]; then
-            exit 1
-          fi
+          node --input-type=module <<'NODE'
+          import assert from "node:assert/strict";
+          import { execFileSync } from "node:child_process";
+          import { readFileSync } from "node:fs";
+          const manifest = JSON.parse(readFileSync("app/package.json", "utf8"));
+          const lock = JSON.parse(readFileSync("app/package-lock.json", "utf8"));
+          const previous = execFileSync("git", ["describe", "--tags", "--abbrev=0", `origin/${process.env.BASE_BRANCH}`], { encoding: "utf8" }).trim();
+          assert.match(manifest.version, /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/);
+          assert.equal(lock.version, manifest.version);
+          assert.equal(lock.packages[""].version, manifest.version);
+          assert.notEqual(manifest.version, previous, "Application changes must bump the release version");
+          console.log(`Release version: ${previous} -> ${manifest.version}`);
+          NODE
 
   validate-node-version:
     name: Validate Node.js version
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Ensure that .tool-versions matches wrangler config
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .tool-versions
+          package-manager-cache: false
+
+      - name: Ensure local, CI, and Workers build versions match
         run: |
-          # Extract node version from .tool-versions
-          tool_versions=$(grep 'nodejs ' .tool-versions | awk '{print $2}')
+          node --input-type=module <<'NODE'
+          import assert from "node:assert/strict";
+          import { readFileSync } from "node:fs";
+          const pinned = readFileSync(".tool-versions", "utf8").split(/\r?\n/).find(line => line.startsWith("nodejs ")).split(/\s+/)[1];
+          assert.equal(process.versions.node, pinned);
+          assert.equal(readFileSync("app/.node-version", "utf8").trim(), pinned);
+          console.log(`Local, CI, and Workers Builds use Node ${pinned}`);
+          NODE
 
-          # Ensure all wrangler config node versions are the same
-          wrangler_versions=$(sed 's|//.*||' ./app/wrangler.jsonc | jq -r '.. | .NODE_VERSION? | select(. != null)' | sort -u)
-          version_count=$(echo "$wrangler_versions" | wc -l | tr -d ' ')
-          if [[ "$version_count" -ne 1 ]]; then
-            echo "ERROR: Multiple different Node.js versions found in wrangler config:"
-            echo "$wrangler_versions"
-            exit 1
-          fi
+  validate-build:
+    name: Validate application build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
-          # Compare the node version in the wrangler config with .tool-versions
-          if [[ "$tool_versions" != "$wrangler_versions" ]]; then
-            echo "ERROR: Node.js version in .tool-versions does not match wrangler config"
-            exit 1
-          fi
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .tool-versions
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and dry-run Worker deployment
+        run: npm run build && npm run deploy -- --dry-run

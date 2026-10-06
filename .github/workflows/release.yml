@@ -5,32 +5,37 @@ on:
     branches: ["main"]
 
 permissions:
-  pull-requests: read
-  contents: write
-  id-token: write
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   check_version:
     name: Check Version
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
     outputs:
       current_version: ${{ steps.versions.outputs.current_version }}
       is_new_release: ${{ steps.versions.outputs.is_new_release }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .tool-versions
+          package-manager-cache: false
 
       - name: Get versions
         id: versions
         run: |
-          current_version=$(cat ./app/package.json \
-            | grep version \
-            | head -1 \
-            | awk -F: '{ print $2 }' \
-            | sed 's/[",]//g' \
-            | tr -d " \t\n\r")
+          current_version=$(node -p 'JSON.parse(require("node:fs").readFileSync("./app/package.json", "utf8")).version')
 
           previous_version=$(git describe --tags --abbrev=0)
 
@@ -44,7 +49,10 @@ jobs:
 
   release:
     name: Release and Tag New Version
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
     needs: [check_version]
     if: needs.check_version.outputs.is_new_release == 'true'
     env:
@@ -53,18 +61,18 @@ jobs:
       VERSION: ${{ needs.check_version.outputs.current_version }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Push tag
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git tag ${{ env.VERSION }}
-          git push origin ${{ env.VERSION }}
+          git tag "$VERSION"
+          git push origin "$VERSION"
 
       - name: Create release
         run: |
-          gh release create ${{ env.VERSION }} \
+          gh release create "$VERSION" \
             --repo="${{ env.GITHUB_REPOSITORY }}" \
             --title="${{ env.VERSION }}" \
             --generate-notes
