@@ -35,9 +35,11 @@ Run `npm run dev` for Astro's local Workers runtime with hot reload. The default
 ```sh
 npm run types       # Generate runtime and binding declarations
 npm run check       # Generate types and check Astro/TypeScript
-npm run build       # Check and build the local environment
+npm run build       # Check and build the Worker
 npm run preview     # Preview the built Worker locally
 ```
+
+`npm run preview` is local-only. `npm run deploy` publishes production, while `npm run deploy:preview` publishes a Preview named after the current branch. Both require a build first.
 
 Generated bindings are ignored by git and regenerated before development and builds. `secrets.required` declares secret names so CI can generate types without live secret values.
 
@@ -45,4 +47,4 @@ Astro 7, Cloudflare adapter 14, and TypeScript 6 are used. TypeScript 7 is defer
 
 # Deployment
 
-The deployment process follows [GitHub Flow](https://githubflow.github.io). Version 2.0.0 targets Cloudflare Workers, not Pages. GitHub Actions performs PR checks and creates releases; [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/) owns application deployment.
+The deployment process follows [GitHub Flow](https://githubflow.github.io). Version 2.0.0 targets Cloudflare Workers, not Pages. GitHub Actions performs PR checks and creates releases; [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/) owns application deployment and branch previews.

@@ -7,10 +7,9 @@
     "check": "npm run types && astro check",
     "dev": "npm run types && astro dev",
     "build": "npm run check && astro build",
-    "build:staging": "CLOUDFLARE_ENV=staging npm run build",
-    "build:production": "CLOUDFLARE_ENV=production npm run build",
     "preview": "astro preview",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "deploy:preview": "wrangler preview"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
